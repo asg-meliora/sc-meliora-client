@@ -24,12 +24,14 @@ const Login = () => {
       usersData.filter(
         (user) =>
           user.name === username &&
-          user.password === "123" &&
-          user.type === "admin"
+          user.password === password /*&&*/
+          // user.type === "admin"
       ).length === 0
     ) {
       setError({ error: true, message: "Usuario no encontrado" });
       return;
+    } else {
+      navigate("/dashboard");
     }
   };
 
@@ -50,7 +52,7 @@ const Login = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              required
+              // required
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
             />
             <FaUserAlt />
@@ -67,7 +69,7 @@ const Login = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
+              // required
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
             />
             <FaLock />
@@ -81,7 +83,7 @@ const Login = () => {
         </form>
       </div>
       {error.error && (
-        <div className="bg-red-500 text-white p-2 rounded mt-4 text-center">
+        <div className="bg-red-500 text-white p-2 rounded mt-4 text-center" onClick={() => setError({ error: false, message: "" })}>
           {error.message}
         </div>
       )}

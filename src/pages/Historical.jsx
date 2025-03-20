@@ -1,8 +1,14 @@
 import React from 'react'
+import SideMenu from '../components/SideMenu'
 
 const Historical = () => {
   return (
-    <div>Historical</div>
+    <>
+      <div className="flex">
+        <SideMenu />
+        Histórico
+      </div>
+    </>
   )
 }
 

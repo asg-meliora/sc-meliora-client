@@ -1,8 +1,14 @@
 import React from 'react'
+import SideMenu from '../components/SideMenu'
 
 const Invoices = () => {
   return (
-    <div>Invoices</div>
+    <>
+      <div className="flex">
+        <SideMenu />
+        Facturas
+      </div>
+    </>
   )
 }
 
