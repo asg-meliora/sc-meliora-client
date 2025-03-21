@@ -1,4 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
 @import "tailwindcss";
+
+/* ? Custom Fonts */
+/* > General Text */
+.font-inter {
+  font-family: "Inter", sans-serif;
+}
+/* > Headers */
+.font-cinzel {
+  font-family: "Cinzel", serif;
+}
+/* > Buttons */
+.font-lora {
+  font-family: "Lora", serif;
+}
+/* > Titles */
+.font-raleway {
+  font-family: "Raleway", sans-serif;
+}
+
+/* ! Custom Colors */
+/* > General Background / Texts */
+.bg-black {
+  background-color: #262523;
+}
+/* > General Background */
+.bg-whiteN {
+  background-color: #F4F4F7;
+}
+/* > General Text */
+.bg-bone{
+  background-color: #F7F5E9;
+}
+/* > Table Borders */
+.bg-dark-coffee {
+  background-color: #3E3A32;
+}
+/* > Slide Bars */
+/* TODO: Might change given desing  */
+.bg-cream {
+  background-color: #DBD0BD;
+}
+
+
+
+/* ? Custom Gradients */
+/* > General Buttons */
+.bg-gold-gradient {
+  background: rgb(227,156,17);
+  background: radial-gradient(circle, rgba(227,156,17,1) 0%, rgba(188,134,52,1) 41%, rgba(130,87,23,1) 100%);
+}
+/* > General Buttons Hover */
+.bg-dark-gold-gradient {
+  background: rgb(145,99,8);
+  background: radial-gradient(circle, rgba(145,99,8,1) 0%, rgba(132,95,40,1) 41%, rgba(87,58,15,1) 100%); 
+}
+/* > LogOut Buttons */
+.bg-red-gradient {
+    background: rgb(232,67,74);
+  background: radial-gradient(circle, rgba(232,67,74,1) 0%, rgba(181,55,60,1) 41%, rgba(130,51,54,1) 100%); 
+}
+/* > LogOut Buttons Hover */
+.bg-dark-red-gradient {
+  background: rgb(175,34,41);
+  background: radial-gradient(circle, rgba(175,34,41,1) 0%, rgba(137,26,28,1) 41%, rgba(95,30,31,1) 100%); 
+}
+/* > Login Button */
+.bg-blue-gradient {
+  background: rgb(69,129,219);
+  background: radial-gradient(circle, rgba(69,129,219,1) 0%, rgba(22,104,227,1) 40%, rgba(40,86,155,1) 100%); 
+}
+/* > Login Button Hover */
+.bg-dark-blue-gradient {
+  background: rgb(47,96,170);
+  background: radial-gradient(circle, rgba(47,96,170,1) 0%, rgba(15,67,144,1) 45%, rgba(16,36,67,1) 100%); 
+}
+/* > Background */
+.bg-black-gradient {
+  background: rgb(63,62,60);
+  background: radial-gradient(circle, rgba(63,62,60,1) 0%, rgba(38,37,35,1) 41%, rgba(17,17,16,1) 100%); 
+}
+/* > Headings */
+.heading-gradient{
+  background: rgb(245,189,78);
+  background: radial-gradient(circle, rgba(245,189,78,1) 0%, rgba(194,146,36,1) 41%, rgba(180,120,32,1) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+/* > Division Lines */
+.division-gradient{
+  background: rgb(201,137,11);
+  background: radial-gradient(circle, rgba(201,137,11,1) 0%, rgba(148,97,23,1) 41%, rgba(150,96,17,1) 100%); 
+}
+
+/* ? Custom Shadows */
+/* > Outer Shadow Low */
+.shadow-low {
+  box-shadow: 0px 2px 6px 2px rgba(0, 0, 0, 0.25);
+}
+/* > Outer Shadow Mid */
+.shadow-mid {
+  box-shadow: 0px 4px 6px 5px rgba(0, 0, 0, 0.25);
+}
+
+/* ? Special Texts */
+/* 
+  TODO: Re-design InnerShadows 
+  * It might need to .heading-gradient merge with .shadow-heading
+  * Buttons might need a class like the heading one
+  Tests: https://codepen.io/ASuarez18-the-typescripter/pen/vEYjKEZ
+  Tool: https://html-css-js.com/css/generator/text-shadow/
+*/
+/* > Inner Shadow Heading */
+
+/* > Inner Shadow Button Text */
+
+.logoutButton:hover{
+  background: rgb(175,34,41);
+  background: radial-gradient(circle, rgba(175,34,41,1) 0%, rgba(137,26,28,1) 41%, rgba(95,30,31,1) 100%); 
+}
+.menuButton:hover{
+  background: rgb(145,99,8);
+  background: radial-gradient(circle, rgba(145,99,8,1) 0%, rgba(132,95,40,1) 41%, rgba(87,58,15,1) 100%); 
+}
 /* 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
