@@ -1,4 +1,6 @@
 import React from "react";
+import { TokenProvider } from './TokenContext';
+import { ProtectedRoute } from "./ProtectedRoute";
 
 import {
   Route,
@@ -17,14 +19,16 @@ import {
   NotFound,
 } from "./pages/index";
 
+const apiLink = "http://localhost:3001/api";
+
 const router = createBrowserRouter(
   createRoutesFromElements([
-    <Route path="/" element={<Login />} />,
-    <Route path="/files" element={<Files />} />,
-    <Route path="/historical" element={<Historical />} />,
-    <Route path="/invoices" element={<Invoices />} />,
-    <Route path="/dashboard" element={<Dashboard />} />,
-    <Route path="/users" element={<Users />} />,
+    <Route path="/" element={<Login api = {apiLink} />} />,
+    <Route path="/files" element={<ProtectedRoute> <Files api={apiLink}/> </ProtectedRoute>} />,
+    <Route path="/historical" element={<ProtectedRoute> <Historical api={apiLink}/> </ProtectedRoute>} />,
+    <Route path="/invoices" element={<ProtectedRoute> <Invoices api={apiLink}/> </ProtectedRoute>} />,
+    <Route path="/dashboard" element={<ProtectedRoute> <Dashboard api={apiLink}/> </ProtectedRoute>} />,
+    <Route path="/users" element={<ProtectedRoute> <Users api={apiLink}/> </ProtectedRoute>} />,
     <Route path="*" element={<NotFound />} />,
   ])
 );
@@ -32,7 +36,9 @@ const router = createBrowserRouter(
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <TokenProvider>
+        <RouterProvider router={router} />
+      </TokenProvider>
     </>
   );
 }

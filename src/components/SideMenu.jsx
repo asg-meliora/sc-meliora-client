@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
 
 import {
   FaRegFileAlt,
@@ -47,6 +48,8 @@ const SideMenu = () => {
 
   const handleLogout = () => {
     console.log("Cerrando sesión...");
+    Cookies.remove("token");
+
     // TODO: Logout Logic
     navigate("/");
   };
@@ -63,9 +66,8 @@ const SideMenu = () => {
         {menuItems.map((item, index) => (
           <button
             key={index}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-              activeIndex === index ? "bg-yellow-600" : "hover:bg-yellow-900"
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${activeIndex === index ? "bg-yellow-600" : "hover:bg-yellow-900"
+              }`}
             onClick={() => handleMenuItemClick(index)}
           >
             <span className="text-xl">{item.icon}</span>

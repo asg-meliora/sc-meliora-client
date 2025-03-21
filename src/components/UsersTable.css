@@ -1,0 +1,59 @@
+.navbar th,
+.navbar td {
+    padding: 0.5em 1em;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    border-bottom: 0.3px solid #dddddd;
+    /*border: 1px solid rgb(0, 0, 0); /* Define el grosor, color y estilo de las líneas */
+    /*width: 10vw;*/
+}
+
+.cont {
+    line-height: 1em;
+    width: 100%;
+}
+
+.cont tbody {
+    overflow: overlay;
+}
+
+/* .periodo {
+    display: flex;
+    justify-content: space-between;
+    background-color: #3498db;
+    border-radius: 0.2em;
+
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 1em;
+    color: #fff;
+} */
+
+/* .deleteButton {
+    padding-right: 1em;
+    cursor: pointer;
+} */
+
+/* .button {
+    color: #fff;
+    background-color: #4caf50;
+    border: 2px solid #4caf50;
+    padding: 0.5em 1em;
+    transition:
+        background-color 0.3s,
+        color 0.3s;
+} */
+
+/* .button:hover {
+    background-color: #45a049;
+    border-color: #45a049;
+} */
+
+.cont tbody tr:nth-child(even) {
+    background-color: #e2e2e2;
+    /* Cambia el color de fondo de las filas pares a blanco */
+}
+
+/* .cont p {
+    padding: 0.4em;
+} */
