@@ -76,7 +76,7 @@ const SideMenu = () => {
             className={`flex items-start gap-4 px-4 py-3 rounded-lg transition-all text-base font-lora ${
               activeIndex === index
                 ? "bg-gold-gradient shadow-mid"
-                : "hover:cursor-pointer menuButton"
+                : "hover:cursor-pointer menuButton hover:scale-110 transform transition-all"
             }`}
             onClick={() => handleMenuItemClick(index)}
           >
@@ -86,7 +86,7 @@ const SideMenu = () => {
         ))}
 
         <button
-          className="flex font-lora items-center gap-3 px-2 py-3 bg-red-gradient logoutButton hover:cursor-pointer rounded-lg m-4 "
+          className="flex font-lora items-center gap-3 px-2 py-3 bg-red-gradient logoutButton hover:cursor-pointer rounded-lg m-4 hover:scale-110 transform transition-all"
           onClick={handleLogout}
         >
           <RiLogoutBoxLine className="text-xl" />

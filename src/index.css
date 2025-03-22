@@ -126,6 +126,14 @@
   background: rgb(145,99,8);
   background: radial-gradient(circle, rgba(145,99,8,1) 0%, rgba(132,95,40,1) 41%, rgba(87,58,15,1) 100%); 
 }
+.fornmButton{
+  background: rgb(69,129,219);
+  background: radial-gradient(circle, rgba(69,129,219,1) 0%, rgba(22,104,227,1) 40%, rgba(40,86,155,1) 100%); 
+}
+.formButton:hover{
+  background: rgb(47,96,170);
+  background: radial-gradient(circle, rgba(47,96,170,1) 0%, rgba(15,67,144,1) 45%, rgba(16,36,67,1) 100%);  
+}
 /* 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
