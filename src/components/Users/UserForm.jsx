@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../styles";
+import styles from "../../styles";
 
 const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
   // Veify if initialData is null, if it is, set the initialData to an object with the following (empty) properties

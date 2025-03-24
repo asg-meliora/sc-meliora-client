@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SideMenu from "../components/SideMenu";
 import { FaEdit } from "react-icons/fa";
 import { usersData } from "../constants/index";
-import UserForm from "../components/UserForm";
+import UserForm from "../components/Users/UserForm";
 
 const Users = () => {
   const [users, setUsers] = useState(usersData);
@@ -66,7 +66,6 @@ const Users = () => {
                     <th className="p-4 text-left">Nombre</th>
                     <th className="p-4 text-left">Tipo</th>
                     <th className="p-4 text-left">Email</th>
-                    <th className="p-4 text-left">Teléfono</th>
                     <th className="p-4 text-left">Estado</th>
                     <th className="p-4 text-center">Acciones</th>
                   </tr>
@@ -82,7 +81,6 @@ const Users = () => {
                       <td className="p-4 capitalize">{user.name}</td>
                       <td className="p-4">{formatUserType(user.type)}</td>
                       <td className="p-4">{user.email}</td>
-                      <td className="p-4">{user.phone}</td>
                       <td className="p-4">
                         <span
                           className={`px-3 py-1 text-xs font-bold rounded-full text-white shadow-md ${

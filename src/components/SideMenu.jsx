@@ -69,7 +69,7 @@ const SideMenu = () => {
         <img
           src={lion}
           alt="lion logo"
-          className="w-50 h-50 drop-shadow-[0_0_15px_rgba(255,180,0,0.8)]"
+          className="w-50 h-50 drop-shadow-[0_0_15px_rgba(240,188,58,0.30)] hover:drop-shadow-[0_0_20px_rgba(240,188,58,0.90)] hover:scale-130 transform transition-all"
         />
       </div>
       <nav className="flex flex-col gap-[10px] p-4">
