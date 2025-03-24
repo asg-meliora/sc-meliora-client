@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
 
 import {
   FaRegFileAlt,
@@ -51,6 +52,8 @@ const SideMenu = () => {
 
   const handleLogout = () => {
     console.log("Cerrando sesión...");
+    Cookies.remove("token");
+
     // TODO: Logout Logic
     navigate("/");
   };
