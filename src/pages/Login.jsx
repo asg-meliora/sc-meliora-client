@@ -3,17 +3,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-import { GiLion } from "react-icons/gi";
 import styles from "../styles";
 import lionLogo from "../assets/lion.webp";
+import { FiEye, FiEyeOff, FiMail } from "react-icons/fi";
 
 const Login = ({ api }) => {
   const [email, setEmail] = useState("");
   const [password_hash, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,7 +87,7 @@ const Login = ({ api }) => {
             alt="lion-logo"
             className="w-[70px] h-[70px] mr-[-5px]"
           />
-          <span className="text-gray-800 font-semibold text-xl">
+          <span className="text-gray-800 font-semibold font-raleway text-2xl">
             Black Lion
           </span>
         </div>
@@ -106,27 +111,35 @@ const Login = ({ api }) => {
             )}
 
             {/* Email Input */}
-            <div className="mb-4">
+            <div className="mb-4 relative">
               <label className={`${styles.input_label}`}>Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={`${styles.input_field}`}
-                required
-              />
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`${styles.input_field}`}
+                  required
+                />
+                <FiMail className={`${styles.input_icon}`} />
+              </div>
             </div>
 
             {/* Password Input */}
-            <div className="mb-4">
+            <div className="mb-4 relative">
               <label className={`${styles.input_label}`}>Contraseña</label>
-              <input
-                type="password"
-                value={password_hash}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`${styles.input_field}`}
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}	
+                  value={password_hash}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`${styles.input_field}`}
+                  required
+                />
+                <button type="button" onClick={togglePasswordVisibility} className={`${styles.input_icon} hover:cursor-pointer hover:scale-115 focus:outline-none transition-all`}>
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
             </div>
 
             {/* Login Button */}

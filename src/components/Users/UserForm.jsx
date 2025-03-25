@@ -26,7 +26,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-whiteN text-black p-6 rounded-lg shadow-lg relative w-96">
+    <div className="max-w-md mx-auto bg-whiteN text-black p-6 rounded-lg shadow-xl relative w-96">
       {/* Close Form Button */}
       <button
         onClick={() => setShowForm(false)}
