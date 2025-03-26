@@ -19,7 +19,7 @@ import {
   NotFound,
 } from "./pages/index";
 
-const apiLink = "http://Api-contabilidad-env.eba-tkitjar3.us-east-1.elasticbeanstalk.com/api";
+const apiLink = import.meta.env.VITE_API_URL;
 
 const router = createBrowserRouter(
   createRoutesFromElements([

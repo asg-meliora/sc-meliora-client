@@ -7,12 +7,21 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
     initialData || {
       name: "",
       password: "",
-      type: "user",
+      type: 1,
       email: "",
-      phone: "",
-      status: "active",
+      status: 1,
     }
   );
+
+  const formatUserType = (type) => {
+    const types = {
+      1: "Administrador",
+      2: "Usuario",
+      3: "Broker",
+      4: "Lectura",
+    };
+    return types[type] || "Desconocido";
+  };
 
   /// Handle the change of the input fields
   const handleChange = (e) => {
@@ -24,6 +33,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
     onSubmit(formData);
     setShowForm(false);
   };
+  
 
   return (
     <div className="max-w-md mx-auto bg-whiteN text-black p-6 rounded-lg shadow-xl relative w-96">
@@ -45,25 +55,27 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           type="text"
           name="name"
           placeholder="Nombre"
-          value={formData.name}
+          value={formData.user_name}
           onChange={handleChange}
           className={styles.input}
           required
         />
 
+        {/* TODO: Get unhashed password or definde way of handling edit password */}
         <input
           type="password"
           name="password"
           placeholder="Contraseña"
-          value={formData.password}
+          value={formData.password_hash}
           onChange={handleChange}
           className={styles.input}
           required
         />
 
+        {/* TODO: Fix showing correct user type given json info */}
         <select
           name="type"
-          value={formData.type}
+          value={() => formatUserType(formData.role_id)}
           onChange={handleChange}
           className={`${styles.input} hover:cursor-pointer`}
         >
@@ -83,19 +95,10 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           required
         />
 
-        <input
-          type="text"
-          name="phone"
-          placeholder="Teléfono"
-          value={formData.phone}
-          onChange={handleChange}
-          className={styles.input}
-          required
-        />
-
+        {/* TODO: Fix showing correct user type given json info */}
         <select
           name="status"
-          value={formData.status}
+          value={formData.is_active}
           onChange={handleChange}
           className={`${styles.input} hover:cursor-pointer`}
         >

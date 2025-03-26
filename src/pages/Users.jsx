@@ -1,23 +1,13 @@
 import React, { useState } from "react";
 import SideMenu from "../components/SideMenu";
-import { FaEdit } from "react-icons/fa";
 import { usersData } from "../constants/index";
 import UserForm from "../components/Users/UserForm";
+import UsersTable from "../components/Users/UsersTable";
 
-const Users = () => {
+const Users = ({api}) => {
   const [users, setUsers] = useState(usersData);
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-
-  const formatUserType = (type) => {
-    const types = {
-      user: "Usuario",
-      admin: "Administrador",
-      broker: "Broker",
-      lecture: "Lectura",
-    };
-    return types[type] || "Desconocido";
-  };
 
   const handleClickAddUser = (user = null) => {
     setEditingUser(user);
@@ -57,8 +47,8 @@ const Users = () => {
               </button>
             </div>
           </div>
-
-          <div className="px-2 w-full mt-0.5">
+          <UsersTable api={api} handleClickAddUser={handleClickAddUser} />
+          {/* <div className="px-2 w-full mt-0.5">
             <div className="overflow-x-auto bg-whiteN p-4">
               <table className="w-full border-collapse overflow-hidden rounded-xl">
                 <thead className="bg-gradient-to-r from-yellow-600 to-amber-900 text-white font-raleway uppercase text-sm">
@@ -105,7 +95,7 @@ const Users = () => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

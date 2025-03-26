@@ -40,7 +40,6 @@ const Login = ({ api }) => {
       return;
     }
 
-    // Reset error message
     setErrorMessage("");
     // console.log("Email:", email);
     // console.log("Password:", password_hash);
