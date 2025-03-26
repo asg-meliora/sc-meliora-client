@@ -13,6 +13,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
     }
   );
 
+  // Format the user type to a more readable format from JSON data
   const formatUserType = (type) => {
     const types = {
       1: "Administrador",
@@ -30,54 +31,87 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // TODO: Change logic to send the correct data to the API
     onSubmit(formData);
     setShowForm(false);
   };
-  
+
+  const [errorMessage, seterrorMessage] = useState("");
 
   return (
-    <div className="max-w-md mx-auto bg-whiteN text-black p-6 rounded-lg shadow-xl relative w-96">
+    <div className="max-w-md mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black p-6 rounded-lg shadow-xl relative w-96">
       {/* Close Form Button */}
       <button
         onClick={() => setShowForm(false)}
-        className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 hover:font-bold text-2xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all"
+        className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 hover:font-extrabold text-xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all"
       >
         ✕
       </button>
 
       {/* Form Title */}
-      <h2 className="text-2xl font-bold mb-4 mx-2 font-raleway">
+      <h2 className="text-2xl font-bold mb-4 mx-3 text-blackN font-raleway">
         {initialData ? "Editar Usuario" : "Agregar Nuevo Usuario"}
       </h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 mx-2">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 mx-2"
+        noValidate
+      >
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mb-4 text-red-500 text-sm text-center animate-fade-in">
+            {errorMessage}
+          </div>
+        )}
+
         <input
           type="text"
           name="name"
           placeholder="Nombre"
           value={formData.user_name}
           onChange={handleChange}
-          className={styles.input}
+          className={styles.input_form}
           required
         />
 
         {/* TODO: Get unhashed password or definde way of handling edit password */}
+        {/* TODO: Confirm Password check icon if match, if not x icon */}
+        {/* TODO: Validation if user wrote new password for validating last password */}
         <input
           type="password"
           name="password"
           placeholder="Contraseña"
-          value={formData.password_hash}
           onChange={handleChange}
-          className={styles.input}
+          className={styles.input_form}
           required
         />
+
+        <input
+          type="password"
+          name="confirm-password"
+          placeholder="Confirmar Contraseña"
+          onChange={handleChange}
+          className={styles.input_form}
+          required
+        />
+
+        {initialData && (
+          <input
+            type="password"
+            name="last-password"
+            placeholder="Contraseña Anterior"
+            onChange={handleChange}
+            className={styles.input_form}
+            required />
+        )}
 
         {/* TODO: Fix showing correct user type given json info */}
         <select
           name="type"
           value={() => formatUserType(formData.role_id)}
           onChange={handleChange}
-          className={`${styles.input} hover:cursor-pointer`}
+          className={`${styles.select_form}`}
         >
           <option value="user">Usuario</option>
           <option value="admin">Administrador</option>
@@ -91,7 +125,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           placeholder="Correo electrónico"
           value={formData.email}
           onChange={handleChange}
-          className={styles.input}
+          className={styles.input_form}
           required
         />
 
@@ -100,7 +134,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           name="status"
           value={formData.is_active}
           onChange={handleChange}
-          className={`${styles.input} hover:cursor-pointer`}
+          className={`${styles.select_form}`}
         >
           <option value="active">Activo</option>
           <option value="inactive">Inactivo</option>

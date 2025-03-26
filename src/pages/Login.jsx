@@ -94,7 +94,7 @@ const Login = ({ api }) => {
         {/* Login */}
         {/* Title & text */}
         <div className="bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dbdbdb] p-8 rounded-xl shadow-lg w-96">
-          <h2 className="text-4xl font-bold text-center text-gray-900 mb-1">
+          <h2 className="text-4xl font-bold text-center text-blackN mb-1">
             Bienvenido
           </h2>
           <p className="text-gray-500 text-center mb-6">
