@@ -1,49 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import SideMenu from '../components/SideMenu';
 import FilesTable from '../components/Files/FilesTable';
-import Cookies from "js-cookie";
+import FilesCreate from '../components/Files/FilesCreate';
 
 const Files = ({ api }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    name_rs: '',
-    rfc: '',
-    curp: '',
-    address: '',
-    zip_code: '',
-    phone: '',
-    email: '',
-    bank_account: '',
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`${api}/clients/`, {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": Cookies.get("token"),
-        },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
-        alert('Datos enviados con éxito');
-        setIsModalOpen(false);
-      } else {
-        const errorData = await response.json();
-        alert(`Error al enviar los datos: ${errorData.message || 'Error desconocido'}`);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error al enviar los datos. Por favor, revisa la consola para más detalles.');
-    }
-  };
 
   return (
     <>
@@ -53,12 +14,24 @@ const Files = ({ api }) => {
           <h2 className="text-2xl font-bold mb-4 text-center">
             Lista de Expedientes
           </h2>
-          <div className="bg-gray-50 shadow-xl rounded-lg px-5 py-3 m-2 w-full max-w-6xl overflow-x-auto">
+          <div className="bg-gray-50 shadow-xl rounded-lg px-5 py-3 m-2 w-full max-w-7xl overflow-x-auto">
             <FilesTable api={api} />
           </div>
 
+
+          {/*Modal*/}
+          <div className="Modal">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded mt-4 " onClick={() => setIsModalOpen(true)}>
+              Crear Nuevo Expediente
+            </button>
+
+            <FilesCreate api={api} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <h3 className="text-xl font-bold mb-4">Formulario</h3>
+            </FilesCreate>
+          </div>
+
           {/* Modal */}
-          <button
+          {/* <button
             className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
             onClick={() => setIsModalOpen(true)}
           >
@@ -100,7 +73,7 @@ const Files = ({ api }) => {
                 </form>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>

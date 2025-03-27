@@ -44,7 +44,7 @@ function FilesTable({ api }) {
         return <div>{formattedDate}</div>;
     };
 
-    console.log(dataClients);
+    //console.log(dataClients);
     return (
         <table className="cont min-w-full">
             <thead className="navbar">
