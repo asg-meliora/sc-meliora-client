@@ -19,7 +19,7 @@ import {
   NotFound,
 } from "./pages/index";
 
-const apiLink = import.meta.env.VITE_API_URL;
+const apiLink = "http://localhost:3001/api";
 
 const router = createBrowserRouter(
   createRoutesFromElements([

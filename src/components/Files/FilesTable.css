@@ -1,0 +1,23 @@
+.navbar th,
+.navbar td {
+    padding: 0.5em 1em;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    border-bottom: 0.3px solid #dddddd;
+    /*border: 1px solid rgb(0, 0, 0); /* Define el grosor, color y estilo de las líneas */
+    /*width: 10vw;*/
+}
+
+.cont {
+    line-height: 1em;
+    width: 100%;
+}
+
+.cont tbody {
+    overflow: overlay;
+}
+
+.cont tbody tr:nth-child(even) {
+    background-color: #e2e2e2;
+    /* Cambia el color de fondo de las filas pares a blanco */
+}
