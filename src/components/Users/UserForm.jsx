@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles";
 
 const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
@@ -12,6 +12,10 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
       status: 1,
     }
   );
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Format the user type to a more readable format from JSON data
   const formatUserType = (type) => {
@@ -32,11 +36,30 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: Change logic to send the correct data to the API
+    // Name validation
+    if (!formData.name) {
+      setErrorMessage("Por favor, introduce un nombre valido.");
+    }
+
+    // Email validation
+    if (!formData.email) {
+      setErrorMessage(
+        "Por favor, introduce tu dirección de correo electrónico."
+      );
+      return;
+    } else if (!emailRegex.test(formData.email)) {
+      setErrorMessage("Por favor, introduce un correo electrónico válido.");
+      return;
+    }
+
+    // Password validation
+    if (!formData.password && !initialData) {
+      setErrorMessage("Por favor, introduce la contraseña.");
+      return;
+    }
     onSubmit(formData);
     setShowForm(false);
   };
-
-  const [errorMessage, seterrorMessage] = useState("");
 
   return (
     <div className="max-w-md mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black p-6 rounded-lg shadow-xl relative w-96">
@@ -75,6 +98,16 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           required
         />
 
+        <input
+          type="email"
+          name="email"
+          placeholder="Correo electrónico"
+          value={formData.email}
+          onChange={handleChange}
+          className={styles.input_form}
+          required
+        />
+
         {/* TODO: Get unhashed password or definde way of handling edit password */}
         {/* TODO: Confirm Password check icon if match, if not x icon */}
         {/* TODO: Validation if user wrote new password for validating last password */}
@@ -103,7 +136,8 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
             placeholder="Contraseña Anterior"
             onChange={handleChange}
             className={styles.input_form}
-            required />
+            required
+          />
         )}
 
         {/* TODO: Fix showing correct user type given json info */}
@@ -118,16 +152,6 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           <option value="broker">Broker</option>
           <option value="lecture">Lectura</option>
         </select>
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Correo electrónico"
-          value={formData.email}
-          onChange={handleChange}
-          className={styles.input_form}
-          required
-        />
 
         {/* TODO: Fix showing correct user type given json info */}
         <select
