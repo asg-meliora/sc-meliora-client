@@ -14,6 +14,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
   );
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -36,27 +37,46 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: Change logic to send the correct data to the API
+
     // Name validation
-    if (!formData.name) {
-      setErrorMessage("Por favor, introduce un nombre valido.");
+    if (!initialData && (!formData.name && !formData.name.length < 3) || !formData.name.length > 20) {
+      setErrorMessage("Por favor, introduce un nombre valido. (Mínimo 3 y máximo 20 caracteres)");
+      return
     }
 
     // Email validation
-    if (!formData.email) {
+    // > Empty email
+    if (!initialData && !formData.email) {
       setErrorMessage(
         "Por favor, introduce tu dirección de correo electrónico."
       );
       return;
-    } else if (!emailRegex.test(formData.email)) {
+    }
+    // > Invalid email format 
+    else if (!initialData && !emailRegex.test(formData.email)) {
       setErrorMessage("Por favor, introduce un correo electrónico válido.");
       return;
     }
 
     // Password validation
-    if (!formData.password && !initialData) {
+    // > Empty password
+    if (!initialData && !formData.password && !initialData) {
       setErrorMessage("Por favor, introduce la contraseña.");
       return;
     }
+    // > Invalid password format
+    else if (!initialData && !passwordRegex.test(formData.password) ) {
+      setErrorMessage(
+        "La contraseña debe tener al menos 8 caracteres, una mayuscula, un número y un símbolo."
+      );
+      return;
+    }
+    // > Invalid password confirmation
+    if (!initialData && formData.password !== formData.confirmPassword) {
+      setErrorMessage("Las contraseñas no coinciden.");
+      return;
+    }
+
     onSubmit(formData);
     setShowForm(false);
   };
@@ -122,14 +142,14 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
 
         <input
           type="password"
-          name="confirm-password"
+          name="confirmPassword"
           placeholder="Confirmar Contraseña"
           onChange={handleChange}
           className={styles.input_form}
           required
         />
 
-        {initialData && (
+        {/* {initialData && (
           <input
             type="password"
             name="last-password"
@@ -138,7 +158,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
             className={styles.input_form}
             required
           />
-        )}
+        )} */}
 
         {/* TODO: Fix showing correct user type given json info */}
         <select
@@ -147,10 +167,10 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           onChange={handleChange}
           className={`${styles.select_form}`}
         >
-          <option value="user">Usuario</option>
-          <option value="admin">Administrador</option>
-          <option value="broker">Broker</option>
-          <option value="lecture">Lectura</option>
+          <option value="1">Usuario</option>
+          <option value="2">Administrador</option>
+          <option value="3">Broker</option>
+          <option value="4">Lectura</option>
         </select>
 
         {/* TODO: Fix showing correct user type given json info */}
