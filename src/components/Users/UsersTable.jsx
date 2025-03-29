@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { format } from "date-fns";
 
 import { FaEdit } from "react-icons/fa";
 
@@ -25,6 +26,11 @@ const UsersTable = ({ api, handleClickAddUser }) => {
 
   console.log(dataBoard);
 
+  /**
+   * Function that returns the user type in a readable format
+   * @param {number} type - Id of the user type
+   * @returns  {string} - Formatted user type for showing in table
+   */
   const formatUserType = (type) => {
     const types = {
       1: "Administrador",
@@ -34,6 +40,16 @@ const UsersTable = ({ api, handleClickAddUser }) => {
     };
     return types[type] || "Desconocido";
   };
+
+  /**
+   * Function that formats the date string from server to dd/MM/yyyy format
+   * @param {string} dateString - Date string to be formatted
+   * @returns {string} - Formatted date string in dd/MM/yyyy format
+   */
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, "dd/MM/yyyy");
+  }
 
   return (
     <div className="px-2 w-full mt-0.5">
@@ -45,6 +61,7 @@ const UsersTable = ({ api, handleClickAddUser }) => {
               <th className="p-4 text-left">Tipo</th>
               <th className="p-4 text-left">Email</th>
               <th className="p-4 text-left">Estado</th>
+              <th className="p-4 text-left">Creación</th>
               <th className="p-4 text-center">Acciones</th>
             </tr>
           </thead>
@@ -56,7 +73,7 @@ const UsersTable = ({ api, handleClickAddUser }) => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-gray-200"
                 } hover:bg-gray-300 transition-all`}
               >
-                <td className="p-4 capitalize">{user.user_name}</td>
+                <td className="p-4">{user.user_name}</td>
                 <td className="p-4">{formatUserType(user.role_id)}</td>
                 <td className="p-4">{user.email}</td>
                 <td className="p-4">
@@ -70,6 +87,7 @@ const UsersTable = ({ api, handleClickAddUser }) => {
                     {user.is_active === 1 ? "Activo" : "Inactivo"}
                   </span>
                 </td>
+                <td className="p-4">{formatDate(user.created_at)}</td>
                 <td className="p-4 text-center">
                   <button
                     onClick={() => handleClickAddUser(user)}
