@@ -5,43 +5,49 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
   // Veify if initialData is null, if it is, set the initialData to an object with the following (empty) properties
   const [formData, setFormData] = useState(
     initialData || {
-      name: "",
-      password: "",
-      type: 1,
+      user_name: "",
       email: "",
-      status: 1,
+      password: "",
+      role_id: "",
+      is_active: "",
     }
   );
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Format the user type to a more readable format from JSON data
-  const formatUserType = (type) => {
+  // Format the user role_id to a more readable format from JSON data
+  const formatUserType = (role_id) => {
     const types = {
       1: "Administrador",
       2: "Usuario",
       3: "Broker",
       4: "Lectura",
     };
-    return types[type] || "Desconocido";
+    return types[role_id] || "Desconocido";
   };
 
   /// Handle the change of the input fields
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value }); // !
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: Change logic to send the correct data to the API
 
-    // Name validation
-    if (!initialData && (!formData.name && !formData.name.length < 3) || !formData.name.length > 20) {
-      setErrorMessage("Por favor, introduce un nombre valido. (Mínimo 3 y máximo 20 caracteres)");
-      return
+    // user_name validation
+    if (
+      (!initialData && !formData.user_name && !formData.user_name.length < 3) ||
+      !formData.user_name.length > 20
+    ) {
+      setErrorMessage(
+        "Por favor, introduce un nombre valido. (Mínimo 3 y máximo 20 caracteres)"
+      );
+      return;
     }
 
     // Email validation
@@ -52,7 +58,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
       );
       return;
     }
-    // > Invalid email format 
+    // > Invalid email format
     else if (!initialData && !emailRegex.test(formData.email)) {
       setErrorMessage("Por favor, introduce un correo electrónico válido.");
       return;
@@ -65,7 +71,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
       return;
     }
     // > Invalid password format
-    else if (!initialData && !passwordRegex.test(formData.password) ) {
+    else if (!initialData && !passwordRegex.test(formData.password)) {
       setErrorMessage(
         "La contraseña debe tener al menos 8 caracteres, una mayuscula, un número y un símbolo."
       );
@@ -110,9 +116,9 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
 
         <input
           type="text"
-          name="name"
-          placeholder="Nombre"
-          value={formData.user_name}
+          name="user_name"
+          placeholder="Usuario"
+          // value={formData.user_name}
           onChange={handleChange}
           className={styles.input_form}
           required
@@ -122,7 +128,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           type="email"
           name="email"
           placeholder="Correo electrónico"
-          value={formData.email}
+          // value={formData.email}
           onChange={handleChange}
           className={styles.input_form}
           required
@@ -162,11 +168,13 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
 
         {/* TODO: Fix showing correct user type given json info */}
         <select
-          name="type"
-          value={() => formatUserType(formData.role_id)}
+          name="role_id"
+          // value={() => formatUserType(formData.role_id)}
+          value={formData.role_id || ""}
           onChange={handleChange}
-          className={`${styles.select_form}`}
+          className={`${styles.select_form} ${formData.role_id ? "text-black font-normal" : "italic text-gray-500"}`}
         >
+          <option value="" hidden disabled>Tipo de Usuario</option>
           <option value="1">Usuario</option>
           <option value="2">Administrador</option>
           <option value="3">Broker</option>
@@ -175,11 +183,12 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
 
         {/* TODO: Fix showing correct user type given json info */}
         <select
-          name="status"
-          value={formData.is_active}
+          name="is_active"
+          value={formData.is_active || ""}
           onChange={handleChange}
-          className={`${styles.select_form}`}
+          className={`${styles.select_form} ${formData.is_active ? "text-black font-normal" : "italic text-gray-500"}`}
         >
+          <option value="" hidden disabled>Estatus del Usuario</option>
           <option value="active">Activo</option>
           <option value="inactive">Inactivo</option>
         </select>
