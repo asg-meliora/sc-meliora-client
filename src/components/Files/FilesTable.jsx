@@ -1,31 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Cookies from "js-cookie";
-import "./FilesTable.css"
+import "./FilesTable.css";
 
-function FilesTable({ api }) {
-    const [dataClients, setDataClients] = useState({ results: [] }); //Variable para obtener los datos en un hook
-
-
-    useEffect(() => {
-        const getClients = async () => {
-            const response = await fetch(`${api}/clients/`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': Cookies.get('token')
-                }
-            })
-
-            const data = await response.json()
-
-            setDataClients(data)
-        }
-        getClients()
-    }, [api])
-    // vacío, se ejecuta cada vez que renderiza el componente
-    // [], se ejecuta la primera vez que renderiza el componente
-    // [estado], se ejecuta solo cuando se actualice el estado, sin bucle
-
+function FilesTable({ api, newFiles }) {
     // "client_id": 6,
     // "name_rs": "exampleRS5",
     // "rfc": "GFC435",
@@ -44,7 +21,7 @@ function FilesTable({ api }) {
         return <div>{formattedDate}</div>;
     };
 
-    //console.log(dataClients);
+    //console.log('Debug Table',newFiles);
     return (
         <table className="cont min-w-full">
             <thead className="navbar">
@@ -61,8 +38,8 @@ function FilesTable({ api }) {
                 </tr>
             </thead>
             <tbody>
-                {dataClients.results.map(results => (
-                    <tr className="navbar" key={results.client_id}>
+                {newFiles.results.map((results, index) => (
+                    <tr className="navbar" key={results.client_id || results.insertId}>
                         <td className="px-4 py-2">{results.name_rs}</td>
                         <td className="px-4 py-2">{results.rfc}</td>
                         <td className="px-4 py-2">{results.curp}</td>

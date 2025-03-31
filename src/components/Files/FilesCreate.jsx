@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Cookies from "js-cookie";
 
-function FilesCreate({ api ,isOpen, onClose, children }) {
+function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
   if (!isOpen) return null;
 
   const [formData, setFormData] = useState({
@@ -19,36 +19,54 @@ function FilesCreate({ api ,isOpen, onClose, children }) {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  
+  //TODO Cambiar estructura por nuevo enpoint
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await fetch(`${api}/clients/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-access-token": Cookies.get("token"),
         },
         body: JSON.stringify(formData),
       });
-      
+
       if (response.ok) {
-        alert('Datos enviados con éxito');
-        onClose();
+        const data = await response.json();
+        console.log('Debug 3.1',data);
+
+        if (data.results.insertId) {
+          // Hacer una segunda solicitud para obtener los datos completos del cliente
+          const clientResponse = await fetch(
+            `${api}/clients/${data.results.insertId}`,
+            {
+              headers: { "x-access-token": Cookies.get("token") },
+            }
+          );
+
+          if (clientResponse.ok) {
+            const newClient = await clientResponse.json();
+            console.log('Debug 3.2',newClient.results);
+            onAddFile(newClient.results); // Agregar el nuevo cliente a la tabla
+            onClose(); // Cerrar el modal
+          } else {
+            alert("Error al obtener los datos del cliente.");
+          }
+        }
       } else {
-        const errorData = await response.json();
-        alert(`Error al enviar los datos: ${errorData.message || 'Error desconocido'}`);
+        alert("Error al crear el cliente.");
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('Error al enviar los datos. Por favor, revisa la consola para más detalles.');
+      console.error("Error:", error);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" style={{ backgroundColor: 'rgba(75, 87, 99, 0.5)' }}>
       <div className="bg-white p-6 rounded shadow-lg w-1/3">
-
         {children}
         <form onSubmit={handleSubmit}>
           {Object.keys(formData).map((key) => (
@@ -75,7 +93,7 @@ function FilesCreate({ api ,isOpen, onClose, children }) {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default FilesCreate
+export default FilesCreate;
