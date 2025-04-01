@@ -1,31 +1,10 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { format } from "date-fns";
 
 import { FaEdit } from "react-icons/fa";
 
-const UsersTable = ({ api, handleClickAddUser }) => {
-  const [dataBoard, setDataBoard] = useState({ results: [] });
-
-  useEffect(() => {
-    const getBoards = async () => {
-      const response = await fetch(`${api}/users`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": Cookies.get("token"),
-        },
-      });
-
-      const data = await response.json();
-
-      setDataBoard(data);
-    };
-    getBoards();
-  }, [api]);
-
-  console.log(dataBoard);
-
+const UsersTable = ({ handleClickAddUser, dataBoard }) => {
   /**
    * Function that returns the user type in a readable format
    * @param {number} type - Id of the user type

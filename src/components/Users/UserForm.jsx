@@ -1,34 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "../../styles";
 
-const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
+const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
   // Veify if initialData is null, if it is, set the initialData to an object with the following (empty) properties
   const [formData, setFormData] = useState(
     initialData || {
       user_name: "",
       email: "",
-      password: "",
+      password_hash: "",
       role_id: "",
       is_active: "",
     }
   );
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex =
-    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Format the user role_id to a more readable format from JSON data
-  const formatUserType = (role_id) => {
-    const types = {
-      1: "Administrador",
-      2: "Usuario",
-      3: "Broker",
-      4: "Lectura",
-    };
-    return types[role_id] || "Desconocido";
-  };
 
   /// Handle the change of the input fields
   const handleChange = (e) => {
@@ -37,11 +26,9 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Change logic to send the correct data to the API
-
     // user_name validation
     if (
-      (!initialData && !formData.user_name && !formData.user_name.length < 3) ||
+      (!initialData && (formData.user_name.length < 3 || formData.user_name.length > 20)) ||
       !formData.user_name.length > 20
     ) {
       setErrorMessage(
@@ -49,7 +36,6 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
       );
       return;
     }
-
     // Email validation
     // > Empty email
     if (!initialData && !formData.email) {
@@ -63,35 +49,36 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
       setErrorMessage("Por favor, introduce un correo electrónico válido.");
       return;
     }
-
     // Password validation
     // > Empty password
-    if (!initialData && !formData.password && !initialData) {
+    if (!initialData && !formData.password_hash && !initialData) {
       setErrorMessage("Por favor, introduce la contraseña.");
       return;
     }
     // > Invalid password format
-    else if (!initialData && !passwordRegex.test(formData.password)) {
+    else if (!initialData && !passwordRegex.test(formData.password_hash)) {
       setErrorMessage(
         "La contraseña debe tener al menos 8 caracteres, una mayuscula, un número y un símbolo."
       );
       return;
     }
     // > Invalid password confirmation
-    if (!initialData && formData.password !== formData.confirmPassword) {
+    if (!initialData && formData.password_hash !== formData.confirmPassword) {
       setErrorMessage("Las contraseñas no coinciden.");
       return;
     }
 
-    onSubmit(formData);
-    setShowForm(false);
+    const { confirmPassword, ...dataToSubmit } = formData;
+
+    onSubmit(dataToSubmit);
+    toggleForm(false);
   };
 
   return (
     <div className="max-w-md mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black p-6 rounded-lg shadow-xl relative w-96">
       {/* Close Form Button */}
       <button
-        onClick={() => setShowForm(false)}
+        onClick={() => toggleForm(false)}
         className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 hover:font-extrabold text-xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all"
       >
         ✕
@@ -139,7 +126,7 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
         {/* TODO: Validation if user wrote new password for validating last password */}
         <input
           type="password"
-          name="password"
+          name="password_hash"
           placeholder="Contraseña"
           onChange={handleChange}
           className={styles.input_form}
@@ -154,17 +141,6 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           className={styles.input_form}
           required
         />
-
-        {/* {initialData && (
-          <input
-            type="password"
-            name="last-password"
-            placeholder="Contraseña Anterior"
-            onChange={handleChange}
-            className={styles.input_form}
-            required
-          />
-        )} */}
 
         {/* TODO: Fix showing correct user type given json info */}
         <select
@@ -189,13 +165,14 @@ const UserForm = ({ initialData = null, onSubmit, setShowForm }) => {
           className={`${styles.select_form} ${formData.is_active ? "text-black font-normal" : "italic text-gray-500"}`}
         >
           <option value="" hidden disabled>Estatus del Usuario</option>
-          <option value="active">Activo</option>
-          <option value="inactive">Inactivo</option>
+          <option value="1">Activo</option>
+          <option value="0">Inactivo</option>
         </select>
 
         {/* Add User Button */}
         <button
           type="submit"
+          disabled={loading}
           className="bg-blue-gradient formButton p-2 mt-2 rounded-lg hover:cursor-pointer text-white hover:text-gray-200 text-lg w-65 self-center font-semibold hover:scale-110 transform transition-all"
         >
           {initialData ? "Guardar Cambios" : "Agregar Usuario"}
