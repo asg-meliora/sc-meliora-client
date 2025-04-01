@@ -12,11 +12,14 @@ const Users = ({api}) => {
   const [loading, setLoading] = useState(false); // State for activating/deactivating send form button
   const [dataBoard, setUsersBoard] = useState({ results: [] });
 
+  const url = editingUser ? `${api}/users/update` : `${api}/accesslog`;
+
   /**
    * @param {object} user - User object to be edited or null if adding a new user
    *  @returns {void} - Set the editingUser state to the user object and show the form
    */
   const handleOpenUserForm = (user = null) => {
+    
     setEditingUser(user);
     setShowForm(true);
   };
@@ -57,17 +60,18 @@ const Users = ({api}) => {
    * @throws {Error} - Throws an error if the form submission fails
    */
   const handleUserSubmit = async (formData) => {
+    console.warn("Data\n", formData);
     const token = Cookies.get("token");
     if (!token) {
       console.error("Token no encontrado. Por favor, inicia sesión.");
       return;
     }
-    
+
     setLoading(true);
     try {
-      console.log("Data\n", formData);
+      console.warn("Data\n", formData);
       
-      const response = await fetch(`${api}/accesslog`, {
+      const response = await fetch(url, {
         method: editingUser ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",

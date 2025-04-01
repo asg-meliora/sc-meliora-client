@@ -4,7 +4,7 @@ import { format } from "date-fns";
 
 import { FaEdit } from "react-icons/fa";
 
-const UsersTable = ({ handleClickAddUser, dataBoard }) => {
+const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
   /**
    * Function that returns the user type in a readable format
    * @param {number} type - Id of the user type
@@ -69,7 +69,7 @@ const UsersTable = ({ handleClickAddUser, dataBoard }) => {
                 <td className="p-4">{formatDate(user.created_at)}</td>
                 <td className="p-4 text-center">
                   <button
-                    onClick={() => handleClickAddUser(user)}
+                    onClick={() => handleOpenUserForm(user)}
                     className="text-amber-400 hover:text-amber-800 hover:cursor-pointer transition-all transform hover:scale-120"
                   >
                     <FaEdit size={18} />

@@ -14,21 +14,29 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
   );
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [confirmPassword, setConfirmPassword] = useState(formData.password_hash || "");
 
   /// Handle the change of the input fields
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value }); // !
+    const { name, value } = e.target;
+
+    if (name === "confirmPassword") {
+      setConfirmPassword(value);
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // user_name validation
     if (
-      (!initialData && (formData.user_name.length < 3 || formData.user_name.length > 20)) ||
+      (!initialData &&
+        (formData.user_name.length < 3 || formData.user_name.length > 20)) ||
       !formData.user_name.length > 20
     ) {
       setErrorMessage(
@@ -63,14 +71,12 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
       return;
     }
     // > Invalid password confirmation
-    if (!initialData && formData.password_hash !== formData.confirmPassword) {
+    if (!initialData && formData.password_hash !== confirmPassword) {
       setErrorMessage("Las contraseñas no coinciden.");
       return;
     }
 
-    const { confirmPassword, ...dataToSubmit } = formData;
-
-    onSubmit(dataToSubmit);
+    onSubmit(formData);
     toggleForm(false);
   };
 
@@ -105,7 +111,7 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
           type="text"
           name="user_name"
           placeholder="Usuario"
-          // value={formData.user_name}
+          value={formData.user_name || ""}
           onChange={handleChange}
           className={styles.input_form}
           required
@@ -115,7 +121,7 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
           type="email"
           name="email"
           placeholder="Correo electrónico"
-          // value={formData.email}
+          value={formData.email || ""}
           onChange={handleChange}
           className={styles.input_form}
           required
@@ -128,6 +134,7 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
           type="password"
           name="password_hash"
           placeholder="Contraseña"
+          value={formData.password_hash || ""}
           onChange={handleChange}
           className={styles.input_form}
           required
@@ -137,6 +144,7 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
           type="password"
           name="confirmPassword"
           placeholder="Confirmar Contraseña"
+          value={confirmPassword || ""}
           onChange={handleChange}
           className={styles.input_form}
           required
@@ -148,11 +156,15 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
           // value={() => formatUserType(formData.role_id)}
           value={formData.role_id || ""}
           onChange={handleChange}
-          className={`${styles.select_form} ${formData.role_id ? "text-black font-normal" : "italic text-gray-500"}`}
+          className={`${styles.select_form} ${
+            formData.role_id ? "text-black font-normal" : "italic text-gray-500"
+          }`}
         >
-          <option value="" hidden disabled>Tipo de Usuario</option>
-          <option value="1">Usuario</option>
-          <option value="2">Administrador</option>
+          <option value="" hidden disabled>
+            Tipo de Usuario
+          </option>
+          <option value="2">Usuario</option>
+          <option value="1">Administrador</option>
           <option value="3">Broker</option>
           <option value="4">Lectura</option>
         </select>
@@ -160,11 +172,17 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
         {/* TODO: Fix showing correct user type given json info */}
         <select
           name="is_active"
-          value={formData.is_active || ""}
+          value={formData.is_active !== undefined ? formData.is_active : ""}
           onChange={handleChange}
-          className={`${styles.select_form} ${formData.is_active ? "text-black font-normal" : "italic text-gray-500"}`}
+          className={`${styles.select_form} ${
+            formData.is_active !== ""
+              ? "text-black font-normal"
+              : "italic text-gray-500"
+          }`}
         >
-          <option value="" hidden disabled>Estatus del Usuario</option>
+          <option value="" hidden disabled>
+            Estatus del Usuario
+          </option>
           <option value="1">Activo</option>
           <option value="0">Inactivo</option>
         </select>
