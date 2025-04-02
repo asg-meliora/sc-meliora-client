@@ -63,7 +63,7 @@ const Login = ({ api }) => {
     console.log(data);
 
     if (data.error) {
-      navigate("/");
+      setErrorMessage(data.error)
     } else {
       const expireCookie = 1 / 24;
       Cookies.set("token", data.token, {
