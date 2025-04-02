@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "../../styles";
 
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
 const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
   // Veify if initialData is null, if it is, set the initialData to an object with the following (empty) properties
   const [formData, setFormData] = useState(
@@ -18,17 +20,28 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(formData.password_hash || "");
+  const [confirmPassword, setConfirmPassword] = useState(
+    formData.password_hash || ""
+  );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfPassword, setShowConfPassword] = useState(false);
 
   /// Handle the change of the input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "confirmPassword") {
+    if (name === "confirmPasswordButton") {
       setConfirmPassword(value);
     } else {
       setFormData({ ...formData, [name]: value });
     }
+  };
+
+  const togglePasswordVisibility = (field) => {
+    if (field === "password_hash") 
+      setShowPassword(!showPassword);
+    else if (field === "confirmPassword") 
+      setShowConfPassword(!showConfPassword);
   };
 
   const handleSubmit = (e) => {
@@ -130,25 +143,46 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
         {/* TODO: Get unhashed password or definde way of handling edit password */}
         {/* TODO: Confirm Password check icon if match, if not x icon */}
         {/* TODO: Validation if user wrote new password for validating last password */}
-        <input
-          type="password"
-          name="password_hash"
-          placeholder="Contraseña"
-          value={formData.password_hash || ""}
-          onChange={handleChange}
-          className={styles.input_form}
-          required
-        />
 
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirmar Contraseña"
-          value={confirmPassword || ""}
-          onChange={handleChange}
-          className={styles.input_form}
-          required
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password_hash"
+            placeholder="Contraseña"
+            value={formData.password_hash || ""}
+            onChange={handleChange}
+            className={styles.input_form}
+            required
+          />
+          <button
+            type="button"
+            name="passwordButton"
+            onClick={() => togglePasswordVisibility("password_hash")}
+            className={`${styles.input_icon} hover:cursor-pointer hover:scale-115 focus:outline-none transition-all`}
+          >
+            {showPassword ? <FiEyeOff /> : <FiEye />}
+          </button>
+        </div>
+
+        <div className="relative">
+          <input
+            type={showConfPassword ? "text" : "password"}
+            name="confirmPassword"
+            placeholder="Confirmar Contraseña"
+            value={confirmPassword || ""}
+            onChange={handleChange}
+            className={styles.input_form}
+            required
+          />
+          <button
+            type="button"
+            name="confirmPasswordButton"
+            onClick={() => togglePasswordVisibility("confirmPassword")}
+            className={`${styles.input_icon} hover:cursor-pointer hover:scale-115 focus:outline-none transition-all`}
+          >
+            {showConfPassword ? <FiEyeOff /> : <FiEye />}
+          </button>
+        </div>
 
         {/* TODO: Fix showing correct user type given json info */}
         <select
