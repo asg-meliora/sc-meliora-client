@@ -25,15 +25,20 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
   );
   const [showPassword, setShowPassword] = useState(false);
   const [showConfPassword, setShowConfPassword] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(false);
 
   /// Handle the change of the input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (name === "confirmPasswordButton") {
+    if (name === "password_hash") {
+      setFormData((prev) => ({ ...prev, password_hash: value }));
+      setPasswordsMatch(value === confirmPassword);
+    }
+    else if (name === "confirmPassword") {
       setConfirmPassword(value);
+      setPasswordsMatch(value === formData.password_hash);
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -171,7 +176,7 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
             placeholder="Confirmar Contraseña"
             value={confirmPassword || ""}
             onChange={handleChange}
-            className={styles.input_form}
+            className={`${styles.input_form} focus:outline-none ${!passwordsMatch ? "border-red-500 border-2 focus:ring-2 focus:ring-red-500" : "border-green-600 border-2 focus:ring-2 focus:ring-green-600"}`}
             required
           />
           <button
