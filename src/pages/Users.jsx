@@ -4,13 +4,13 @@ import UserForm from "../components/Users/UserForm";
 import UsersTable from "../components/Users/UsersTable";
 import Cookies from "js-cookie";
 
-
-const Users = ({api}) => {
+const Users = ({ api }) => {
   // const [users, setUsers] = useState(usersData);
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [loading, setLoading] = useState(false); // State for activating/deactivating send form button
   const [dataBoard, setUsersBoard] = useState({ results: [] });
+  // const [serverErrorMessage, setServerErrorMessage] = useState("");
 
   const url = editingUser ? `${api}/users/update` : `${api}/accesslog`;
 
@@ -19,7 +19,6 @@ const Users = ({api}) => {
    *  @returns {void} - Set the editingUser state to the user object and show the form
    */
   const handleOpenUserForm = (user = null) => {
-    
     setEditingUser(user);
     setShowForm(true);
   };
@@ -27,16 +26,16 @@ const Users = ({api}) => {
   const fetchUsers = useCallback(async () => {
     const token = Cookies.get("token");
     if (!token) {
-      console.error("Token no encontrado. Por favor, inicia sesión.");
+      // console.error("Token no encontrado. Por favor, inicia sesión.");
       return;
     }
-    
+
     try {
-      const response = await fetch(`${api}/users` , {
+      const response = await fetch(`${api}/users`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "x-access-token": token
+          "x-access-token": token,
         },
       });
       if (!response.ok) throw new Error("Error al obtener usuarios");
@@ -56,7 +55,7 @@ const Users = ({api}) => {
   /**
    * Function to handle the form submission
    * @param {Object} formData - Form data to be sent to the API
-   * @returns {Promise<void>} - Promise that resolves when the form is submitted 
+   * @returns {Promise<void>} - Promise that resolves when the form is submitted
    * @throws {Error} - Throws an error if the form submission fails
    */
   const handleUserSubmit = async (formData) => {
@@ -64,13 +63,15 @@ const Users = ({api}) => {
     const token = Cookies.get("token");
     if (!token) {
       console.error("Token no encontrado. Por favor, inicia sesión.");
-      return;
+      return Promise.reject(
+        new Error("Token no encontrado. Por favor, inicia sesión")
+      );
     }
 
     setLoading(true);
+
     try {
-      console.warn("Data\n", formData);
-      
+
       const response = await fetch(url, {
         method: editingUser ? "PUT" : "POST",
         headers: {
@@ -79,13 +80,18 @@ const Users = ({api}) => {
         },
         body: JSON.stringify(formData),
       });
-      if (!response.ok) throw new Error("Error al enviar el formulario");
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al enviar el formulario");
+      }
+
       await response.json();
-      console.log(response.data);
       await fetchUsers();
       setShowForm(false);
     } catch (error) {
       console.error("Error al enviar el formulario:", error);
+      return Promise.reject(error);
     } finally {
       setLoading(false);
     }
@@ -98,7 +104,7 @@ const Users = ({api}) => {
   const closeForm = () => {
     setShowForm(false);
     setEditingUser(null);
-  }
+  };
 
   return (
     <>
@@ -118,7 +124,11 @@ const Users = ({api}) => {
               </button>
             </div>
           </div>
-          <UsersTable api={api} dataBoard={dataBoard} handleOpenUserForm={handleOpenUserForm} />
+          <UsersTable
+            api={api}
+            dataBoard={dataBoard}
+            handleOpenUserForm={handleOpenUserForm}
+          />
         </div>
       </div>
 

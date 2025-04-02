@@ -3,7 +3,13 @@ import styles from "../../styles";
 
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
-const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
+const UserForm = ({
+  initialData = null,
+  onSubmit,
+  toggleForm,
+  loading,
+  serverErrorMessage,
+}) => {
   // Veify if initialData is null, if it is, set the initialData to an object with the following (empty) properties
   const [formData, setFormData] = useState(
     initialData || {
@@ -16,8 +22,7 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
   );
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex =
-    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmPassword, setConfirmPassword] = useState(
@@ -25,7 +30,7 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
   );
   const [showPassword, setShowPassword] = useState(false);
   const [showConfPassword, setShowConfPassword] = useState(false);
-  const [passwordsMatch, setPasswordsMatch] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(initialData ? true : false);
 
   /// Handle the change of the input fields
   const handleChange = (e) => {
@@ -33,8 +38,7 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
     if (name === "password_hash") {
       setFormData((prev) => ({ ...prev, password_hash: value }));
       setPasswordsMatch(value === confirmPassword);
-    }
-    else if (name === "confirmPassword") {
+    } else if (name === "confirmPassword") {
       setConfirmPassword(value);
       setPasswordsMatch(value === formData.password_hash);
     } else {
@@ -43,13 +47,12 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
   };
 
   const togglePasswordVisibility = (field) => {
-    if (field === "password_hash") 
-      setShowPassword(!showPassword);
-    else if (field === "confirmPassword") 
+    if (field === "password_hash") setShowPassword(!showPassword);
+    else if (field === "confirmPassword")
       setShowConfPassword(!showConfPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // user_name validation
     if (
@@ -94,8 +97,14 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
       return;
     }
 
-    onSubmit(formData);
-    toggleForm(false);
+    setErrorMessage("");
+
+    try {
+      await onSubmit(formData);
+      toggleForm(false);
+    } catch (error) {
+      setErrorMessage(error.message || "Hubo un error en el servidor. Inténtalo de nuevo.")
+    }
   };
 
   return (
@@ -119,9 +128,9 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
         noValidate
       >
         {/* Error Message */}
-        {errorMessage && (
+        {(errorMessage || serverErrorMessage) && (
           <div className="mb-4 text-red-500 text-sm text-center animate-fade-in">
-            {errorMessage}
+            {errorMessage ? errorMessage : serverErrorMessage}
           </div>
         )}
 
@@ -176,7 +185,11 @@ const UserForm = ({ initialData = null, onSubmit, toggleForm, loading }) => {
             placeholder="Confirmar Contraseña"
             value={confirmPassword || ""}
             onChange={handleChange}
-            className={`${styles.input_form} focus:outline-none ${!passwordsMatch ? "border-red-500 border-2 focus:ring-2 focus:ring-red-500" : "border-green-600 border-2 focus:ring-2 focus:ring-green-600"}`}
+            className={`${styles.input_form} focus:outline-none ${
+              !passwordsMatch
+                ? "border-red-500 border-2 focus:ring-2 focus:ring-red-500"
+                : "border-green-600 border-2 focus:ring-2 focus:ring-green-600"
+            }`}
             required
           />
           <button
