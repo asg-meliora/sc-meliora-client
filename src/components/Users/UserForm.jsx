@@ -37,10 +37,10 @@ const UserForm = ({
     const { name, value } = e.target;
     if (name === "password_hash") {
       setFormData((prev) => ({ ...prev, password_hash: value }));
-      setPasswordsMatch(value === confirmPassword);
+      setPasswordsMatch(value !== "" && value === confirmPassword);
     } else if (name === "confirmPassword") {
       setConfirmPassword(value);
-      setPasswordsMatch(value === formData.password_hash);
+      setPasswordsMatch(value !== "" && value === formData.password_hash);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
