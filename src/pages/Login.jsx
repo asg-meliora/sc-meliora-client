@@ -41,14 +41,11 @@ const Login = ({ api }) => {
     }
 
     setErrorMessage("");
-    // console.log("Email:", email);
-    // console.log("Password:", password_hash);
 
     const values = {
       email: email,
       password_hash: password_hash,
     };
-    // console.log(values);
 
     const response = await fetch(`${api}/accesslogin`, {
       method: "POST",
@@ -60,7 +57,6 @@ const Login = ({ api }) => {
 
     const data = await response.json();
 
-    console.log(data);
 
     if (data.error) {
       setErrorMessage(data.error)
@@ -71,7 +67,6 @@ const Login = ({ api }) => {
         secure: true,
         sameSite: "strict",
       });
-      //Cookies.set('userid', data.userid, { expires: expireCookie, secure: true, sameSite: 'strict' });
       navigate("/dashboard");
     }
   };

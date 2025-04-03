@@ -26,7 +26,7 @@ const Users = ({ api }) => {
   const fetchUsers = useCallback(async () => {
     const token = Cookies.get("token");
     if (!token) {
-      // console.error("Token no encontrado. Por favor, inicia sesión.");
+      console.error("Token no encontrado. Por favor, inicia sesión.");
       return;
     }
 
@@ -118,7 +118,7 @@ const Users = ({ api }) => {
             <div className="flex flex-col justify-end my-4">
               <button
                 onClick={() => handleOpenUserForm()}
-                className="bg-gold-gradient menuButton hover:cursor-pointer text-gray-950 hover:text-white font-lora font-medium px-4 py-2 rounded-lg hover:scale-105 transform transition-all"
+                className="bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium px-4 py-2 rounded-lg hover:scale-105 transform transition-all"
               >
                 + Agregar Usuario
               </button>
