@@ -50,14 +50,22 @@ const SideMenu = () => {
     if (currentIndex !== -1) setActiveIndex(currentIndex);
   }, [location.pathname]);
 
+  /**
+   * Handles user logout by removing the auth token and navigating to homepage (login)
+   * @function handleLogout
+   * @returns {void} - Deletes token and sends user to login
+   */
   const handleLogout = () => {
-    console.log("Cerrando sesión...");
     Cookies.remove("token");
-
-    // TODO: Logout Logic
     navigate("/");
   };
 
+  /**
+   * Handles the click event for a menu item, using the active index and navigating to the specified route
+   * @function handleMenuItemClick
+   * @param {number} index - The index of the clicked menu item 
+   * @returns {void} - Sets active index and navigates to index page
+   */
   const handleMenuItemClick = (index) => {
     setActiveIndex(index);
     navigate(menuItems[index].route);

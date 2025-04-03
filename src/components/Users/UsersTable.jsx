@@ -7,6 +7,7 @@ import { FaEdit } from "react-icons/fa";
 const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
   /**
    * Function that returns the user type in a readable format
+   * @function formatUserType
    * @param {number} type - Id of the user type
    * @returns  {string} - Formatted user type for showing in table
    */
@@ -22,6 +23,7 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
 
   /**
    * Function that formats the date string from server to dd/MM/yyyy format
+   * @function formatDate
    * @param {string} dateString - Date string to be formatted
    * @returns {string} - Formatted date string in dd/MM/yyyy format
    */

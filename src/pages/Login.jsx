@@ -16,10 +16,23 @@ const Login = ({ api }) => {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  /**
+   * Toggles visibility of the password field
+   * @function togglePasswordVisibility
+   * @returns {void} - Sets password visibility
+   */
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  /**
+   * Handles form submittion for user login, validating inputs and sending data to server
+   * @async
+   * @function handleSubmit
+   * @param {Object} e - The event object of the form submittion
+   * @returns {Promise<void>} - A promise that resolves when login process is complete
+   * @throws {Error} - Sets error message if validation fails or if an error occurs in server
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 

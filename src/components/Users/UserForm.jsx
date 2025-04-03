@@ -10,7 +10,7 @@ const UserForm = ({
   loading,
   serverErrorMessage,
 }) => {
-  // Veify if initialData is null, if it is, set the initialData to an object with the following (empty) properties
+  // Verify if initialData is null, if it is, sets the initialData to an object with the following (empty) properties
   const [formData, setFormData] = useState(
     initialData || {
       user_name: "",
@@ -25,14 +25,19 @@ const UserForm = ({
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(
-    formData.password_hash || ""
-  );
+  const [confirmPassword, setConfirmPassword] = useState(formData.password_hash || "");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfPassword, setShowConfPassword] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(initialData ? true : false);
 
-  /// Handle the change of the input fields
+  /**
+   * Handles the change of input fields, updating formData and checking password match
+   * @function handleChange
+   * @param {Object} e - Event object from the input field
+   * @param {string} e.target.name - Name of the input field
+   * @param {string} e.target.value - Value of the input field
+   * @returns {void} - Updates formData & validates password match
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "password_hash") {
@@ -46,12 +51,27 @@ const UserForm = ({
     }
   };
 
+  /**
+   * Toggles visibility of password or confirm password fields
+   * @function togglePasswordVisibility
+   * @param {string} field - Field name to toggle visibility for either password or confirm password
+   * @returns {void}
+   */
   const togglePasswordVisibility = (field) => {
     if (field === "password_hash") setShowPassword(!showPassword);
     else if (field === "confirmPassword")
       setShowConfPassword(!showConfPassword);
   };
 
+  
+  /**
+   * Handles form submition, validating input fields, then sends data to submit
+   * @async
+   * @function handleSubmit
+   * @param {Object} e - Event object from the form submittion
+   * @returns {Promise<void>} - Promise that resolves if form is succesfully submitted
+   * @throws {Error} - Sets an error message if validation fails or if submition encouunters an error and shows error message
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     // user_name validation
@@ -153,10 +173,6 @@ const UserForm = ({
           className={styles.input_form}
           required
         />
-
-        {/* TODO: Get unhashed password or definde way of handling edit password */}
-        {/* TODO: Confirm Password check icon if match, if not x icon */}
-        {/* TODO: Validation if user wrote new password for validating last password */}
 
         <div className="relative">
           <input

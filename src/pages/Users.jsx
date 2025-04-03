@@ -5,17 +5,17 @@ import UsersTable from "../components/Users/UsersTable";
 import Cookies from "js-cookie";
 
 const Users = ({ api }) => {
-  // const [users, setUsers] = useState(usersData);
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [loading, setLoading] = useState(false); // State for activating/deactivating send form button
   const [dataBoard, setUsersBoard] = useState({ results: [] });
-  // const [serverErrorMessage, setServerErrorMessage] = useState("");
 
-  const url = editingUser ? `${api}/users/update` : `${api}/accesslog`;
+  const url = editingUser ? `${api}/users/update` : `${api}/accesslog`; 
 
   /**
-   * @param {object} user - User object to be edited or null if adding a new user
+   * Opens the user form for creating or editing a user
+   * @function handleOpenUserForm
+   * @param {object|null} user - User object to be edited or null if adding a new user
    *  @returns {void} - Set the editingUser state to the user object and show the form
    */
   const handleOpenUserForm = (user = null) => {
@@ -23,6 +23,13 @@ const Users = ({ api }) => {
     setShowForm(true);
   };
 
+  /**
+   * Function that fetches the list of users from the server and updates the user board state
+   * @async
+   * @function fetchUsers
+   * @returns {Promise<void>} Promise that resolves when users are fetched correctly & its state changes
+   * @throws {Error} Throws error if the request fails
+   */
   const fetchUsers = useCallback(async () => {
     const token = Cookies.get("token");
     if (!token) {
@@ -42,6 +49,7 @@ const Users = ({ api }) => {
       const data = await response.json();
       setUsersBoard(data);
     } catch (error) {
+      // TODO: Set error message to show fail in fetching or other way
       console.log("Error al obtener usuarios:", error);
     }
   }, [api]);
@@ -50,13 +58,15 @@ const Users = ({ api }) => {
     fetchUsers();
   }, [fetchUsers]);
 
-  console.log(dataBoard);
+  // console.log(dataBoard);
 
   /**
-   * Function to handle the form submission
+   * Async Function that handles the form submission to create or update a user
+   * @async
+   * @function handleUserSubmit
    * @param {Object} formData - Form data to be sent to the API
    * @returns {Promise<void>} - Promise that resolves when the form is submitted
-   * @throws {Error} - Throws an error if the form submission fails
+   * @throws {Error} - Throws an error if the form submission fails or if the token is not found
    */
   const handleUserSubmit = async (formData) => {
     console.warn("Data\n", formData);
@@ -98,7 +108,8 @@ const Users = ({ api }) => {
 
   /**
    * Closes the form modal and resets the editingUser state
-   * @returns {void}
+   * @function closeForm
+   * @returns {void} - Closes form and sets editingUser to null
    */
   const closeForm = () => {
     setShowForm(false);
