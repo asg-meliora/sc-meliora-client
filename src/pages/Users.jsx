@@ -71,7 +71,6 @@ const Users = ({ api }) => {
     setLoading(true);
 
     try {
-
       const response = await fetch(url, {
         method: editingUser ? "PUT" : "POST",
         headers: {
@@ -108,10 +107,13 @@ const Users = ({ api }) => {
 
   return (
     <>
-      <div className="flex bg-whiteN">
-        <SideMenu />
-        <div className="w-full">
-          <div className="flex items-center justify-between bg-black-gradient px-6 py-1">
+      <div className="flex bg-whiteN min-h-screen">
+        <div className="w-64">
+          <SideMenu />
+        </div>
+
+        <div className="w-full flex flex-col flex-grow">
+          <div className="flex items-center justify-between bg-black-gradient px-6 py-1 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]">
             <h2 className="text-4xl font-cinzel font-medium heading-gradient">
               Usuarios
             </h2>
