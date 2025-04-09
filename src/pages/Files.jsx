@@ -8,7 +8,6 @@ const Files = ({ api }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); //Estado para manejar el status del modal
   const [newFiles, setNewFiles] = useState({ results:[] }); //Estado para manejar los nuevos datos del formulario
 
-
   useEffect(() => {
       const getClients = async () => {
           const response = await fetch(`http://localhost:3001/api/clients/`, {
@@ -36,7 +35,7 @@ const Files = ({ api }) => {
     setNewFiles((prevFiles) => ({...prevFiles, results: [...prevFiles.results, ...updatedResults] })); // Acceder a prevFiles.results
   };
   
-  console.log('Debug Padre',newFiles);
+  //console.log('Debug Padre',newFiles);
   return (
     <>
       <div className="flex flex-wrap bg-gray-100">
