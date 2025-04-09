@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import SideMenu from "../components/SideMenu";
 import UserForm from "../components/Users/UserForm";
 import UsersTable from "../components/Users/UsersTable";
+import { FaPlus } from "react-icons/fa";
 import Cookies from "js-cookie";
 
 const Users = ({ api }) => {
@@ -131,9 +132,9 @@ const Users = ({ api }) => {
             <div className="flex flex-col justify-end my-4">
               <button
                 onClick={() => handleOpenUserForm()}
-                className="bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium px-4 py-2 rounded-lg hover:scale-105 transform transition-all"
+                className=" flex items-center gap-2 bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium hover:font-bold px-4 py-2 rounded-lg hover:scale-110 transform transition-all"
               >
-                + Agregar Usuario
+                <FaPlus /> Agregar Usuario
               </button>
             </div>
           </div>
