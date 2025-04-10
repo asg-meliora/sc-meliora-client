@@ -1,6 +1,7 @@
 // import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { format } from "date-fns";
+import styles from "../../styles";
 
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 
@@ -43,20 +44,20 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
   };
 
   return (
-    <div className="px-2 w-full mt-0.5 ">
-      <div className="overflow-x-auto bg-whiteN p-4">
-        <table className="w-full border-collapse overflow-hidden rounded-xl shadow-mid shad">
-          <thead className="bg-radial from-[#dd9206] via-[#835f1c] to-[#6d581d] drop-shadow-[0_0_12px_rgba(0,0,0,0.5)] text-white font-raleway uppercase text-sm">
+    <div className={styles.table_layout}>
+      <div className={styles.table_container}>
+        <table className={`${styles.table} rounded-2xl`}>
+          <thead className={styles.table_header}>
             <tr>
-              <th className="p-4 text-center">Nombre</th>
-              <th className="p-4 text-center">Tipo</th>
-              <th className="p-4 text-center">Email</th>
-              <th className="p-4 text-center">Estado</th>
-              <th className="p-4 text-center">Creación</th>
-              <th className="p-4 text-center">Acciones</th>
+              <th className={styles.table_header_cell}>Nombre</th>
+              <th className={styles.table_header_cell}>Tipo</th>
+              <th className={styles.table_header_cell}>Email</th>
+              <th className={styles.table_header_cell}>Estado</th>
+              <th className={styles.table_header_cell}>Creación</th>
+              <th className={styles.table_header_cell}>Acciones</th>
             </tr>
           </thead>
-          <tbody className="text-gray-700 font-inter text-sm">
+          <tbody className={styles.table_body}>
             {dataBoard.results.map((user, index) => (
               <tr
                 key={user.user_id}
@@ -64,14 +65,14 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
                 } hover:bg-[#313131] hover:text-white transition-all`}
               >
-                <td className="p-4 ] text-center font-semibold">{user.user_name}</td>
-                <td className="p-4 ] text-center ">
+                <td className="p-4 text-center font-semibold">{user.user_name}</td>
+                <td className="p-4 text-center ">
                   <span className={`px-3 py-1 items-center text-xs font-bold rounded-full text-white shadow-md ${getUserTypeColor(user.role_id)}`}>
                     {formatUserType(user.role_id)}
                   </span>
                 </td>
-                <td className="p-4 ] text-center">{user.email}</td>
-                <td className="p-4 ] text-center">
+                <td className="p-4 text-center">{user.email}</td>
+                <td className="p-4 text-center">
                   <span
                     className={`px-3 py-1 text-xs font-bold rounded-full text-white shadow-md ${
                       user.is_active === 1
@@ -82,8 +83,8 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
                     {user.is_active === 1 ? "Activo" : "Inactivo"}
                   </span>
                 </td>
-                <td className="p-4 ] text-center">{formatDate(user.created_at)}</td>
-                <td className="p-4 ] text-center">
+                <td className="p-4 text-center">{formatDate(user.created_at)}</td>
+                <td className="p-4 text-center">
                   <button
                     onClick={() => handleOpenUserForm(user)}
                     className="text-[#9e824f]  hover:text-[#eeb13f] hover:cursor-pointer transition-all transform hover:scale-120"

@@ -5,13 +5,15 @@ import UsersTable from "../components/Users/UsersTable";
 import { FaPlus } from "react-icons/fa";
 import Cookies from "js-cookie";
 
+import styles from "../styles";
+
 const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [loading, setLoading] = useState(false); // State for activating/deactivating send form button
   const [dataBoard, setUsersBoard] = useState({ results: [] });
 
-  const url = editingUser ? `${api}/users/update` : `${api}/accesslog`; 
+  const url = editingUser ? `${api}/users/update` : `${api}/accesslog`;
 
   /**
    * Opens the user form for creating or editing a user
@@ -119,20 +121,19 @@ const Users = ({ api }) => {
 
   return (
     <>
-      <div className="flex bg-whiteN min-h-screen">
+      <div className={styles.blank_page}>
         <div className="w-64">
           <SideMenu />
         </div>
 
-        <div className="w-full flex flex-col flex-grow">
-          <div className="flex items-center justify-between bg-black-gradient px-6 py-1 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]">
-            <h2 className="text-4xl font-cinzel font-medium heading-gradient">
-              Usuarios
-            </h2>
-            <div className="flex flex-col justify-end my-4">
+        <div className={styles.page_container}>
+          <div className={styles.header_container}>
+            <h2 className={styles.heading_page}>Usuarios</h2>
+            <div className={styles.button_header_container}>
               <button
                 onClick={() => handleOpenUserForm()}
-                className=" flex items-center gap-2 bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium hover:font-bold px-4 py-2 rounded-lg hover:scale-110 transform transition-all"
+                //button_header
+                className={styles.button_header}
               >
                 <FaPlus /> Agregar Usuario
               </button>
@@ -148,8 +149,8 @@ const Users = ({ api }) => {
 
       {/* Form Moda; */}
       {showForm && (
-        <div className="fixed top-0 right-0 w-full h-full flex justify-center items-center">
-          <div className="fixed w-full h-full bg-black opacity-50"></div>
+        <div className={styles.form_container}>
+          <div className={styles.form_modal_bg}></div>
           <UserForm
             onSubmit={handleUserSubmit}
             toggleForm={closeForm}
