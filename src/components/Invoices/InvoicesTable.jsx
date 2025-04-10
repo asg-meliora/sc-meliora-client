@@ -2,7 +2,6 @@ import { MdOutlineCancel } from "react-icons/md";
 import styles from "../../styles";
 
 const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm }) => {
-  console.log("dataBoard", dataBoard);
   const statusMap = ["", "Iniciada", "En Progreso", "Finalizada"];
   const statusColor = [
     "",

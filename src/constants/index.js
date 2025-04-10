@@ -118,4 +118,14 @@ export const invoicesData = [
     subtotal: "25000",
     legal_name: "Sapphire Tech S.A. de C.V."
   },
+  {
+    id: "0019",
+    status: 4,
+    type: "Servicios",
+    user_assigned: "usuario8",
+    concept: "Implementación de Software",
+    created_at: "2025-04-03T08:33:47.000Z",
+    subtotal: "2000",
+    legal_name: "Opal Systems S.A. de C.V."
+  },
 ];
