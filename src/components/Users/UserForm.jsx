@@ -128,28 +128,28 @@ const UserForm = ({
   };
 
   return (
-    <div className="max-w-md mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black p-6 rounded-lg shadow-xl relative w-96">
+    <div className={styles.form_layout}>
       {/* Close Form Button */}
       <button
         onClick={() => toggleForm(false)}
-        className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 hover:font-extrabold text-xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all"
+        className={styles.close_form_button}
       >
         ✕
       </button>
 
       {/* Form Title */}
-      <h2 className="text-2xl font-bold mb-4 mx-3 text-blackN font-raleway">
+      <h2 className={styles.form_heading}>
         {initialData ? "Editar Usuario" : "Agregar Nuevo Usuario"}
       </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 mx-2"
+        className={styles.form}
         noValidate
       >
         {/* Error Message */}
         {(errorMessage || serverErrorMessage) && (
-          <div className="mb-4 text-red-500 text-sm text-center animate-fade-in">
+          <div className={styles.error_message}>
             {errorMessage ? errorMessage : serverErrorMessage}
           </div>
         )}
@@ -259,7 +259,7 @@ const UserForm = ({
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-gradient formButton p-2 mt-2 rounded-lg hover:cursor-pointer text-white hover:text-gray-200 text-lg w-65 self-center font-semibold hover:scale-110 transform transition-all"
+          className={styles.send_button}
         >
           {initialData ? "Guardar Cambios" : "Agregar Usuario"}
         </button>

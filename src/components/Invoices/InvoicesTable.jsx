@@ -1,7 +1,7 @@
-import { FcCancel } from "react-icons/fc";
+import { MdOutlineCancel } from "react-icons/md";
 import styles from "../../styles";
 
-const InvoicesTable = ({ dataBoard, invoiceStatus }) => {
+const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm }) => {
   console.log("dataBoard", dataBoard);
   const statusMap = ["", "Iniciada", "En Progreso", "Finalizada"];
   const statusColor = [
@@ -97,8 +97,8 @@ const InvoicesTable = ({ dataBoard, invoiceStatus }) => {
                     <td className="p-4 text-center">{invoice.legal_name}</td>
                     {invoiceStatus === 1 && (
                       <td className="p-4 text-center">
-                        <button className="text-[#9e824f] hover:text-[#eeb13f] hover:cursor-pointer transition-all transform hover:scale-120">
-                          <FcCancel size={18} />
+                        <button onClick={handleOpenCancelForm} className="text-[#9e824f] hover:text-[#eeb13f] scale-120 hover:cursor-pointer transition-all transform hover:scale-140">
+                          <MdOutlineCancel size={18} />
                         </button>
                       </td>
                     )}
