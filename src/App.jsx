@@ -17,6 +17,7 @@ import {
   Login,
   Users,
   NotFound,
+  FilesCreate
 } from "./pages/index";
 
 const apiLink = "http://localhost:3001/api";
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
   createRoutesFromElements([
     <Route path="/" element={<Login api = {apiLink} />} />,
     <Route path="/files" element={<ProtectedRoute> <Files api={apiLink}/> </ProtectedRoute>} />,
+    <Route path="/files/details/:id" element={<ProtectedRoute> <FilesCreate api={apiLink}/> </ProtectedRoute>} />,
     <Route path="/historical" element={<ProtectedRoute> <Historical api={apiLink}/> </ProtectedRoute>} />,
     <Route path="/invoices" element={<ProtectedRoute> <Invoices api={apiLink}/> </ProtectedRoute>} />,
     <Route path="/dashboard" element={<ProtectedRoute> <Dashboard api={apiLink}/> </ProtectedRoute>} />,

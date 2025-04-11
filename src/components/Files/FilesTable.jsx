@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import Cookies from "js-cookie";
+import React from 'react'
 import "./FilesTable.css";
+import { useNavigate } from "react-router-dom";
 
 function FilesTable({ api, newFiles }) {
+    const navigate = useNavigate();
+
     // "client_id": 6,
     // "name_rs": "exampleRS5",
     // "rfc": "GFC435",
@@ -30,25 +32,27 @@ function FilesTable({ api, newFiles }) {
                     <th className="px-4 py-2">RFC</th>
                     <th className="px-4 py-2">CURP</th>
                     <th className="px-4 py-2">Dirección</th>
-                    <th className="px-4 py-2">C.P.</th>
+                    {/* <th className="px-4 py-2">C.P.</th> */}
                     <th className="px-4 py-2">Teléfono</th>
                     <th className="px-4 py-2">Email</th>
                     <th className="px-4 py-2">Número de cuenta</th>
                     <th className="px-4 py-2">Fecha de creación</th>
+                    {/* <th className="px-4 py-2">ACCIONES</th> */}
                 </tr>
             </thead>
             <tbody>
                 {newFiles.results.map((results, index) => (
-                    <tr className="navbar" key={results.client_id || results.insertId}>
+                    <tr className="navbar cursor-pointer hover:bg-green-600" key={results.client_id || results.insertId} onClick={ ()=>navigate(`/files/details/${results.client_id}`) }>
                         <td className="px-4 py-2">{results.name_rs}</td>
                         <td className="px-4 py-2">{results.rfc}</td>
                         <td className="px-4 py-2">{results.curp}</td>
                         <td className="px-4 py-2">{results.address}</td>
-                        <td className="px-4 py-2">{results.zip_code}</td>
+                        {/* <td className="px-4 py-2">{results.zip_code}</td> */}
                         <td className="px-4 py-2">{results.phone}</td>
                         <td className="px-4 py-2">{results.email}</td>
                         <td className="px-4 py-2">{results.bank_account}</td>
                         <td className="px-4 py-2"><FormattedDate dateString={results.created_at}/></td>
+                        {/* <td className="px-4 py-2 bg-blue-500 hover:bg-green-600 rounded-[12px]"> <button className= "text-white" onClick={ ()=>navigate('/') }>PLAY</button> </td> */}
                     </tr>
                 ))}
             </tbody>

@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from "js-cookie";
-``
+
+//Diccionario para los labels del formulario
+const DiccLabels = {
+  "name_rs": { label: "Razón Social" },
+  "rfc": { label: "RFC" },
+  "curp": { label: "CURP" },
+  "address": { label: "Dirección" },
+  "zip_code": { label: "Código Postal" },
+  "phone": { label: "Teléfono" },
+  "email": { label: "Correo Electrónico" },
+  "bank_account": { label: "No. Cuenta Bancaria" },
+  "fileCSF": { label: "CSF" },
+  "fileCDB": { label: "Comprabante de Domicilio" },
+  "fileCDD": { label: "Carátula Bancaria" },
+};
+
 const TextInput = ({ label, name, value, onChange, type = "text" }) => (
   <div className="mb-4">
     <label className="block text-gray-700 capitalize">{label}</label>
@@ -17,7 +32,7 @@ const TextInput = ({ label, name, value, onChange, type = "text" }) => (
 
 const UserAssignInput = ({ options, value, onChange }) => (
   <div className="mb-4">
-    <label className="block text-gray-700">Usuario asignado</label>
+    <label className="block text-gray-700 capitalize">Usuario Asignado</label>
     <select
       name="userAssign"
       value={value}
@@ -33,11 +48,9 @@ const UserAssignInput = ({ options, value, onChange }) => (
   </div>
 );
 
-const FileInput = ({ name, onChange, file }) => (
+const FileInput = ({ name, onChange, file, label }) => (
   <div className="mb-4">
-    <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-      Subir archivo {name.replace('file', '') || '1.0'}
-    </label>
+    <label htmlFor={name} className="block text-sm font-medium text-gray-700"> Subir archivo {label}</label>
     <input
       id={name}
       type="file"
@@ -86,7 +99,7 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
     fetchUsers(api)
   }, [api]);
 
-  console.log(formData);
+  console.log(formData); //QUITARLO
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -119,8 +132,8 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
       if (!response.ok) throw new Error("Error al crear el cliente");
 
       const result = await response.json();
-      if (result.results.insertId) {
-        const clientResponse = await fetch(`${api}/clients/byid/${result.results.insertId}`, {
+      if (result.client_id) {
+        const clientResponse = await fetch(`${api}/clients/byid/${result.client_id}`, {
           headers: { "x-access-token": Cookies.get("token") },
         });
         if (!clientResponse.ok) throw new Error("Error al obtener los datos del cliente");
@@ -141,10 +154,10 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
         <form onSubmit={handleSubmit}>
           {Object.entries(formData).map(([key, value]) => (
             key.startsWith('file')
-              ? <FileInput key={key} name={key} file={value} onChange={handleFileChange} />
-              : key !== 'userAssign' && <TextInput key={key} label={key.replace('_', ' ')} name={key} value={value} onChange={handleInputChange} />
+              ? <FileInput key={key} name={key} file={value} onChange={handleFileChange} label={DiccLabels[key].label}/>
+              : key !== 'userAssign' && <TextInput key={key} label={DiccLabels[key].label} name={key} value={value} onChange={handleInputChange} />
           ))}
-          <UserAssignInput options={userAssigns.results} value={formData.userAssign} onChange={handleInputChange} />
+          <UserAssignInput options={userAssigns.results} value={formData.userAssign} onChange={handleInputChange}/>
           <div className="flex justify-end mt-4">
             <button type="button" className="bg-gray-500 text-white px-4 py-2 rounded mr-2" onClick={onClose}>Cancelar</button>
             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Enviar</button>
