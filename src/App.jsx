@@ -20,7 +20,7 @@ import {
   FilesCreate
 } from "./pages/index";
 
-const apiLink = "http://localhost:3001/api";
+const apiLink = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
 const router = createBrowserRouter(
   createRoutesFromElements([

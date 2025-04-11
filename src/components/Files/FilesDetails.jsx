@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 import { SiGoogledocs } from "react-icons/si";
 import FilesTableDetail from './FileTableDetail.jsx';
 
+import LoadingScreen from '../LoadingScreen.jsx';
+
 function FileDetail({ api }) {
     const { id } = useParams();
     const [isPreviewVisible, setIsPreviewVisible] = useState(false);
@@ -71,25 +73,23 @@ function FileDetail({ api }) {
                 URL.revokeObjectURL(fileUrl);
             }
         };
-    }, [api, id]);
+    }, [api, id, fileUrl]);
 
     // Pantalla de carga
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-screen">
-                <p className="text-xl font-semibold text-gray-700">Cargando información...</p>
-            </div>
+            <LoadingScreen />
         );
     }
 
     // Manejo de errores
-    if (error) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <p className="text-red-500 text-xl font-semibold">{error}</p>
-            </div>
-        );
-    }
+    // if (error) {
+    //     return (
+    //         <div className="flex items-center justify-center h-screen">
+    //             <p className="text-red-500 text-xl font-semibold">{error}</p>
+    //         </div>
+    //     );
+    // }
 
     const handlePreviewClick = () => {
         setIsPreviewVisible(true);
