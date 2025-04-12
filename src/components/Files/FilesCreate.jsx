@@ -17,19 +17,6 @@ const DiccLabels = {
   fileCDD: { label: "Carátula Bancaria" },
 };
 
-// const TextInput = ({ label, name, value, onChange, type = "text" }) => (
-//   <div className="mb-4">
-//     <label className="block text-gray-700 capitalize">{label}</label>
-//     <input
-//       type={type}
-//       name={name}
-//       value={value}
-//       onChange={onChange}
-//       className="w-full px-3 py-2 border rounded"
-//       required
-//     />
-//   </div>
-// );
 const TextInput = ({ placeholder, name, value, onChange, type = "text" }) => (
   <input
     type={type}
@@ -41,23 +28,6 @@ const TextInput = ({ placeholder, name, value, onChange, type = "text" }) => (
     required
   />
 );
-
-// const UserAssignInput = ({ options, value, onChange }) => (
-//     <select
-//       name="userAssign"
-//       value={value}
-//       onChange={onChange}
-//       className="w-full px-3 py-2 border rounded"
-//       required
-//     >
-//       <option value="">Seleccione una opción</option>
-//       {options.map(({ user_id, user_name }) => (
-//         <option key={user_id} value={user_name}>
-//           {user_name}
-//         </option>
-//       ))}
-//     </select>
-// );
 
 const FileInput = ({ name, onChange, file, label }) => (
   <div className="flex flex-col gap-2">
@@ -204,11 +174,6 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
             )
           )
         )}
-        {/* <UserAssignInput
-          options={userAssigns.results}
-          value={formData.userAssign}
-          onChange={handleInputChange}
-        /> */}
         <select
           name="userAssign"
           value={formData.userAssign || ""}
@@ -237,57 +202,6 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
         </button>
       </form>
     </div>
-    // <div
-    //   className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-    //   style={{ backgroundColor: "rgba(75, 87, 99, 0.5)" }}
-    // >
-    //   <div className="bg-white p-6 rounded shadow-lg w-1/3">
-    //     {children}
-    //     <form onSubmit={handleSubmit}>
-    //       {Object.entries(formData).map(([key, value]) =>
-    //         key.startsWith("file") ? (
-    //           <FileInput
-    //             key={key}
-    //             name={key}
-    //             file={value}
-    //             onChange={handleFileChange}
-    //             label={DiccLabels[key].label}
-    //           />
-    //         ) : (
-    //           key !== "userAssign" && (
-    //             <TextInput
-    //               key={key}
-    //               label={DiccLabels[key].label}
-    //               name={key}
-    //               value={value}
-    //               onChange={handleInputChange}
-    //             />
-    //           )
-    //         )
-    //       )}
-    //       <UserAssignInput
-    //         options={userAssigns.results}
-    //         value={formData.userAssign}
-    //         onChange={handleInputChange}
-    //       />
-    //       <div className="flex justify-end mt-4">
-    //         <button
-    //           type="button"
-    //           className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
-    //           onClick={onClose}
-    //         >
-    //           Cancelar
-    //         </button>
-    //         <button
-    //           type="submit"
-    //           className="bg-blue-500 text-white px-4 py-2 rounded"
-    //         >
-    //           Enviar
-    //         </button>
-    //       </div>
-    //     </form>
-    //   </div>
-    // </div>
   );
 }
 

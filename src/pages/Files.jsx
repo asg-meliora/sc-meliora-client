@@ -99,34 +99,6 @@ const Files = ({ api }) => {
           </FilesCreate>
         </div>
       )}
-      {/* // ! ------------------------------------------------------------------- \\ */}
-      {/* <div className="flex flex-wrap bg-gray-100">
-         <SideMenu className="w-full md:w-1/4" /> 
-        <div className="flex-1 w-full md:w-3/4 m-3 flex flex-col items-center">
-           <h2 className="text-2xl font-bold mb-4 text-center">
-            Lista de Expedientes
-          </h2> 
-           <div className="bg-gray-50 shadow-xl rounded-lg px-5 py-3 m-2 w-full max-w-7xl overflow-x-auto">
-            <FilesTable api={api} newFiles={newFiles} />
-          </div> 
-
-          Modal
-           <div className="Modal">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded mt-4 " onClick={() => setIsModalOpen(true)}>
-              Crear Nuevo Expediente
-            </button> 
-
-             <FilesCreate
-              api={api}
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onAddFile={handleNewFile}
-            >
-              <h3 className="text-xl font-bold mb-4">Formulario</h3>
-            </FilesCreate> 
-          </div> 
-        </div>
-      </div> */}
     </>
   );
 };
