@@ -31,6 +31,7 @@ const styles = {
   form: "flex flex-col gap-4 mx-2",
   error_message: "mb-4 text-red-500 text-sm text-center animate-fade-in",
   input_form: "w-full p-2 text-[16px] rounded-md bg-linear-0 from-[#ffffff] via-[#eeeeee] to-[#ffffff] border border-gray-300 shadow-md shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-blue-400 focus:scale-105 focus:mt-0.5 transition-all",
+  input_file: "w-full p-2 text-[16px] rounded-md bg-linear-0 from-[#ffffff] via-[#eeeeee] to-[#ffffff] border border-gray-300 shadow-md shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-blue-400 focus:scale-105 focus:mt-0.5 transition-all file:bg-blue-500 file:text-sm file:text-white file:rounded-md file:border-none file:p-2 file:mr-4 file:cursor-pointer",
   select_form: "w-full p-2 text-[16px] rounded-md bg-linear-0 from-[#ffffff] via-[#eeeeee] to-[#ffffff] border border-gray-300 shadow-md shadow-stone-300 font-inter hover:cursor-pointer focus:ring-2 focus:scale-105 focus:ring-blue-600 transition-all",
   send_button: "bg-blue-gradient formButton p-2 mt-2 rounded-lg hover:cursor-pointer text-white hover:text-gray-200 text-lg w-65 self-center font-semibold hover:scale-110 transform transition-all",
 }

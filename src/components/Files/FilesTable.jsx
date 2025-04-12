@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "../../styles";
 import { SlOptionsVertical } from "react-icons/sl";
 
-function FilesTable({ api, newFiles }) {
+function FilesTable({ newFiles }) {
   const navigate = useNavigate();
 
   // "client_id": 6,

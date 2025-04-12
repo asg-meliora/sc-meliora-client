@@ -62,7 +62,7 @@ const CancelInvoiceForm = ({
               name="invoice_file"
               accept=".pdf,.xml,.jpg,.png" // puedes personalizar según el tipo de archivo permitido
               onChange={handleChange}
-              className={`${styles.input_form} file:bg-blue-500 file:text-sm file:text-white file:rounded-md file:border-none file:p-2 file:mr-4 file:cursor-pointer`}
+              className={styles.input_file}
             />
           </div>
           {formData.invoice_file && (
