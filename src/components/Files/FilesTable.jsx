@@ -57,12 +57,14 @@ function FilesTable({ newFiles }) {
               {newFiles.results.map((item, index) => (
                 <tr
                   key={item.client_id || item.insertId}
-                  onClick={() => navigate(`/files/details/${item.client_id}`)}
                   className={`border-b-[2.5px] border-[#b9b9b9]  last:border-none ${
                     index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
-                  } hover:bg-[#313131] hover:cursor-pointer hover:text-white transition-all`}
+                  } hover:bg-[#313131] hover:text-white transition-all`}
                 >
-                  <td className="p-4 text-center font-semibold">
+                  <td
+                    className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transform transition-all"
+                    onClick={() => navigate(`/files/details/${item.client_id}`)}
+                  >
                     {item.name_rs}
                   </td>
                   <td className="p-4 text-center">{item.rfc}</td>

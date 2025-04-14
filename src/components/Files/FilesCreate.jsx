@@ -30,7 +30,7 @@ const TextInput = ({ placeholder, name, value, onChange, type = "text" }) => (
 );
 
 const FileInput = ({ name, onChange, file, label }) => (
-  <div className="flex flex-col gap-2">
+  <div className="flex flex-col gap-2 col-span-2">
     <label htmlFor={name} className="text-base font-semibold text-gray-700">
       {" "}
       Subir archivo {label}
@@ -137,7 +137,7 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
   };
 
   return (
-    <div className={`${styles.form_layout}`}>
+    <div className={`${styles.form_layout} relative w-full max-w-5xl`}>
       {/* Close Form Button */}
       <button onClick={onClose} className={styles.close_form_button}>
         ✕
@@ -145,58 +145,59 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
 
       {/* Form Title */}
       <h2 className={styles.form_heading}>Agregar Nuevo Expediente</h2>
-      <form onSubmit={handleSubmit} className={`${styles.form} max-h-[90vh] overflow-y-auto p-4 w-full max-w-xl bg-none`}>
-        {/* Error Message */}
-        {/* {(errorMessage || serverErrorMessage) && (
+      <form onSubmit={handleSubmit} className={`${styles.form}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto p-6 w-full max-w-5xl">
+          {/* Error Message */}
+          {/* {(errorMessage || serverErrorMessage) && (
           <div className={styles.error_message}>
             {errorMessage ? errorMessage : serverErrorMessage}
           </div>
         )} */}
-        {/* Form Fields */}
-        {Object.entries(formData).map(([key, value]) =>
-          key.startsWith("file") ? (
-            <FileInput
-              key={key}
-              name={key}
-              file={value}
-              onChange={handleFileChange}
-              label={DiccLabels[key].label}
-            />
-          ) : (
-            key !== "userAssign" && (
-              <TextInput
+          {/* Form Fields */}
+          {Object.entries(formData).map(([key, value]) =>
+            key.startsWith("file") ? (
+              <FileInput
                 key={key}
-                placeholder={DiccLabels[key].label}
                 name={key}
-                value={value}
-                onChange={handleInputChange}
+                file={value}
+                onChange={handleFileChange}
+                label={DiccLabels[key].label}
               />
+            ) : (
+              key !== "userAssign" && (
+                <TextInput
+                  key={key}
+                  placeholder={DiccLabels[key].label}
+                  name={key}
+                  value={value}
+                  onChange={handleInputChange}
+                />
+              )
             )
-          )
-        )}
-        <select
-          name="userAssign"
-          value={formData.userAssign || ""}
-          onChange={handleInputChange}
-          className={`${styles.select_form} ${
-            formData.userAssign
-              ? "text-black font-normal"
-              : "italic text-gray-500"
-          }`}
-          required
-        >
-          <option value="" hidden disabled>
-            Seleccione una opción
-          </option>
-          {userAssigns.results.map(({ user_id, user_name }) => (
-            <option key={user_id} value={user_name}>
-              {user_name}
+          )}
+          <select
+            name="userAssign"
+            value={formData.userAssign || ""}
+            onChange={handleInputChange}
+            className={`${styles.select_form} col-span-2  ${
+              formData.userAssign
+                ? "text-black font-normal"
+                : "italic text-gray-500"
+            }`}
+            required
+          >
+            <option value="" hidden disabled>
+              Usuario asignado
             </option>
-          ))}
-        </select>
-
+            {userAssigns.results.map(({ user_id, user_name }) => (
+              <option key={user_id} value={user_name}>
+                {user_name}
+              </option>
+            ))}
+          </select>
+        </div>
         {/* Add File Button */}
-        <button type="submit" className={styles.send_button}>
+        <button type="submit" className={`${styles.send_button} mt-[-20px]`}>
           {" "}
           Agregar Expediente
         </button>

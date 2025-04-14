@@ -87,7 +87,7 @@ const Files = ({ api }) => {
         </div>
       </div>
       {isModalOpen && (
-        <div className={styles.form_container}>
+        <div className={`${styles.form_container}`}>
           <div className={styles.form_modal_bg}></div>
           <FilesCreate
             api={api}

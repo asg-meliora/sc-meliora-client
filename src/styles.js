@@ -13,9 +13,7 @@ const styles = {
   heading_page: "text-4xl font-cinzel font-medium heading-gradient",
   button_header_container: "flex flex-col justify-end my-4",
   button_header: "flex items-center gap-2 bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium hover:font-bold px-4 py-2 rounded-lg hover:scale-110 transform transition-all",
-  form_container: "fixed top-0 right-0 w-full h-full flex justify-center items-center",
-  form_modal_bg: "fixed w-full h-full bg-black opacity-50",
-
+ 
   // > Table
   table_layout: "w-full px-1 border-collapse overflow-hidden",
   table_container: "overflow-x-auto bg-whiteN p-4",
@@ -25,7 +23,9 @@ const styles = {
   table_body: "text-gray-700 font-inter text-sm",
 
   // > Form
-  form_layout: "max-w-md mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black p-6 rounded-lg shadow-xl relative w-96",
+  form_container: "fixed top-0 right-0 w-full h-full flex justify-center items-center",
+  form_modal_bg: "fixed w-full h-full bg-black opacity-50",
+  form_layout: "max-w-[800px] mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black p-6 rounded-lg shadow-xl relative w-96",
   close_form_button: "absolute top-2 right-2 text-gray-400 hover:text-gray-700 hover:font-extrabold text-xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all",
   form_heading: "text-2xl font-bold mb-4 mx-3 text-blackN font-raleway",
   form: "flex flex-col gap-4 mx-2",
