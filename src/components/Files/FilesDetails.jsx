@@ -68,20 +68,20 @@ function FileDetail({ api }) {
 
         getFileDetail();
 
+        //control para que no parpadee el archivo 
         return () => {
             if (fileUrl) {
                 URL.revokeObjectURL(fileUrl);
             }
         };
-    }, [api, id, fileUrl]);
+    }, [api, id]);
 
     // Pantalla de carga
     if (loading) {
         return (
-            <LoadingScreen />
+            <LoadingScreen/>
         );
     }
-
     // Manejo de errores
     // if (error) {
     //     return (
@@ -139,6 +139,15 @@ function FileDetail({ api }) {
                         />
                     </div>
                 )}
+                {/* {fileUrl && (
+                    <a
+                        href={fileUrl}
+                        download={`Documento_${id}`}
+                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                    >
+                        Descargar Documento
+                    </a>
+                )} */}
             </div>
         </div>
     );
