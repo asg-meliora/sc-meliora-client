@@ -18,13 +18,14 @@ function FileTableDetail({ data }) {
         email: { label: "Correo Electrónico" },
         bank_account: { label: "No. Cuenta Bancaria" },
         created_at: { label: "Fecha de creación" },
+        user_name: { label: "Usuario Asignado" },
     };
 
     if (!data || !data.results || data.results.length === 0) {
         return <div className="text-red-500">No hay datos para mostrar.</div>;
     }
 
-    const item = data.results[0]; // Por legibilidad
+    const item = data.results; // Por legibilidad
     const keys = Object.keys(DiccHead);// Orden de los campos
 
     // Divide las claves en dos mitades

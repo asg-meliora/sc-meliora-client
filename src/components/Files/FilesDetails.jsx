@@ -9,8 +9,7 @@ import LoadingScreen from '../LoadingScreen.jsx';
 
 function FileDetail({ api }) {
     const { id } = useParams();
-    const [isPreviewVisible, setIsPreviewVisible] = useState(false);
-    const [fileUrl, setFileUrl] = useState(null);
+    const [fileUrl, setFileUrl] = useState({ urls: [] });
     const [newFiles, setNewFiles] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
     const [error, setError] = useState(null); // Estado de error   
     const [loading, setLoading] = useState(true); // Estado de carga
@@ -18,8 +17,9 @@ function FileDetail({ api }) {
     //Peticion para ver los datos del expediente
     useEffect(() => {
         const getClients = async () => {
+            setLoading(true);
             try {
-                const response = await fetch(`${api}/clients/byid/${id}`, {
+                const response = await fetch(`${api}/clients/byclientanduser/${id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -43,8 +43,9 @@ function FileDetail({ api }) {
 
     useEffect(() => {
         const getFileDetail = async () => {
+            setLoading(true);
             try {
-                const response = await fetch(`${api}/docs/${id}`, {
+                const response = await fetch(`${api}/docs/byid/${id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -56,9 +57,13 @@ function FileDetail({ api }) {
                     throw new Error('Error al obtener el Documento');
                 }
 
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                setFileUrl(url);
+                // const blob = await response.blob(); // Para Manejo De Archivos Pesados
+                // const url = URL.createObjectURL(blob);
+
+                const res = await response.json();
+                console.log(res);
+
+                setFileUrl(res);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -67,20 +72,11 @@ function FileDetail({ api }) {
         };
 
         getFileDetail();
-
-        //control para que no parpadee el archivo 
-        return () => {
-            if (fileUrl) {
-                URL.revokeObjectURL(fileUrl);
-            }
-        };
-    }, [api, id]);
+    }, [api, id]);  
 
     // Pantalla de carga
     if (loading) {
-        return (
-            <LoadingScreen/>
-        );
+        return <LoadingScreen />
     }
     // Manejo de errores
     // if (error) {
@@ -91,21 +87,26 @@ function FileDetail({ api }) {
     //     );
     // }
 
-    const handlePreviewClick = () => {
-        setIsPreviewVisible(true);
-    };
-
-    const handleClosePreview = () => {
-        setIsPreviewVisible(false);
-    };
-
     console.log(newFiles);//Quitarlo
+
+    const FormattedDate = (dateString) => {
+        const date = new Date(dateString);
+        const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    
+        return formattedDate;
+    };
+
+    const documentTypeMap = {
+        CSF: 'CSF',
+        CDD: 'Comprobante Domicilio',
+        CDB: 'Caratula Bancaria',
+    };
 
     return (
         <div className="flex flex-wrap bg-gray-100">
             <SideMenu className="w-full md:w-1/4" />
             <div className="flex-1 w-full md:w-3/4 m-3 flex flex-col items-center">
-            
+
                 <h1 className='text-2xl font-bold mb-4 text-center'>
                     Expediente No. {id}
                 </h1>
@@ -117,37 +118,22 @@ function FileDetail({ api }) {
 
 
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                {!isPreviewVisible && (
-                    <div onClick={handlePreviewClick} className="cursor-pointer flex items-center justify-center w-62 h-52 bg-gray-200 rounded-lg">
-                        <SiGoogledocs className="w-26 h-26" />
-                        CSF
-                    </div>
-                )}
-                {isPreviewVisible && fileUrl && (
-                    <div className="w-full flex flex-col items-center">
-                        <button
-                            onClick={handleClosePreview}
-                            className="mb-4 px-4 py-2 bg-red-500 text-white rounded"
+                <div className='flex bg-blue-500 rounded-lg my-25 py-10 px-5 gap-10'>
+                    {fileUrl.urls.map((urls) => (
+                        <a
+                        key={urls.document_id}
+                        href={urls.signedUrl}
+                        download={`${urls.document_type}-${id}`}
+                        // className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
                         >
-                            Cerrar Previsualización
-                        </button>
-                        <iframe
-                            src={fileUrl}
-                            title={`Documento ${id}`}
-                            width="100%"
-                            height="600px"
-                        />
-                    </div>
-                )}
-                {/* {fileUrl && (
-                    <a
-                        href={fileUrl}
-                        download={`Documento_${id}`}
-                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-                    >
-                        Descargar Documento
-                    </a>
-                )} */}
+                                <div className="cursor-pointer flex flex-col items-center justify-center w-62 h-52 bg-gray-200 rounded-lg">
+                                    <SiGoogledocs className="w-26 h-26 my-4" />
+                                    <p className="">{documentTypeMap[urls.document_type] || urls.document_type}</p>
+                                    <p>({FormattedDate(urls.created_at)})</p>
+                                </div>
+                        </a>
+                    ))}
+                </div>
             </div>
         </div>
     );
