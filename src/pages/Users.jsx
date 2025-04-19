@@ -4,6 +4,8 @@ import UserForm from "../components/Users/UserForm";
 import UsersTable from "../components/Users/UsersTable";
 import { FaPlus } from "react-icons/fa";
 import Cookies from "js-cookie";
+import SuccessToast from "../components/SuccessToast";
+import { AnimatePresence } from "framer-motion";
 
 import styles from "../styles";
 
@@ -12,6 +14,8 @@ const Users = ({ api }) => {
   const [editingUser, setEditingUser] = useState(null);
   const [loading, setLoading] = useState(false); // State for activating/deactivating send form button
   const [dataBoard, setUsersBoard] = useState({ results: [] });
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] =useState("");
 
   const url = editingUser ? `${api}/users/update` : `${api}/accesslog`;
 
@@ -106,6 +110,8 @@ const Users = ({ api }) => {
       return Promise.reject(error);
     } finally {
       setLoading(false);
+      setSuccessMessage(editingUser ? "El usuario se modificó correctamente" : "El usuario se creó correctamente")
+      setSuccess(true);
     }
   };
 
@@ -159,6 +165,17 @@ const Users = ({ api }) => {
           />
         </div>
       )}
+      <div className="fixed bottom-4 right-4 z-50">
+        <AnimatePresence>
+          {success && (
+            <SuccessToast
+              message={successMessage}
+              onClose={() => setSuccess(false)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
 };
