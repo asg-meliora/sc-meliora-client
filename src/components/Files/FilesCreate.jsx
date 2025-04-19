@@ -45,7 +45,7 @@ const FileInput = ({ name, onChange, file, label }) => (
       required
     />
     {file && (
-      <p className="text-sm text-gray-700">Archivo Seleccionado: {file.name}</p>
+      <p className=" ml-3 mt-[-5px] text-sm text-gray-700">Archivo Seleccionado: {file.name}</p>
     )}
   </div>
 );
@@ -69,6 +69,8 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
   });
 
   const [userAssigns, setuserAssigns] = useState({ results: [] });
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorExist, setErrorExist] = useState(false);  // > temporal for testing
 
   useEffect(() => {
     const fetchUsers = async (api) => {
@@ -96,7 +98,93 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
-  const handleSubmit = async (e) => {
+  // Validations
+  const validateNameRS = (name_rs) => {
+    const regex = /^[A-Za-zÁÉÍÓÚÑÜáéíóúñü0-9\s\.,-]{3,}$/;
+    return regex.test(name_rs);
+  };
+  const validateRFC = (rfc) => {
+    const regex = /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/i;
+    return regex.test(rfc);
+  };
+  const validateCURP = (curp) => {
+    const regex = /^[A-Z][AEIOU][A-Z]{2}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/i;
+    return regex.test(curp);
+  };
+  const validateAddress = (address) => {
+    return typeof address === "string" && address.trim().length >= 10;
+  };
+  const validateZipCode = (zip) => {
+    return /^\d{5}$/.test(zip);
+  };
+  const validatePhone = (phone) => {
+    const cleaned = phone.replace(/[^\d+]/g, "");
+    return /^\+?\d{10,15}$/.test(cleaned);
+  };
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    return regex.test(email);
+  };
+  const validateBankAccount = (account) => {
+    return /^\d{10,18}$/.test(account);
+  };
+  const validateFiles = (formData) => {
+    if (!formData.fileCSF || !formData.fileCDB || !formData.fileCDD) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Phone", formData.phone, validatePhone(formData.phone));
+
+    if (!validateNameRS(formData.name_rs)) {
+      setErrorMessage(
+        "La Razón Social debe tener al menos 3 caracteres y no contener caracteres especiales."
+      ); setErrorExist(true);
+      return;
+    }
+    if (!validateRFC(formData.rfc)) {
+      setErrorMessage("El RFC no es válido."); setErrorExist(true);
+      return;
+    }
+    if (!validateCURP(formData.curp)) {
+      setErrorMessage("El CURP no es válido."); setErrorExist(true);
+      return;
+    }
+    if (!validateAddress(formData.address)) {
+      setErrorMessage("La dirección debe tener al menos 10 caracteres."); setErrorExist(true);
+      return;
+    }
+    if (!validateZipCode(formData.zip_code)) {
+      setErrorMessage("El código postal no es válido."); setErrorExist(true);
+      return;
+    }
+    if (!validatePhone(formData.phone)) {
+      setErrorMessage("El número de teléfono no es valido."); setErrorExist(true);
+      return;
+    }
+    if (!validateEmail(formData.email)) {
+      setErrorMessage("El correo electrónico no es válido."); setErrorExist(true);
+      return;
+    }
+    if (!validateBankAccount(formData.bank_account)) {
+      setErrorMessage("La cuenta bancaria no es válida."); setErrorExist(true);
+      return;
+    }
+    if (!validateFiles(formData)) {
+      setErrorMessage("Debes subir todos los archivos requeridos: CSF, Comprobante de Domicilio y Carátula Bancaria."); setErrorExist(true);
+      return;
+    }
+    if (!formData.userAssign) {
+      setErrorMessage("Favor de seleccionar un usuario asignado."); setErrorExist(true);
+      return;
+    }
+    setErrorExist(false);
+  };
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
@@ -145,14 +233,19 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
 
       {/* Form Title */}
       <h2 className={styles.form_heading}>Agregar Nuevo Expediente</h2>
-      <form onSubmit={handleSubmit} className={`${styles.form}`}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto p-6 w-full max-w-5xl">
-          {/* Error Message */}
-          {/* {(errorMessage || serverErrorMessage) && (
+      <form onSubmit={handleSubmit} className={`${styles.form}`} noValidate>
+        {/* Error Message */}
+        {/* {(errorMessage || serverErrorMessage) && (
           <div className={styles.error_message}>
             {errorMessage ? errorMessage : serverErrorMessage}
           </div>
         )} */}
+        <div className="mb-[-40px]">
+          {(errorMessage && errorExist) && (
+            <div className={styles.error_message}>{errorMessage}</div>
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto p-6 w-full max-w-5xl">
           {/* Form Fields */}
           {Object.entries(formData).map(([key, value]) =>
             key.startsWith("file") ? (
