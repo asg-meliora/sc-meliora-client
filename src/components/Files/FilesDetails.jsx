@@ -142,6 +142,15 @@ function FileDetail({ api }) {
               />
             </div>
           )}
+          {/* {fileUrl && (
+                    <a
+                        href={fileUrl}
+                        download={`Documento_${id}`}
+                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                    >
+                        Descargar Documento
+                    </a>
+                )} */}
         </div>
       </div>
       <div className="fixed bottom-4 right-4 z-50">
