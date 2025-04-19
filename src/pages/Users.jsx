@@ -5,6 +5,7 @@ import UsersTable from "../components/Users/UsersTable";
 import { FaPlus } from "react-icons/fa";
 import Cookies from "js-cookie";
 import SuccessToast from "../components/SuccessToast";
+import LoadingScreen from "../components/LoadingScreen";
 import { AnimatePresence } from "framer-motion";
 
 import styles from "../styles";
@@ -13,6 +14,7 @@ const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [loading, setLoading] = useState(false); // State for activating/deactivating send form button
+  const [loadingData, setLoadingData] = useState(true);
   const [dataBoard, setUsersBoard] = useState({ results: [] });
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] =useState("");
@@ -58,6 +60,9 @@ const Users = ({ api }) => {
     } catch (error) {
       // TODO: Set error message to show fail in fetching or other way
       console.log("Error al obtener usuarios:", error);
+    }
+    finally {
+      setLoadingData(false);
     }
   }, [api]);
 
@@ -127,6 +132,7 @@ const Users = ({ api }) => {
 
   return (
     <>
+      <AnimatePresence>{loadingData && <LoadingScreen />}</AnimatePresence>
       <div className={styles.blank_page}>
         <div className="w-64">
           <SideMenu />

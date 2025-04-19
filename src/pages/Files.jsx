@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import LoadingScreen from "../components/LoadingScreen";
 import styles from "../styles";
 import { FaPlus } from "react-icons/fa";
+import { AnimatePresence } from "framer-motion";
 
 const Files = ({ api }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); //Estado para manejar el status del modal
@@ -40,9 +41,9 @@ const Files = ({ api }) => {
   // [estado], se ejecuta solo cuando se actualice el estado, sin bucle
 
   //Pantalla de Carga
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  // if (loading) {
+  //   return <LoadingScreen />;
+  // }
 
   // Manejo de errores
   if (error) {
@@ -65,6 +66,8 @@ const Files = ({ api }) => {
   //console.log('Debug Padre',newFiles);
   return (
     <>
+      <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
+      
       <div className={styles.blank_page}>
         <div className="w-64">
           <SideMenu />
