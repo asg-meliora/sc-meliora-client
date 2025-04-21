@@ -2,6 +2,18 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import styles from "../../styles";
 
+import {
+  validateNameRS,
+  validateRFC,
+  validateCURP,
+  validateAddress,
+  validateZipCode,
+  validatePhone,
+  validateEmail,
+  validateBankAccount,
+  validateFiles,
+} from "../../validations";
+
 //Diccionario para los labels del formulario
 const DiccLabels = {
   name_rs: { label: "Razón Social" },
@@ -45,12 +57,21 @@ const FileInput = ({ name, onChange, file, label }) => (
       required
     />
     {file && (
-      <p className=" ml-3 mt-[-5px] text-sm text-gray-700">Archivo Seleccionado: {file.name}</p>
+      <p className=" ml-3 mt-[-5px] text-sm text-gray-700">
+        Archivo Seleccionado: {file.name}
+      </p>
     )}
   </div>
 );
 
-function FilesCreate({ api, isOpen, onClose, onAddFile, setLoading, setLoadingMessage }) {
+function FilesCreate({
+  api,
+  isOpen,
+  onClose,
+  onAddFile,
+  setLoading,
+  setLoadingMessage,
+}) {
   if (!isOpen) return null;
 
   const [formData, setFormData] = useState({
@@ -70,7 +91,7 @@ function FilesCreate({ api, isOpen, onClose, onAddFile, setLoading, setLoadingMe
 
   const [userAssigns, setuserAssigns] = useState({ results: [] });
   const [errorMessage, setErrorMessage] = useState(null);
-  const [errorExist, setErrorExist] = useState(false);  // > temporal for testing
+  const [errorExist, setErrorExist] = useState(false); // > temporal for testing
 
   useEffect(() => {
     const fetchUsers = async (api) => {
@@ -98,43 +119,6 @@ function FilesCreate({ api, isOpen, onClose, onAddFile, setLoading, setLoadingMe
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
-  // Validations
-  const validateNameRS = (name_rs) => {
-    const regex = /^[A-Za-zÁÉÍÓÚÑÜáéíóúñü0-9\s\.,-]{3,}$/;
-    return regex.test(name_rs);
-  };
-  const validateRFC = (rfc) => {
-    const regex = /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/i;
-    return regex.test(rfc);
-  };
-  const validateCURP = (curp) => {
-    const regex = /^[A-Z][AEIOU][A-Z]{2}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/i;
-    return regex.test(curp);
-  };
-  const validateAddress = (address) => {
-    return typeof address === "string" && address.trim().length >= 10;
-  };
-  const validateZipCode = (zip) => {
-    return /^\d{5}$/.test(zip);
-  };
-  const validatePhone = (phone) => {
-    const cleaned = phone.replace(/[^\d+]/g, "");
-    return /^\+?\d{10,15}$/.test(cleaned);
-  };
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    return regex.test(email);
-  };
-  const validateBankAccount = (account) => {
-    return /^\d{10,18}$/.test(account);
-  };
-  const validateFiles = (formData) => {
-    if (!formData.fileCSF || !formData.fileCDB || !formData.fileCDD) {
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Phone", formData.phone, validatePhone(formData.phone));
@@ -142,43 +126,55 @@ function FilesCreate({ api, isOpen, onClose, onAddFile, setLoading, setLoadingMe
     if (!validateNameRS(formData.name_rs)) {
       setErrorMessage(
         "La Razón Social debe tener al menos 3 caracteres y no contener caracteres especiales."
-      ); setErrorExist(true);
+      );
+      setErrorExist(true);
       return;
     }
     if (!validateRFC(formData.rfc)) {
-      setErrorMessage("El RFC no es válido."); setErrorExist(true);
+      setErrorMessage("El RFC no es válido.");
+      setErrorExist(true);
       return;
     }
     if (!validateCURP(formData.curp)) {
-      setErrorMessage("El CURP no es válido."); setErrorExist(true);
+      setErrorMessage("El CURP no es válido.");
+      setErrorExist(true);
       return;
     }
     if (!validateAddress(formData.address)) {
-      setErrorMessage("La dirección debe tener al menos 10 caracteres."); setErrorExist(true);
+      setErrorMessage("La dirección debe tener al menos 10 caracteres.");
+      setErrorExist(true);
       return;
     }
     if (!validateZipCode(formData.zip_code)) {
-      setErrorMessage("El código postal no es válido."); setErrorExist(true);
+      setErrorMessage("El código postal no es válido.");
+      setErrorExist(true);
       return;
     }
     if (!validatePhone(formData.phone)) {
-      setErrorMessage("El número de teléfono no es valido."); setErrorExist(true);
+      setErrorMessage("El número de teléfono no es valido.");
+      setErrorExist(true);
       return;
     }
     if (!validateEmail(formData.email)) {
-      setErrorMessage("El correo electrónico no es válido."); setErrorExist(true);
+      setErrorMessage("El correo electrónico no es válido.");
+      setErrorExist(true);
       return;
     }
     if (!validateBankAccount(formData.bank_account)) {
-      setErrorMessage("La cuenta bancaria no es válida."); setErrorExist(true);
+      setErrorMessage("La cuenta bancaria no es válida.");
+      setErrorExist(true);
       return;
     }
     if (!validateFiles(formData)) {
-      setErrorMessage("Debes subir todos los archivos requeridos: CSF, Comprobante de Domicilio y Carátula Bancaria."); setErrorExist(true);
+      setErrorMessage(
+        "Debes subir todos los archivos requeridos: CSF, Comprobante de Domicilio y Carátula Bancaria."
+      );
+      setErrorExist(true);
       return;
     }
     if (!formData.userAssign) {
-      setErrorMessage("Favor de seleccionar un usuario asignado."); setErrorExist(true);
+      setErrorMessage("Favor de seleccionar un usuario asignado.");
+      setErrorExist(true);
       return;
     }
     setErrorExist(false);
@@ -187,8 +183,8 @@ function FilesCreate({ api, isOpen, onClose, onAddFile, setLoading, setLoadingMe
   };
 
   const onSubmit = async () => {
-    setLoadingMessage("Enviando información...")
-    setLoading(true); 
+    setLoadingMessage("Enviando información...");
+    setLoading(true);
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value) data.append(key, value);
@@ -222,12 +218,14 @@ function FilesCreate({ api, isOpen, onClose, onAddFile, setLoading, setLoadingMe
         onClose();
       }
     } catch (error) {
-      setErrorMessage(error.message || "Hubo un error en el servidor. Inténtalo de nuevo.");
+      setErrorMessage(
+        error.message || "Hubo un error en el servidor. Inténtalo de nuevo."
+      );
       setErrorExist(true);
       console.error("Error:", error);
       // alert(error.message);
-    }
-    finally {
+    } finally {
+      console.log("Ended");
       setLoading(false);
     }
   };
@@ -249,7 +247,7 @@ function FilesCreate({ api, isOpen, onClose, onAddFile, setLoading, setLoadingMe
           </div>
         )} */}
         <div className="mb-[-40px]">
-          {(errorMessage && errorExist) && (
+          {errorMessage && errorExist && (
             <div className={styles.error_message}>{errorMessage}</div>
           )}
         </div>

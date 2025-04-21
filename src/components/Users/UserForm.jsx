@@ -3,6 +3,8 @@ import styles from "../../styles";
 
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
+import { validateEmail, validatePassword } from "../../validations";
+
 const UserForm = ({
   initialData = null,
   onSubmit,
@@ -21,8 +23,7 @@ const UserForm = ({
     }
   );
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  
 
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmPassword, setConfirmPassword] = useState(formData.password_hash || "");
@@ -94,7 +95,7 @@ const UserForm = ({
       return;
     }
     // > Invalid email format
-    else if (!initialData && !emailRegex.test(formData.email)) {
+    else if (!initialData && !validateEmail(formData.email)) {
       setErrorMessage("Por favor, introduce un correo electrónico válido.");
       return;
     }
@@ -105,7 +106,7 @@ const UserForm = ({
       return;
     }
     // > Invalid password format
-    else if (!initialData && !passwordRegex.test(formData.password_hash)) {
+    else if (!initialData && !validatePassword(formData.password_hash)) {
       setErrorMessage(
         "La contraseña debe tener al menos 8 caracteres, una mayuscula, un número y un símbolo."
       );

@@ -45,7 +45,7 @@ const SideMenu = () => {
 
   useEffect(() => {
     const currentIndex = menuItems.findIndex(
-      (item) => item.route === location.pathname
+      (item) => location.pathname.startsWith(item.route)
     );
     if (currentIndex !== -1) setActiveIndex(currentIndex);
   }, [location.pathname]);
@@ -71,6 +71,9 @@ const SideMenu = () => {
     navigate(menuItems[index].route);
   };
 
+  console.log("Active Index: ", activeIndex);
+  
+
   return (
     <div className="h-screen w-55 bg-black-gradient text-white drop-shadow-[0_0_10px_rgba(0,0,0,0.5)] flex flex-col">
       <div className="flex flex-col items-center justify-center transform transition-all  group mb-4:">
@@ -91,7 +94,7 @@ const SideMenu = () => {
             key={index}
             className={`flex items-start gap-4 px-4 py-3 rounded-lg transition-all text-base font-lora ${
               activeIndex === index
-                ? "bg-gold-gradient font-bold shadow-mid"
+                ? "bg-gold-gradient font-bold shadow-mid hover:cursor-pointer"
                 : "hover:cursor-pointer menuButton font-medium hover:scale-110 hover:font-bold transform transition-all"
             }`}
             onClick={() => handleMenuItemClick(index)}
