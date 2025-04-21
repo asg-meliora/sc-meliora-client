@@ -50,7 +50,7 @@ const FileInput = ({ name, onChange, file, label }) => (
   </div>
 );
 
-function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
+function FilesCreate({ api, isOpen, onClose, onAddFile, setLoading, setLoadingMessage }) {
   if (!isOpen) return null;
 
   const [formData, setFormData] = useState({
@@ -182,10 +182,13 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
       return;
     }
     setErrorExist(false);
+    setErrorMessage(null);
+    onSubmit(formData);
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async () => {
+    setLoadingMessage("Enviando información...")
+    setLoading(true); 
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value) data.append(key, value);
@@ -219,8 +222,13 @@ function FilesCreate({ api, isOpen, onClose, children, onAddFile }) {
         onClose();
       }
     } catch (error) {
+      setErrorMessage(error.message || "Hubo un error en el servidor. Inténtalo de nuevo.");
+      setErrorExist(true);
       console.error("Error:", error);
       // alert(error.message);
+    }
+    finally {
+      setLoading(false);
     }
   };
 

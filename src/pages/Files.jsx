@@ -13,6 +13,7 @@ const Files = ({ api }) => {
   const [newFiles, setNewFiles] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(true); // Estado de carga
+  const [loadingMessage, setLoadingMessage] = useState("Cargando expedientes...");
 
   useEffect(() => {
     const getClients = async () => {
@@ -66,7 +67,7 @@ const Files = ({ api }) => {
   //console.log('Debug Padre',newFiles);
   return (
     <>
-      <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
+      <AnimatePresence>{loading && <LoadingScreen message={loadingMessage} />}</AnimatePresence>
       
       <div className={styles.blank_page}>
         <div className="w-64">
@@ -97,9 +98,9 @@ const Files = ({ api }) => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             onAddFile={handleNewFile}
-          >
-            <h3 className="text-xl font-bold mb-4">Formulario</h3>
-          </FilesCreate>
+            setLoading={setLoading}
+            setLoadingMessage={setLoadingMessage}
+          />
         </div>
       )}
     </>

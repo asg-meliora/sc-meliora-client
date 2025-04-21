@@ -78,11 +78,6 @@ function FileDetail({ api }) {
     };
   }, [api, id, fileUrl]);
 
-  // Pantalla de carga
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
   // Manejo de errores
   // if (error) {
   //     return (
@@ -104,6 +99,7 @@ function FileDetail({ api }) {
 
   return (
     <>
+      <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
       <div className="flex flex-wrap bg-gray-100">
         <SideMenu className="w-full md:w-1/4" />
         <div className="flex-1 w-full md:w-3/4 m-3 flex flex-col items-center">

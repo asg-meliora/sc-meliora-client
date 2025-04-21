@@ -13,8 +13,8 @@ import styles from "../styles";
 const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  const [loading, setLoading] = useState(false); // State for activating/deactivating send form button
-  const [loadingData, setLoadingData] = useState(true);
+  const [loading, setLoading] = useState(true); // State for activating/deactivating send form button
+  const [loadingMessage, setLoadingMessage] = useState("Cargando usuarios...");
   const [dataBoard, setUsersBoard] = useState({ results: [] });
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] =useState("");
@@ -62,7 +62,7 @@ const Users = ({ api }) => {
       console.log("Error al obtener usuarios:", error);
     }
     finally {
-      setLoadingData(false);
+      setLoading(false);
     }
   }, [api]);
 
@@ -89,7 +89,7 @@ const Users = ({ api }) => {
         new Error("Token no encontrado. Por favor, inicia sesión")
       );
     }
-
+    setLoadingMessage("Enviando información...");
     setLoading(true);
 
     try {
@@ -132,7 +132,7 @@ const Users = ({ api }) => {
 
   return (
     <>
-      <AnimatePresence>{loadingData && <LoadingScreen />}</AnimatePresence>
+      <AnimatePresence>{loading && <LoadingScreen message={loadingMessage} />}</AnimatePresence>
       <div className={styles.blank_page}>
         <div className="w-64">
           <SideMenu />
