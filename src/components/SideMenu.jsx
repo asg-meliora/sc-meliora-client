@@ -71,7 +71,6 @@ const SideMenu = () => {
     navigate(menuItems[index].route);
   };
 
-  console.log("Active Index: ", activeIndex);
   
 
   return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import SideMenu from "../../components/SideMenu";
 import Cookies from "js-cookie";
@@ -28,92 +28,65 @@ function FileDetail({ api }) {
   const [newData, setNewData] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
   const [userAssigns, setuserAssigns] = useState({ results: [] }); //Estado para manejar los usuarios asignados en el dropdown
 
-  //Peticion para ver los usuarios asignados posibles
-  useEffect(() => {
-    const fetchUsers = async (api) => {
-      try {
-        const response = await fetch(`${api}/users/byregnact`, {
-          method: "GET",
-          headers: { "x-access-token": Cookies.get("token") },
-        });
-        if (!response.ok) throw new Error("Failed to fetch users");
-
-        const data = await response.json();
-        setuserAssigns(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    fetchUsers(api);
+  const fetchUsers = useCallback(async () => {
+    const response = await fetch(`${api}/users/byregnact`, {
+      method: "GET",
+      headers: { "x-access-token": Cookies.get("token") },
+    });
+    if (!response.ok) throw new Error("Failed to fetch users");
+    return await response.json();
   }, [api]);
-
-  //Peticion para ver los datos del expediente
-  useEffect(() => {
-    const getClients = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${api}/clients/byclientanduser/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-access-token": Cookies.get("token"),
-          },
-        });
-
-        if (!response.ok) throw new Error("Error al obtener Expediente");
-
-        const data = await response.json();
-        setNewData(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false); // Carga finalizada
-      }
-    };
-
-    getClients();
+  
+  const getClients = useCallback(async () => {
+    const response = await fetch(`${api}/clients/byclientanduser/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": Cookies.get("token"),
+      },
+    });
+    if (!response.ok) throw new Error("Error al obtener Expediente");
+    return await response.json();
+  }, [api, id]);
+  
+  const getFileDetail = useCallback(async () => {
+    const response = await fetch(`${api}/docs/byid/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": Cookies.get("token"),
+      },
+    });
+    if (!response.ok) throw new Error("Error al obtener el Documento");
+    return await response.json();
   }, [api, id]);
 
-  //Peticion para ver los Archivos
   useEffect(() => {
-    const getFileDetail = async () => {
+    const fetchAllData = async () => {
       setLoading(true);
+      setError(null); // limpiar errores anteriores
+  
       try {
-        const response = await fetch(`${api}/docs/byid/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-access-token": Cookies.get("token"),
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Error al obtener el Documento");
-        }
-
-        // const blob = await response.blob(); // Para Manejo De Archivos Pesados
-        // const url = URL.createObjectURL(blob);
-
-        const res = await response.json();
-        console.log(res);
-
-        setFileUrl(res);
+        const [usersData, clientsData, fileData] = await Promise.all([
+          fetchUsers(),
+          getClients(),
+          getFileDetail(),
+        ]);
+  
+        setuserAssigns(usersData);
+        setNewData(clientsData);
+        setFileUrl(fileData);
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false); // Carga finalizada
+        setLoading(false);
       }
     };
-
-    getFileDetail();
-
-    // TODO: Deleted wuth merge, validate
-    // return () => {
-    //   if (fileUrl) {
-    //     URL.revokeObjectURL(fileUrl);
-    //   }
-    // };
-  }, [api, id, fileUrl]);
+  
+    fetchAllData();
+  }, [fetchUsers, getClients, getFileDetail]);
+  
+  
 
   // Manejo de errores
   // if (error) {
@@ -156,13 +129,12 @@ function FileDetail({ api }) {
       alert("Exitosamente exitoso");
     } catch (err) {
       setError(err.message);
-      console.error(err);
     }
   };
 
   //Función para Actulizar el archivo
   const handleFileUpload = async (file, documentId) => {
-    setLoading(true); // Carga finalizada
+    // setLoading(true); // Carga finalizada
     const formData = new FormData();
     formData.append("document", file);
 
@@ -198,12 +170,14 @@ function FileDetail({ api }) {
       setError(err.message);
       alert("Hubo un error al subir el archivo");
     } finally {
-      setLoading(false); // Carga finalizada
+      // setLoading(false); // Carga finalizada
     }
   };
+  
 
   return (
     <>
+      <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
       <div className="flex flex-col md:flex-row bg-gray-100 min-h-screen">
         {/* Sidebar */}
         <SideMenu className="w-full md:w-1/4" />
@@ -221,11 +195,12 @@ function FileDetail({ api }) {
                 data={newData}
                 onSave={handleSaveChanges}
                 userAssigns={userAssigns.results}
+                setLoading={setLoading}
               />
             </div>
 
-            {/* Mensaje de error */}
-            {error && <p className="text-red-500 text-center">{error}</p>}
+            {/* Mensaje de error
+            {error && <p className="text-red-500 text-center">{error}</p>} */}
 
             {/*Detalles de Documento */}
             <section className="bg-blue-500 rounded-lg mt-18 py-10 px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
