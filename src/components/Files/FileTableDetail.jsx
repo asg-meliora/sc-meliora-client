@@ -62,12 +62,12 @@ function FileTableDetail({ data, onSave, userAssigns }) {
             {/* Tabla izquierda */}
             <div className="w-full lg:w-1/2 overflow-x-auto">
                 <h2 className="text-lg font-semibold mb-4">Datos Generales</h2>
-                <table className="w-full border border-gray-300 rounded-lg shadow table-fixed min-w-[300px]">
+                <table className="w-full border border-gray-300 rounded-lg shadow min-w-[300px]" /*table-fixed*/>
                     <tbody>
                         {leftKeys.map((key) => (
                             <tr key={key} className="border-b">
                                 <th className="text-left p-2 bg-gray-300 font-medium whitespace-nowrap">{DiccHead[key].label}</th>
-                                <td className="p-2 max-w-[200px] truncate break-words">
+                                <td className="p-2 max-w-[200px] break-words">
                                     {isEditing ? (
                                         <input
                                             type="text"
