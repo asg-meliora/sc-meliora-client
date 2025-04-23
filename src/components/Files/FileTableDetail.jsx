@@ -66,7 +66,7 @@ function FileTableDetail({ data, onSave, userAssigns }) {
                     <tbody>
                         {leftKeys.map((key) => (
                             <tr key={key} className="border-b">
-                                <th className="text-left p-2 bg-gray-300 font-medium whitespace-nowrap">{DiccHead[key].label}</th>
+                                <th className="text-left p-2 bg-gray-300 font-medium whitespace-nowrap w-1/3">{DiccHead[key].label}</th>
                                 <td className="p-2 max-w-[200px] break-words">
                                     {isEditing ? (
                                         <input
