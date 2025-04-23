@@ -148,13 +148,11 @@ function FileDetail({ api }) {
         }
     };
 
-    const handleFileUpload = async (file, documentId, documentType) => {
+    //Función para Actulizar el archivo
+    const handleFileUpload = async (file, documentId) => {
         setLoading(true); // Carga finalizada
         const formData = new FormData();
         formData.append("document", file);
-        formData.append("document_id", documentId); // Puedes cambiar esto según tu backend
-        formData.append("document_type", documentType); // Puedes cambiar esto según tu backend
-        formData.append("client_id", id);
 
         console.log("Contenido de FormData Antes de:");
         for (let pair of formData.entries()) {
@@ -174,16 +172,16 @@ function FileDetail({ api }) {
 
             const data = await response.json();
             console.log("Archivo subido:", data);
-            alert("Archivo actualizado exitosamente");
+            //alert("Archivo actualizado exitosamente");
 
-            // // Refresca la lista de archivos
-            // const updatedDocs = await fetch(`${api}/docs/byid/${id}`, {
-            //     headers: {
-            //         'x-access-token': Cookies.get('token'),
-            //     }
-            // });
-            // const updatedRes = await updatedDocs.json();
-            // setFileUrl(updatedRes);
+            // Refresca la lista de archivos
+            const updatedDocs = await fetch(`${api}/docs/byid/${id}`, {
+                headers: {
+                    'x-access-token': Cookies.get('token'),
+                }
+            });
+            const updatedRes = await updatedDocs.json();
+            setFileUrl(updatedRes);
         } catch (err) {
             setError(err.message);
             alert("Hubo un error al subir el archivo");
@@ -256,8 +254,7 @@ function FileDetail({ api }) {
                                         onChange={(e) => {
                                             const file = e.target.files[0];
                                             if (file) {
-                                                handleFileUpload(file, urls.document_id, urls.document_type);
-                                                console.log(urls, urls.document_type);
+                                                handleFileUpload(file, urls.document_id);
                                             }
                                         }}
                                     />

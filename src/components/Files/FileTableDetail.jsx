@@ -28,6 +28,7 @@ function FileTableDetail({ data, onSave, userAssigns }) {
 
     const [item, setItem] = useState(data.results); // Estado para los datos
     const [isEditing, setIsEditing] = useState(false); // Estado para determinar si estamos editando
+    const [originalItem, setOriginalItem] = useState(data.results); // Estado para cancelar cambios
 
     // Divide las claves en dos mitades
     const keys = Object.keys(DiccHead);// Orden de los campos
@@ -38,15 +39,21 @@ function FileTableDetail({ data, onSave, userAssigns }) {
 
     // Función para manejar el cambio de valor en un campo
     const handleChange = (e, key) => {
-        console.log(item);
+        console.log(item); //Quitarlo
         setItem({ ...item, [key]: e.target.value });
     };
 
-    // Función para guardar  y preparar los datos modificados para enviarlos al backend
+    // Función para guardar y preparar los datos modificados para enviarlos al backend
     const handleSave = () => {
-        console.log("Datos actualizados:", item);
+        console.log("Datos actualizados:", item); //Quitarlo
         onSave(item); // Envía los datos al padre
         setIsEditing(false); // Desactivar modo edición después de guardar
+    };
+
+    //Función para cancelar cambios
+    const handleCancel = () => {
+        setItem(originalItem);
+        setIsEditing(false);
     };
 
 
@@ -133,6 +140,15 @@ function FileTableDetail({ data, onSave, userAssigns }) {
                 >
                     {isEditing ? "Guardar Cambios" : "Editar Datos"}
                 </button>
+                {/*Boton de cancelar */}        
+                {isEditing && (
+                    <button
+                        onClick={handleCancel}
+                        className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
+                    >
+                        Cancelar
+                    </button>
+                )}
             </div>
         </div>
 
