@@ -9,19 +9,50 @@ import { AnimatePresence } from "framer-motion";
 
 import LoadingScreen from "../LoadingScreen.jsx";
 
+const FormattedDate = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(
+    date.getMonth() + 1
+  )
+    .toString()
+    .padStart(2, "0")}/${date.getFullYear()}`;
+
+  return formattedDate;
+};
+
 function FileDetail({ api }) {
   const { id } = useParams();
-  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
-  const [fileUrl, setFileUrl] = useState(null);
-  const [newFiles, setNewFiles] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
-  const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(true); // Estado de carga
+  const [error, setError] = useState(null); // Estado de error
+  const [fileUrl, setFileUrl] = useState({ urls: [] }); //Estado para manejar las descargas de los archivos
+  const [newData, setNewData] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
+  const [userAssigns, setuserAssigns] = useState({ results: [] }); //Estado para manejar los usuarios asignados en el dropdown
+
+  //Peticion para ver los usuarios asignados posibles
+  useEffect(() => {
+    const fetchUsers = async (api) => {
+      try {
+        const response = await fetch(`${api}/users/byregnact`, {
+          method: "GET",
+          headers: { "x-access-token": Cookies.get("token") },
+        });
+        if (!response.ok) throw new Error("Failed to fetch users");
+
+        const data = await response.json();
+        setuserAssigns(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    fetchUsers(api);
+  }, [api]);
 
   //Peticion para ver los datos del expediente
   useEffect(() => {
     const getClients = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(`${api}/clients/byid/${id}`, {
+        const response = await fetch(`${api}/clients/byclientanduser/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -29,11 +60,10 @@ function FileDetail({ api }) {
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Error al obtener el Documento");
-        }
+        if (!response.ok) throw new Error("Error al obtener Expediente");
+
         const data = await response.json();
-        setNewFiles(data);
+        setNewData(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -44,10 +74,12 @@ function FileDetail({ api }) {
     getClients();
   }, [api, id]);
 
+  //Peticion para ver los Archivos
   useEffect(() => {
     const getFileDetail = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(`${api}/docs/${id}`, {
+        const response = await fetch(`${api}/docs/byid/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -59,9 +91,13 @@ function FileDetail({ api }) {
           throw new Error("Error al obtener el Documento");
         }
 
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        setFileUrl(url);
+        // const blob = await response.blob(); // Para Manejo De Archivos Pesados
+        // const url = URL.createObjectURL(blob);
+
+        const res = await response.json();
+        console.log(res);
+
+        setFileUrl(res);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -71,11 +107,12 @@ function FileDetail({ api }) {
 
     getFileDetail();
 
-    return () => {
-      if (fileUrl) {
-        URL.revokeObjectURL(fileUrl);
-      }
-    };
+    // TODO: Deleted wuth merge, validate
+    // return () => {
+    //   if (fileUrl) {
+    //     URL.revokeObjectURL(fileUrl);
+    //   }
+    // };
   }, [api, id, fileUrl]);
 
   // Manejo de errores
@@ -87,78 +124,165 @@ function FileDetail({ api }) {
   //     );
   // }
 
-  const handlePreviewClick = () => {
-    setIsPreviewVisible(true);
+  // console.log(newData);//Quitarlo
+  // console.log('data', userAssigns);
+
+  const documentTypeMap = {
+    CSF: "CSF",
+    CDD: "Comprobante Domicilio",
+    CDB: "Caratula Bancaria",
   };
 
-  const handleClosePreview = () => {
-    setIsPreviewVisible(false);
+  //Peticion para enviar los nuevos datos del edit
+  const handleSaveChanges = async (updatedData) => {
+    try {
+      const response = await fetch(
+        `${api}/clients/update/byclientanduser/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": Cookies.get("token"),
+          },
+          body: JSON.stringify(updatedData),
+        }
+      );
+
+      if (!response.ok) throw new Error("Error al actualizar los datos");
+
+      const result = await response.json();
+      // setNewFiles({ results: result });
+      console.log(result);
+      alert("Exitosamente exitoso");
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
+    }
   };
 
-  console.log(newFiles); //Quitarlo
+  //Función para Actulizar el archivo
+  const handleFileUpload = async (file, documentId) => {
+    setLoading(true); // Carga finalizada
+    const formData = new FormData();
+    formData.append("document", file);
+
+    console.log("Contenido de FormData Antes de:");
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
+
+    try {
+      const response = await fetch(`${api}/docs/update/${documentId}`, {
+        method: "PUT",
+        headers: {
+          "x-access-token": Cookies.get("token"),
+        },
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Error al subir el archivo");
+
+      const data = await response.json();
+      console.log("Archivo subido:", data);
+      //alert("Archivo actualizado exitosamente");
+
+      // Refresca la lista de archivos
+      const updatedDocs = await fetch(`${api}/docs/byid/${id}`, {
+        headers: {
+          "x-access-token": Cookies.get("token"),
+        },
+      });
+      const updatedRes = await updatedDocs.json();
+      setFileUrl(updatedRes);
+    } catch (err) {
+      setError(err.message);
+      alert("Hubo un error al subir el archivo");
+    } finally {
+      setLoading(false); // Carga finalizada
+    }
+  };
 
   return (
     <>
-      <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
-      <div className="flex flex-wrap bg-gray-100">
+      <div className="flex flex-col md:flex-row bg-gray-100 min-h-screen">
+        {/* Sidebar */}
         <SideMenu className="w-full md:w-1/4" />
-        <div className="flex-1 w-full md:w-3/4 m-3 flex flex-col items-center">
-          <h1 className="text-2xl font-bold mb-4 text-center">
-            Expediente No. {id}
-          </h1>
 
-          {/*Detalles del expediente*/}
-          <div className="w-full">
-            <FilesTableDetail data={newFiles} />
-          </div>
+        {/* Contenido principal */}
+        <div className="flex-1 w-full md:w-3/4 p-4 flex flex-col items-center">
+          <div className="w-full max-w-screen-xl">
+            <h1 className="text-2xl font-bold mb-6 text-center">
+              Expediente No. {id}
+            </h1>
 
-          {/* {error && <p style={{ color: 'red' }}>{error}</p>} */}
-          {!isPreviewVisible && (
-            <div
-              onClick={handlePreviewClick}
-              className="cursor-pointer flex items-center justify-center w-62 h-52 bg-gray-200 rounded-lg"
-            >
-              <SiGoogledocs className="w-26 h-26" />
-              CSF
-            </div>
-          )}
-          {isPreviewVisible && fileUrl && (
-            <div className="w-full flex flex-col items-center">
-              <button
-                onClick={handleClosePreview}
-                className="mb-4 px-4 py-2 bg-red-500 text-white rounded"
-              >
-                Cerrar Previsualización
-              </button>
-              <iframe
-                src={fileUrl}
-                title={`Documento ${id}`}
-                width="100%"
-                height="600px"
+            {/* Detalles del expediente */}
+            <div className="w-full mb-6">
+              <FilesTableDetail
+                data={newData}
+                onSave={handleSaveChanges}
+                userAssigns={userAssigns.results}
               />
             </div>
-          )}
-          {/* {fileUrl && (
-                    <a
-                        href={fileUrl}
-                        download={`Documento_${id}`}
-                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+
+            {/* Mensaje de error */}
+            {error && <p className="text-red-500 text-center">{error}</p>}
+
+            {/*Detalles de Documento */}
+            <section className="bg-blue-500 rounded-lg mt-18 py-10 px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {fileUrl.urls.map((urls) => (
+                <article
+                  key={urls.document_id}
+                  className="flex flex-col items-center justify-center w-full h-54 bg-gray-200 rounded-lg p-4 hover:shadow-lg transition"
+                >
+                  {/* Sección de Información */}
+                  <header className="flex flex-col items-center">
+                    <SiGoogledocs className="w-24 h-24 my-2" />
+                    <h3 className="text-center font-medium">
+                      {documentTypeMap[urls.document_type] ||
+                        urls.document_type}
+                    </h3>
+                    <time
+                      className="text-sm text-gray-600"
+                      dateTime={urls.created_at}
                     >
-                        Descargar Documento
+                      ({FormattedDate(urls.created_at)})
+                    </time>
+                  </header>
+
+                  <footer className="flex gap-3 mt-4">
+                    <a
+                      href={urls.signedUrl}
+                      download={`${urls.document_type}-${id}`}
+                      className="cursor-pointer bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
+                    >
+                      Descargar
                     </a>
-                )} */}
+
+                    {/* Botón para subir nuevo archivo */}
+                    <label
+                      htmlFor={`upload-${urls.document_id}`}
+                      className="cursor-pointer bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
+                    >
+                      Actualizar
+                    </label>
+                    <input
+                      id={`upload-${urls.document_id}`}
+                      type="file"
+                      accept="application/pdf, pdf"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          handleFileUpload(file, urls.document_id);
+                        }
+                      }}
+                    />
+                  </footer>
+                </article>
+              ))}
+            </section>
+          </div>
         </div>
-      </div>
-      <div className="fixed bottom-4 right-4 z-50">
-        <AnimatePresence>
-          {error && (
-            <ErrorToast
-              message={error}
-              onClose={() => setError(null)}
-              variant="x"
-            />
-          )}
-        </AnimatePresence>
       </div>
     </>
   );
