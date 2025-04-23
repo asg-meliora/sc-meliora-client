@@ -47,7 +47,7 @@ const ErrorToast = ({ message, onClose, variant = "text", autoClose = true, dura
         ) : (
           <button
             onClick={onClose}
-            className="text-red-700 font-bold text-xl hover:text-red-900"
+            className="text-red-700 font-bold text-xl hover:text-red-900 hover:cursor-pointer hover:scale-125 transition-all"
           >
             ✕
           </button>
