@@ -1,8 +1,11 @@
+import React from "react";
 import { MdOutlineCancel } from "react-icons/md";
 import styles from "../../styles";
+import { useNavigate } from "react-router-dom";
 
 const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm }) => {
-  const statusMap = ["", "Iniciada", "En Progreso", "Finalizada"];
+  const navigate = useNavigate();
+  const statusMap = ["", "Iniciado", "En Progreso", "Finalizada"];
   const statusColor = [
     "",
     "text-[#eeedeb]",
@@ -25,6 +28,16 @@ const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm }) => {
       currency: "MXN",
     });
   };
+
+  console.log("dataBoard", dataBoard);
+
+  if (!dataBoard || dataBoard.length === 0 || dataBoard.results) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-red-500 text-xl font-semibold">No hay datos disponibles</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -51,24 +64,24 @@ const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm }) => {
             <thead className={styles.table_header}>
               {(invoiceStatus === 1
                 ? [
-                    "ID",
-                    "Tipo",
-                    "Asignado",
-                    "Concepto",
-                    "Ciclo de Vida",
-                    "Subtotal",
-                    "Razón Social",
-                    "Acciones",
-                  ]
+                  "ID",
+                  "Tipo",
+                  "Asignado",
+                  "Concepto",
+                  "Ciclo de Vida",
+                  "Subtotal",
+                  "Razón Social (Receptor)",
+                  "Acciones",
+                ]
                 : [
-                    "ID",
-                    "Tipo",
-                    "Asignado",
-                    "Concepto",
-                    "Ciclo de Vida",
-                    "Subtotal",
-                    "Razón Social",
-                  ]
+                  "ID",
+                  "Tipo",
+                  "Asignado",
+                  "Concepto",
+                  "Ciclo de Vida",
+                  "Subtotal",
+                  "Razón Social (Receptor)",
+                ]
               ).map((title) => (
                 <th key={title} className={styles.table_header_cell}>
                   {title}
@@ -77,23 +90,23 @@ const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm }) => {
             </thead>
             <tbody className={styles.table_body}>
               {dataBoard
-                .filter((invoice) => invoice.status === invoiceStatus)
+                .filter((invoice) => invoice.status === (statusMap[invoiceStatus]))
                 .map((invoice, index) => (
                   <tr
-                    key={invoice.id}
-                    className={`border-b-[2.5px] border-[#b9b9b9]  last:border-none ${
-                      index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
-                    } hover:bg-[#313131] hover:text-white transition-all`}
+                    key={invoice.pipeline_id}
+                    className={`border-b-[2.5px] border-[#b9b9b9]  last:border-none ${index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
+                      } hover:bg-[#313131] hover:text-white transition-all`}
                   >
-                    <td className="p-4 text-center font-semibold">
-                      {invoice.id}
+                    <td className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transform transition-all"
+                      onClick={() => navigate(`/invoices/details/${invoice.pipeline_id}`)}>
+                      {invoice.pipeline_id}
                     </td>
-                    <td className="p-4 text-center">{invoice.type}</td>
-                    <td className="p-4 text-center">{invoice.user_assigned}</td>
+                    <td className="p-4 text-center">{invoice.type_pipeline}</td>
+                    <td className="p-4 text-center">{invoice.assigned_user_sender}</td>
                     <td className="p-4 text-center">{invoice.concept}</td>
                     <td className="p-4 text-center">{dateToDays(invoice.created_at)} día(s)</td>
                     <td className="p-4 text-center">{formatCurrency(invoice.subtotal)}</td>
-                    <td className="p-4 text-center">{invoice.legal_name}</td>
+                    <td className="p-4 text-center">{invoice.receiver_name_rs}</td>
                     {invoiceStatus === 1 && (
                       <td className="p-4 text-center">
                         <button onClick={handleOpenCancelForm} className="text-[#9e824f] hover:text-[#eeb13f] scale-120 hover:cursor-pointer transition-all transform hover:scale-140">

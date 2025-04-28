@@ -55,7 +55,7 @@ const Files = ({ api }) => {
     );
   }
 
-  // Función para manejar la adición de un nuevo archivo
+  // Función para manejar la adición de un nuevo expediente
   const handleNewFile = (newFile) => {
     const updatedResults = Array.isArray(newFile) ? newFile.flat() : [newFile]; // Aplanar el array de resultados, si newFile es un array dentro de results
     setNewFiles((prevFiles) => ({
