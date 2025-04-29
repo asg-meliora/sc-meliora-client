@@ -98,7 +98,7 @@ const CreateInvoiceForm = ({
 
     // Aquí puedes hacer la lógica para enviar los datos al servidor
     try {
-      const response = await fetch(`${api}/pipelines/invoices`, {
+      const response = await fetch(`${api}/invoices`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

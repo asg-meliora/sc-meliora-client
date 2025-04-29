@@ -23,7 +23,7 @@ const Invoices = ({ api }) => {
     setLoading(true); // Carga inicial
 
     try {
-      const response = await fetch(`${api}/pipelines/invoices`, {
+      const response = await fetch(`${api}/invoices`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -84,6 +84,7 @@ const Invoices = ({ api }) => {
             dataBoard={dataBoard}
             invoiceStatus={1}
             handleOpenCancelForm={handleOpenCancelForm}
+            adminStatus={1}
           />
           <InvoicesTable dataBoard={dataBoard} invoiceStatus={2} />
           <InvoicesTable dataBoard={dataBoard} invoiceStatus={3} />

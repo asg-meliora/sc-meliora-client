@@ -74,13 +74,35 @@ const Login = ({ api }) => {
     if (data.error) {
       setErrorMessage(data.error)
     } else {
-      const expireCookie = 1 / 24;
+      const expireCookie = 1 / 24; // el token expira en 1 hora
+
+      // Guardar el token y el role_id en las cookies
       Cookies.set("token", data.token, {
         expires: expireCookie,
         secure: true,
         sameSite: "strict",
       });
-      navigate("/dashboard");
+      Cookies.set("role_id", data.role_id, {
+        expires: expireCookie,
+        secure: true,
+        sameSite: "strict",
+      });
+      Cookies.set("is_active", data.is_active, {
+        expires: expireCookie,
+        secure: true,
+        sameSite: "strict",
+      });
+  
+      // Redirección según role_id
+      if (data.role_id === 1) {
+        navigate("/dashboard"); // Vista de administrador
+      }
+      else if (data.role_id === 2) {
+        navigate(`/user/invoices/${data.user_id}`); // Vista de usuario
+      }
+      else {
+        navigate("*"); // Vista por defecto o común
+      }
     }
   };
 
@@ -137,7 +159,7 @@ const Login = ({ api }) => {
               <label className={`${styles.input_label}`}>Contraseña</label>
               <div className="relative">
                 <input
-                  type={showPassword ? "text" : "password"}	
+                  type={showPassword ? "text" : "password"}
                   value={password_hash}
                   onChange={(e) => setPassword(e.target.value)}
                   className={`${styles.input_field}`}
