@@ -140,6 +140,22 @@
   background: rgb(47,96,170);
   background: radial-gradient(circle, rgba(47,96,170,1) 0%, rgba(15,67,144,1) 45%, rgba(16,36,67,1) 100%);  
 }
+.downloadButton{
+  background: rgb(81, 162, 255);
+  background: radial-gradient(circle, rgb(81, 162, 255) 0%, rgb(43, 127, 255) 40%, rgb(21, 93, 252) 100%);
+}
+.downloadButton:hover{
+  background: rgb(47,96,170);
+  background: radial-gradient(circle, rgb(21, 93, 252) 0%, rgb(20, 71, 230) 45%, rgb(25, 60, 184) 100%);  
+}
+.updateButton{
+  background: rgb(239, 177, 0);
+  background: radial-gradient(circle, rgb(239, 177, 0) 0%, rgb(208, 135, 0) 40%, rgb(166, 95, 0) 100%);
+}
+.updateButton:hover{
+  background: rgb(208, 135, 0);
+  background: radial-gradient(circle, rgb(208, 135, 0) 0%, rgb(166, 95, 0) 45%, rgb(137, 75, 0) 100%);
+}
 
 .logo:hover {
   filter: drop-shadow(0 0 1em #f1b212aa);

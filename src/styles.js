@@ -14,13 +14,21 @@ const styles = {
   button_header_container: "flex flex-col justify-end my-4",
   button_header: "flex items-center gap-2 bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium hover:font-bold px-4 py-2 rounded-lg hover:scale-110 transform transition-all",
  
-  // > Table
+  // > Table General
   table_layout: "w-full px-1 border-collapse overflow-hidden",
   table_container: "overflow-x-auto bg-whiteN p-4",
   table: "w-full border-collapse overflow-hidden rounded-b-xl shadow-mid shad",
   table_header: "bg-radial from-[#dd9206] via-[#835f1c] to-[#6d581d] drop-shadow-[0_0_12px_rgba(0,0,0,0.5)] text-white font-raleway uppercase text-sm",
   table_header_cell: "p-4 text-center",
   table_body: "text-gray-700 font-inter text-sm",
+
+  // > Table Details
+  d_table_container: "flex flex-col lg:flex-row justify-between gap-6 mt-1 ml-2 mr-2 p-4",
+  d_table_column_container: "w-full lg:w-1/2 overflow-x-auto h-full",
+  d_table_heading: "text-2xl font-raleway font-bold mb-2 text-gray-800 text-center",
+  d_table: "w-full h-full table-fixed border-separate border-spacing-0 border-6  border-[#F4F4F7] rounded-md min-w-[300px]",
+  d_table_header: "bg-gray-100 text-gray-700 border-r-6 border-[#F4F4F7] rounded-sm text-md font-bold font-raleway p-3",
+  d_table_data: "p-3 text-sm text-gray-800 border-[#F4F4F7] rounded-sm whitespace-pre-wrap font-inter break-words w-2/3",
 
   // > Form
   form_container: "fixed top-0 right-0 w-full h-full flex justify-center items-center",
