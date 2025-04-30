@@ -86,8 +86,8 @@ const Invoices = ({ api }) => {
             handleOpenCancelForm={handleOpenCancelForm}
             adminStatus={1}
           />
-          <InvoicesTable dataBoard={dataBoard} invoiceStatus={2} />
-          <InvoicesTable dataBoard={dataBoard} invoiceStatus={3} />
+          <InvoicesTable dataBoard={dataBoard} invoiceStatus={2} adminStatus={1}/>
+          <InvoicesTable dataBoard={dataBoard} invoiceStatus={3} adminStatus={1}/>
         </div>
       </div>
 

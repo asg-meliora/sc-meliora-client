@@ -108,7 +108,7 @@ const CreateInvoiceForm = ({
       });
       if (!response.ok) throw new Error("Error al crear la factura");
       const data = await response.json();
-      console.log("Factura creada:", data); //QUITARLO
+      alert("Factura creada correctamente");
     } catch (error) {
       console.error("Error al crear la factura:", error);
     }

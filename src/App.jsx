@@ -22,7 +22,8 @@ import {
 } from "./pages/index";
 
 import {
-  InvoicesUser
+  InvoicesUser,
+  InvoicesUserDetails
 } from "./pagesUser/indexUser"
 
 const apiLink = "http://localhost:3001/api"; //import.meta.env.VITE_API_URL ||
@@ -40,7 +41,8 @@ const router = createBrowserRouter(
     <Route path="/users" element={<ProtectedRoute allowedRoles={[1]}> <Users api={apiLink}/> </ProtectedRoute>} />,
 
     //Rutas de Usuario
-    <Route path="/user/invoices/:id" element={<ProtectedRoute allowedRoles={[2]}> <InvoicesUser api={apiLink}/> </ProtectedRoute>} />,
+    <Route path="/user/invoices/:userId" element={<ProtectedRoute allowedRoles={[2]}> <InvoicesUser api={apiLink}/> </ProtectedRoute>} />,
+    <Route path="/user/invoices/:userId/details/:invoiceId" element={<ProtectedRoute allowedRoles={[2]}> <InvoicesUserDetails api={apiLink}/> </ProtectedRoute>} />,
 
     <Route path="*" element={<NotFound />} />,
   ])

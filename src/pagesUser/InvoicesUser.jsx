@@ -8,15 +8,17 @@ import SideMenu from "../components/SideMenu";
 import InvoicesTable from "../components/Invoices/InvoicesTable";
 
 function InvoicesUser({ api }) {
-  const { id } = useParams();
+  const { userId } = useParams();
   const [dataBoard, setDataBoard] = useState({ results: [] });
   const [loading, setLoading] = useState(false);
-  
+
+  console.log("ID de usuario:", userId); // Verifica el ID del usuario
+
   const getPipelines = useCallback(async () => {
     setLoading(true); // Carga inicial
 
     try {
-      const response = await fetch(`${api}/invoices/user/byid/${id}`, {
+      const response = await fetch(`${api}/invoices/user/byid/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -40,8 +42,10 @@ function InvoicesUser({ api }) {
     getPipelines();
   }, [getPipelines]);
 
+  console.log("DataBoard:", dataBoard); // Verifica el contenido de dataBoard
   return (
     <div>
+      <div>InvoicesUser {userId}</div>
       <div className={styles.blank_page}>
         <div className="w-64">
           <SideMenu />
@@ -54,14 +58,12 @@ function InvoicesUser({ api }) {
           <InvoicesTable
             dataBoard={dataBoard}
             invoiceStatus={1}
-            userStatus={0}
+            adminStatus={0}
           />
-          <InvoicesTable dataBoard={dataBoard} invoiceStatus={2} />
-          <InvoicesTable dataBoard={dataBoard} invoiceStatus={3} />
+          <InvoicesTable dataBoard={dataBoard} invoiceStatus={2} adminStatus={0}/>
+          <InvoicesTable dataBoard={dataBoard} invoiceStatus={3} adminStatus={0}/>
         </div>
       </div>
-
-      <div>InvoicesUser {id}</div>
     </div>
 
   )

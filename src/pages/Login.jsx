@@ -92,6 +92,11 @@ const Login = ({ api }) => {
         secure: true,
         sameSite: "strict",
       });
+      Cookies.set("user_id", data.user_id, {
+        expires: expireCookie,
+        secure: true,
+        sameSite: "strict",
+      }); 
   
       // Redirección según role_id
       if (data.role_id === 1) {

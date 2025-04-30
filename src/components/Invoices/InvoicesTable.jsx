@@ -2,11 +2,12 @@ import React from "react";
 import { MdOutlineCancel } from "react-icons/md";
 import styles from "../../styles";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm, adminStatus }) => {
   const navigate = useNavigate();
 
-  const statusMap = ["", "Iniciado", "En Progreso", "Finalizada"];
+  const statusMap = ["", "Iniciado", "En proceso", "Finalizada"];
   const statusColor = ["", "text-[#eeedeb]", "text-[#d2b72a]", "text-[#89e089]"];
 
   //Manejo empty data, checa si dataBoard es un array, si no lo es, lo convierte en un array vacio
@@ -37,11 +38,14 @@ const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm, adminSt
   // TODO: Format subtotal to currency
   const formatCurrency = (value) => Number(value).toLocaleString("es-MX", { style: "currency", currency: "MXN" });
 
+  // Manejo de la navegación al hacer clic en una fila de la tabla
+  // Si el rol es admin, navega a la ruta de admin, si no, navega a la ruta de usuario
   const handleNavigate = (pipelineId) => {
     if (adminStatus === 1) {
       navigate(`/invoices/details/${pipelineId}`);
     } else {
-      navigate('/');
+      const userId = Cookies.get("user_id");
+      navigate(`/user/invoices/${userId}/details/${pipelineId}`);
     }
   };
 
@@ -98,6 +102,7 @@ const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm, adminSt
                   <td className="p-4 text-center">{dateToDays(invoice.created_at)}</td>
                   <td className="p-4 text-center">{formatCurrency(invoice.subtotal)}</td>
                   <td className="p-4 text-center">{invoice.receiver_name_rs}</td>
+                  {/*Botón de cancelar, Si el estado de la factura es "Iniciado" y el rol es admin, */}
                   {invoiceStatus === 1 && adminStatus === 1 && (
                     <td className="p-4 text-center">
                       <button
@@ -113,7 +118,7 @@ const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm, adminSt
             ) : (
               // Si no hay facturas, muestra un mensaje
               <tr>
-                <td colSpan={columns.length} className="text-center py-10 text-gray-600 font-semibold">
+                <td colSpan={columns.length} className="text-center py-5 text-gray-600 font-semibold">
                   No hay datos disponibles.
                 </td>
               </tr>
