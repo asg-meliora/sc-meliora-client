@@ -110,13 +110,13 @@ function FileTableDetail({
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
                     className={`${styles.d_table_header} ${
                       index === leftKeys.length - 1 ? "" : "border-b-6"
-                    } w-1/4`}
+                    } w-1/3 sm:w-1/4`}
                   >
                     {DiccHead[key].label}
                   </th>
                   <td
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_data} ${
+                    className={`${styles.d_table_data} ${isEditing ? "" : ""} ${
                       index === leftKeys.length - 1 ? "" : "border-b-6"
                     }`}
                   >
@@ -125,7 +125,9 @@ function FileTableDetail({
                         type="text"
                         value={item[key] || ""}
                         onChange={(e) => handleChange(e, key)}
-                        className={`w-full px-3 py-2 border border-[#F4F4F7] rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                        // className={`${styles.d_table_input}`}
+                        className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105  transition-all  px-3 py-2 focus:outline-none`}
+
                       />
                     ) : (
                       item[key] ?? "—"
@@ -159,7 +161,7 @@ function FileTableDetail({
                     }`}
                   >
                     {key === "created_at" ? (
-                      FormattedDate(item[key])
+                      <p>{FormattedDate(item[key])}</p>
                     ) : isEditing && key === "user_name" ? (
                       <select
                         onChange={(e) => handleChange(e, "user_name")}
@@ -184,7 +186,9 @@ function FileTableDetail({
                         type="text"
                         value={item[key] || ""}
                         onChange={(e) => handleChange(e, key)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        // className={`${styles.d_table_input}`}
+                        className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105  transition-all  px-3 py-2 focus:outline-none`}
+
                       />
                     ) : (
                       item[key] || "—"
@@ -202,13 +206,13 @@ function FileTableDetail({
         <div className="flex gap-4 my-[-10px] justify-center items-center">
           <button
             onClick={handleSave}
-            className="px-5 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white font-medium shadow transition"
+            className="px-5 py-2 rounded-xl confirmButton text-white font-medium font-inter shadow-md shadow-green-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
           >
             Guardar Cambios
           </button>
           <button
             onClick={handleCancel}
-            className="px-5 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white font-medium shadow transition"
+            className="px-5 py-2 rounded-xl logoutButton text-white font-medium font-inter shadow-md shadow-red-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
           >
             Cancelar
           </button>

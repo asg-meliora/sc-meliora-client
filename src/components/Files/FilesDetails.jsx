@@ -5,12 +5,12 @@ import Cookies from "js-cookie";
 import { SiGoogledocs } from "react-icons/si";
 import FilesTableDetail from "./FileTableDetail.jsx";
 import ErrorToast from "../ErrorToast.jsx";
+import SuccessToast from "../SuccessToast.jsx";
 import { AnimatePresence } from "framer-motion";
 import { FaEdit } from "react-icons/fa";
 
 import LoadingScreen from "../LoadingScreen.jsx";
 import styles from "../../styles.js";
-import { style } from "framer-motion/client";
 
 const FormattedDate = (dateString) => {
   const date = new Date(dateString);
@@ -31,6 +31,8 @@ function FileDetail({ api }) {
   const [newData, setNewData] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
   const [userAssigns, setuserAssigns] = useState({ results: [] }); //Estado para manejar los usuarios asignados en el dropdown
   const [isEditing, setIsEditing] = useState(false); // Estado para determinar si estamos editando
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const getUsers = useCallback(async () => {
     const response = await fetch(`${api}/users/byregnact`, {
@@ -128,9 +130,12 @@ function FileDetail({ api }) {
       const result = await response.json();
       // setNewFiles({ results: result });
       console.log(result);
-      alert("Exitosamente exitoso");
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsEditing(false); // Finaliza la edición
+      setSuccess(true);
+      setSuccessMessage("Datos actualizados exitosamente");
     }
   };
 
@@ -172,7 +177,8 @@ function FileDetail({ api }) {
       setError(err.message);
       alert("Hubo un error al subir el archivo");
     } finally {
-      // setLoading(false); // Carga finalizada
+      setSuccessMessage("Archivo actualizado exitosamente");
+      setSuccess(true);
     }
   };
 
@@ -189,17 +195,16 @@ function FileDetail({ api }) {
           <div className={styles.header_container}>
             <h2 className={styles.heading_page}>{newData.results.name_rs}</h2>
             {/* <h2 className={styles.heading_page}>Expediente No. {id}</h2> */}
-            {isEditing && (
+            {!isEditing && (
               <div className={styles.button_header_container}>
-              <button
-                className={styles.button_header}
-                onClick={() => setIsEditing(true)}
-              >
-                <FaEdit /> Editar Datos
-              </button>
-            </div>
+                <button
+                  className={styles.button_header}
+                  onClick={() => setIsEditing(true)}
+                >
+                  <FaEdit /> Editar Datos
+                </button>
+              </div>
             )}
-            
           </div>
           {/* Detalles del expediente */}
           <div className="w-full mb-6">
@@ -214,18 +219,18 @@ function FileDetail({ api }) {
           </div>
 
           {/*Detalles de Documento */}
-          <section className="bg-white shadow-sm border border-gray-200 w-[75%] mx-auto rounded-lg py-10 px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
+          <section className="bg-white shadow-sm border border-gray-200 w-[80%] mx-auto rounded-lg py-10 px-5 grid grid-cols-1 lg:grid-cols-3 gap-6 place-items-center grid-cols-auto justify-items-center">
             {fileUrl.urls.map((urls) => (
               <article
                 key={urls.document_id}
                 style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                className="flex flex-col items-center justify-center w-[90%] max-w-xs min-h-[17rem] bg-whiteN rounded-lg"
+                className="flex flex-col items-center justify-center w-[90%] max-w-xd  bg-whiteN rounded-lg"
               >
                 {/* Contenido con padding */}
                 <div className="w-full px-4 py-4 flex flex-col items-center">
                   <header className="flex flex-col items-center">
                     <SiGoogledocs className="w-24 h-24 my-2 text-gray-800" />
-                    <h3 className="text-center font-semibold font-inter text-lg text-gray-800">
+                    <h3 className="text-center font-semibold font-inter text-lg text-gray-800 md:text-base">
                       {documentTypeMap[urls.document_type] ||
                         urls.document_type}
                     </h3>
@@ -240,18 +245,18 @@ function FileDetail({ api }) {
 
                 <hr className="w-full border-t-6 border-white" />
 
-                <div className="w-full  px-4 mt-4 flex gap-3 justify-center">
+                <div className="w-full px-4 mt-4 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center gap-3 text-center justify-center">
                   <a
                     href={urls.signedUrl}
                     download={`${urls.document_type}-${id}`}
-                    className="cursor-pointer downloadButton text-white px-3 py-1 rounded  text-base font-inter shadow-md shadow-blue-700/60 hover:scale-110 transition-all"
+                    className="cursor-pointer downloadButton text-white px-3 py-1 rounded font-medium font-inter w-full shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all"
                   >
                     Descargar
                   </a>
 
                   <label
                     htmlFor={`upload-${urls.document_id}`}
-                    className="cursor-pointer updateButton text-white px-3 py-1 rounded text-base font-inter shadow-md shadow-yellow-700/40 hover:scale-110 transition-all"
+                    className="cursor-pointer updateButton text-white px-3 py-1 rounded font-medium font-inter w-full shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
                   >
                     Actualizar
                   </label>
@@ -268,6 +273,7 @@ function FileDetail({ api }) {
                     }}
                   />
                 </div>
+                <div className="mb-4"></div>
               </article>
             ))}
           </section>
@@ -279,6 +285,15 @@ function FileDetail({ api }) {
             <ErrorToast
               message={error}
               onClose={() => setError(null)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {success && (
+            <SuccessToast
+              message={successMessage}
+              onClose={() => setSuccess(false)}
               variant="x"
             />
           )}

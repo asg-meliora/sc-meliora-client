@@ -7,10 +7,10 @@ const styles = {
   input_icon: "absolute top-3 right-3 text-gray-600 text-xl align self-center",
 
   // > General
-  blank_page: "flex bg-whiteN min-h-screen",
+  blank_page: "flex bg-white sm:bg-[#F4F4F7] min-h-screen",
   page_container: "w-full flex flex-col flex-grow",
   header_container: "flex items-center justify-between bg-black-gradient h-20 px-6 py-1 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]",
-  heading_page: "text-4xl font-cinzel font-medium heading-gradient",
+  heading_page: "text-lg text-center sm:text-xl md:text-3xl lg:text-3xl :text-4xl sm:text-start font-cinzel font-medium heading-gradient",
   button_header_container: "flex flex-col justify-end my-4",
   button_header: "flex items-center gap-2 bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium hover:font-bold px-4 py-2 rounded-lg hover:scale-110 transform transition-all",
  
@@ -27,8 +27,9 @@ const styles = {
   d_table_column_container: "w-full lg:w-1/2 overflow-x-auto h-full",
   d_table_heading: "text-2xl font-raleway font-bold mb-2 text-gray-800 text-center",
   d_table: "w-full h-full table-fixed border-separate border-spacing-0 border-6  border-[#F4F4F7] rounded-md min-w-[300px]",
-  d_table_header: "bg-gray-100 text-gray-700 border-r-6 border-[#F4F4F7] rounded-sm text-md font-bold font-raleway p-3",
+  d_table_header: "bg-gray-100 text-gray-700 border-r-6 border-[#F4F4F7] rounded-sm text-sm md:text-base font-bold font-raleway p-3",
   d_table_data: "p-3 text-sm text-gray-800 border-[#F4F4F7] rounded-sm whitespace-pre-wrap font-inter break-words w-2/3",
+  d_table_input: "w-full p-2 rounded-md bg-linear-0 from-[#ffffff] via-[#eeeeee] to-[#ffffff] border border-gray-300 shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-blue-400 focus:scale-105 focus:mt-0.5 transition-all  px-3 py-2 text-sm shadow-sm focus:outline-none",
 
   // > Form
   form_container: "fixed top-0 right-0 w-full h-full flex justify-center items-center",

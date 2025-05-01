@@ -73,7 +73,7 @@ function FilesTable({ newFiles }) {
                   <td className="p-4 text-center">{item.phone}</td>
                   <td className="p-4 text-center">{item.email}</td>
                   {/* <td className="p-4 text-center">{item.zip_code}</td> */}
-                  <td className="p-4 text-center">{item.bank_account}</td>{" "}
+                  <td className="p-4 text-center">{item.bank_account}</td>
                   <td className="p-4 text-center">
                     <FormattedDate dateString={item.created_at} />
                   </td>
