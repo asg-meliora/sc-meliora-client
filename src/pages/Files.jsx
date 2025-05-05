@@ -7,13 +7,18 @@ import LoadingScreen from "../components/LoadingScreen";
 import styles from "../styles";
 import { FaPlus } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
+import SideBar from "../components/SideBar";
+
 
 const Files = ({ api }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); //Estado para manejar el status del modal
   const [newFiles, setNewFiles] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(true); // Estado de carga
-  const [loadingMessage, setLoadingMessage] = useState("Cargando expedientes...");
+  const [loadingMessage, setLoadingMessage] = useState(
+    "Cargando expedientes..."
+  );
+  const [fullSideBar, setFullSideBar] = useState(false);
 
   useEffect(() => {
     const getClients = async () => {
@@ -67,11 +72,17 @@ const Files = ({ api }) => {
   //console.log('Debug Padre',newFiles);
   return (
     <>
-      <AnimatePresence>{loading && <LoadingScreen message={loadingMessage} />}</AnimatePresence>
-      
+      <AnimatePresence>
+        {loading && <LoadingScreen message={loadingMessage} />}
+      </AnimatePresence>
+
       <div className={styles.blank_page}>
-        <div className="w-64">
-          <SideMenu />
+        <div className="w-16">
+          {fullSideBar ? (
+            <SideMenu setFullSideBar={setFullSideBar} />
+          ) : (
+            <SideBar setFullSideBar={setFullSideBar} />
+          )}
         </div>
 
         <div className={styles.page_container}>

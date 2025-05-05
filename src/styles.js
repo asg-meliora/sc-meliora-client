@@ -17,7 +17,7 @@ const styles = {
   // > Table General
   table_layout: "w-full px-1 border-collapse overflow-hidden",
   table_container: "overflow-x-auto bg-whiteN p-4",
-  table: "w-full border-collapse overflow-hidden rounded-b-xl shadow-mid shad",
+  table: "w-full border-collapse overflow-hidden rounded-b-xl shadow-mid",
   table_header: "bg-radial from-[#dd9206] via-[#835f1c] to-[#6d581d] drop-shadow-[0_0_12px_rgba(0,0,0,0.5)] text-white font-raleway uppercase text-sm",
   table_header_cell: "p-4 text-center",
   table_body: "text-gray-700 font-inter text-sm",

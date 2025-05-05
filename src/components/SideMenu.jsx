@@ -13,6 +13,7 @@ import { IoFileTrayFullOutline } from "react-icons/io5";
 import { RiLogoutBoxLine } from "react-icons/ri";
 
 import lion from "../assets/lion.webp";
+import styles from "../styles";
 
 const menuItems = [
   {
@@ -38,14 +39,14 @@ const menuItems = [
   },
 ];
 
-const SideMenu = () => {
+const SideMenu = ({ setFullSideBar }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    const currentIndex = menuItems.findIndex(
-      (item) => location.pathname.startsWith(item.route)
+    const currentIndex = menuItems.findIndex((item) =>
+      location.pathname.startsWith(item.route)
     );
     if (currentIndex !== -1) setActiveIndex(currentIndex);
   }, [location.pathname]);
@@ -63,7 +64,7 @@ const SideMenu = () => {
   /**
    * Handles the click event for a menu item, using the active index and navigating to the specified route
    * @function handleMenuItemClick
-   * @param {number} index - The index of the clicked menu item 
+   * @param {number} index - The index of the clicked menu item
    * @returns {void} - Sets active index and navigates to index page
    */
   const handleMenuItemClick = (index) => {
@@ -71,10 +72,14 @@ const SideMenu = () => {
     navigate(menuItems[index].route);
   };
 
-  
-
   return (
-    <div className="h-screen w-55 bg-black-gradient text-white drop-shadow-[0_0_10px_rgba(0,0,0,0.5)] flex flex-col">
+    <div className="absolute z-20 h-full w-55 bg-black-gradient text-white drop-shadow-[0_0_10px_rgba(0,0,0,0.5)] flex flex-col">
+      <button
+        onClick={() => setFullSideBar(false)}
+        className={`absolute z-50 top-2 right-2 text-gray-300 hover:text-white hover:font-extrabold text-2xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all`}
+      >
+        ✕
+      </button>
       <div className="flex flex-col items-center justify-center transform transition-all  group mb-4:">
         <div className="flex flex-col items-center justify-center p-4 rounded-lg transition-all group-hover:scale-120 group-hover:drop-shadow-[0_0_0.75rem_rgba(240,188,58,0.90)]">
           <img
