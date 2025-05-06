@@ -7,17 +7,6 @@ import { SlOptionsVertical } from "react-icons/sl";
 function FilesTable({ newFiles }) {
   const navigate = useNavigate();
 
-  // "client_id": 6,
-  // "name_rs": "exampleRS5",
-  // "rfc": "GFC435",
-  // "curp": "LPKI2RTY5",
-  // "address": "calle5",
-  // "zip_code": "904504",
-  // "phone": "7771232334",
-  // "email": "exapmle2cliente@ex.com",
-  // "bank_account": "0129301923"
-  // "created_at": "2025-03-25T00:57:41.000Z"
-
   const FormattedDate = ({ dateString }) => {
     const date = new Date(dateString);
     const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(
@@ -34,7 +23,9 @@ function FilesTable({ newFiles }) {
       <div className={styles.table_layout}>
         <div className={styles.table_container}>
           <table className={`${styles.table} rounded-2xl`}>
-            <thead className={styles.table_header}>
+            <thead
+              className={styles.table_header}
+            >
               <tr>
                 {[
                   "Razón Social",
@@ -62,7 +53,7 @@ function FilesTable({ newFiles }) {
                   } hover:bg-[#313131] hover:text-white transition-all`}
                 >
                   <td
-                    className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transform transition-all"
+                    className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transition-all"
                     onClick={() => navigate(`/files/details/${item.client_id}`)}
                   >
                     {item.name_rs}

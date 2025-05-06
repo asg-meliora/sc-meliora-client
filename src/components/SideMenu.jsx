@@ -73,7 +73,7 @@ const SideMenu = ({ setFullSideBar }) => {
   };
 
   return (
-    <div className="absolute z-20 h-full w-55 bg-black-gradient text-white drop-shadow-[0_0_10px_rgba(0,0,0,0.5)] flex flex-col">
+    <div className="fixed z-20 h-full bg-black-gradient text-white drop-shadow-[0_0_10px_rgba(0,0,0,0.5)] flex flex-col">
       <button
         onClick={() => setFullSideBar(false)}
         className={`absolute z-50 top-2 right-2 text-gray-300 hover:text-white hover:font-extrabold text-2xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all`}

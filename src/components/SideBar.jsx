@@ -7,7 +7,6 @@ import { MdOutlineDashboard, MdMenu, MdClose } from "react-icons/md";
 import { IoFileTrayFullOutline } from "react-icons/io5";
 import { RiLogoutBoxLine } from "react-icons/ri";
 
-import lion from "../assets/lion.webp";
 
 const menuItems = [
   { name: "Dashboard", route: "/dashboard", icon: <MdOutlineDashboard /> },
@@ -61,6 +60,7 @@ const SideBar = ({ setFullSideBar }) => {
           >
             <MdMenu />
           </button>
+					<div className="h-24"></div>
           {menuItems.map((item, index) => (
             <div key={index} className="group relative flex items-center">
               <button

@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import LoadingScreen from "../components/LoadingScreen";
 import styles from "../styles";
 import { FaPlus } from "react-icons/fa";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence} from "framer-motion";
 import SideBar from "../components/SideBar";
 
 
@@ -42,14 +42,7 @@ const Files = ({ api }) => {
 
     getClients();
   }, [api]);
-  // vacío, se ejecuta cada vez que renderiza el componente
-  // [], se ejecuta la primera vez que renderiza el componente
-  // [estado], se ejecuta solo cuando se actualice el estado, sin bucle
-
-  //Pantalla de Carga
-  // if (loading) {
-  //   return <LoadingScreen />;
-  // }
+  
 
   // Manejo de errores
   if (error) {
