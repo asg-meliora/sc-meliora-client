@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import SideMenu from "../components/SideMenu";
 import FilesTable from "../components/Files/FilesTable";
 import FilesCreate from "../components/Files/FilesCreate";
 import Cookies from "js-cookie";
@@ -7,7 +6,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import styles from "../styles";
 import { FaPlus } from "react-icons/fa";
 import { AnimatePresence} from "framer-motion";
-import SideBar from "../components/SideBar";
+import Navbar from "../components/Navbar";
 
 
 const Files = ({ api }) => {
@@ -18,8 +17,7 @@ const Files = ({ api }) => {
   const [loadingMessage, setLoadingMessage] = useState(
     "Cargando expedientes..."
   );
-  const [fullSideBar, setFullSideBar] = useState(false);
-
+  
   useEffect(() => {
     const getClients = async () => {
       try {
@@ -70,13 +68,7 @@ const Files = ({ api }) => {
       </AnimatePresence>
 
       <div className={styles.blank_page}>
-        <div className="w-16">
-          {fullSideBar ? (
-            <SideMenu setFullSideBar={setFullSideBar} />
-          ) : (
-            <SideBar setFullSideBar={setFullSideBar} />
-          )}
-        </div>
+        <Navbar />
 
         <div className={styles.page_container}>
           <div className={styles.header_container}>

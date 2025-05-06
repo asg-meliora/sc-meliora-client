@@ -1,12 +1,12 @@
 import React from "react";
 
-import SideMenu from "../components/SideMenu";
+import Navbar from "../components/Navbar";
 
 const Dashboard = () => {
   return (
     <>
       <div className="flex">
-        <SideMenu />
+        <Navbar />
         Dashboard
       </div>
     </>

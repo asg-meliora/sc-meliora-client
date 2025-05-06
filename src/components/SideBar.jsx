@@ -60,7 +60,7 @@ const SideBar = ({ setFullSideBar }) => {
           >
             <MdMenu />
           </button>
-					<div className="h-24"></div>
+					{/* <div className="h-24"></div> */}
           {menuItems.map((item, index) => (
             <div key={index} className="group relative flex items-center">
               <button

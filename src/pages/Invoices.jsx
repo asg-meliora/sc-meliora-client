@@ -1,5 +1,4 @@
 import { useState } from "react";
-import SideMenu from "../components/SideMenu";
 import styles from "../styles";
 import { FaPlus } from "react-icons/fa";
 
@@ -8,6 +7,7 @@ import { invoicesData } from "../constants";
 
 import CreateInvoiceForm from "../components/Invoices/CreateInvoiceForm";
 import CancelInvoiceForm from "../components/Invoices/CancelInvoiceForm";
+import Navbar from "../components/Navbar";
 
 const Invoices = ({ api }) => {
   const [dataBoard, setDataBoard] = useState(invoicesData);
@@ -26,9 +26,7 @@ const Invoices = ({ api }) => {
   return (
     <>
       <div className={styles.blank_page}>
-        <div className="w-64">
-          <SideMenu />
-        </div>
+        <Navbar />
 
         <div className={styles.page_container}>
           <div className={styles.header_container}>

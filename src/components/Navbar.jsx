@@ -1,10 +1,19 @@
-import SideBar from "./SideBar"
-import SideMenu from "./SideMenu"
+import SideBar from "./SideBar";
+import SideMenu from "./SideMenu";
+import { useState } from "react";
 
 const Navbar = () => {
-  return (
-    <div>Navbar</div>
-  )
-}
+  const [fullSideBar, setFullSideBar] = useState(false);
 
-export default Navbar
+  return (
+    <div className="w-16">
+      {fullSideBar ? (
+        <SideMenu setFullSideBar={setFullSideBar} />
+      ) : (
+        <SideBar setFullSideBar={setFullSideBar} />
+      )}
+    </div>
+  );
+};
+
+export default Navbar;

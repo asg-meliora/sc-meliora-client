@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import SideMenu from "../components/SideMenu";
 import UserForm from "../components/Users/UserForm";
 import UsersTable from "../components/Users/UsersTable";
 import { FaPlus } from "react-icons/fa";
@@ -9,6 +8,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import { AnimatePresence } from "framer-motion";
 
 import styles from "../styles";
+import Navbar from "../components/Navbar";
 
 const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
@@ -134,9 +134,7 @@ const Users = ({ api }) => {
     <>
       <AnimatePresence>{loading && <LoadingScreen message={loadingMessage} />}</AnimatePresence>
       <div className={styles.blank_page}>
-        <div className="w-64">
-          <SideMenu />
-        </div>
+        <Navbar />
 
         <div className={styles.page_container}>
           <div className={styles.header_container}>
