@@ -4,10 +4,10 @@ import styles from "../../styles";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm, adminStatus }) => {
+const InvoicesTable = ({ dataBoard, invoiceStatus, handleAnnulledForm, adminStatus }) => {
   const navigate = useNavigate();
 
-  const statusMap = ["", "Iniciado", "En proceso", "Finalizada"];
+  const statusMap = ["", "Iniciado", "En proceso", "Terminado"];
   const statusColor = ["", "text-[#eeedeb]", "text-[#d2b72a]", "text-[#89e089]"];
 
   //Manejo empty data, checa si dataBoard es un array, si no lo es, lo convierte en un array vacio
@@ -16,14 +16,7 @@ const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm, adminSt
   //Filtra las facturas para cada pipeline
   const filteredInvoices = invoices.filter(invoice => invoice.status === statusMap[invoiceStatus]);
 
-  const columns = [
-    "ID",
-    "Tipo",
-    "Asignado",
-    "Concepto",
-    "Ciclo de Vida",
-    "Subtotal",
-    "Razón Social (Receptor)",
+  const columns = ["ID", "Tipo", "Asignado", "Concepto", "Ciclo de Vida", "Subtotal", "Razón Social (Receptor)",
     ...(invoiceStatus === 1 && adminStatus === 1 ? ["Acciones"] : [])
   ];
 
@@ -106,7 +99,7 @@ const InvoicesTable = ({ dataBoard, invoiceStatus, handleOpenCancelForm, adminSt
                   {invoiceStatus === 1 && adminStatus === 1 && (
                     <td className="p-4 text-center">
                       <button
-                        onClick={handleOpenCancelForm}
+                        onClick={() => handleAnnulledForm(invoice.pipeline_id)}
                         className="text-[#9e824f] hover:text-[#eeb13f] scale-120 hover:cursor-pointer transition-all transform hover:scale-140"
                       >
                         <MdOutlineCancel size={18} />

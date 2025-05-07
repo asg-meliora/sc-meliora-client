@@ -45,7 +45,6 @@ function InvoicesUser({ api }) {
   console.log("DataBoard:", dataBoard); // Verifica el contenido de dataBoard
   return (
     <div>
-      <div>InvoicesUser {userId}</div>
       <div className={styles.blank_page}>
         <div className="w-64">
           <SideMenu />

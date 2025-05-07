@@ -6,6 +6,7 @@ const CreateInvoiceForm = ({
   api,
   setCreateShowForm,
   serverErrorMessage = null,
+  onAddInvoice,
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
@@ -80,7 +81,6 @@ const CreateInvoiceForm = ({
       if (!response.ok) throw new Error("Error al obtener clientes");
       const data = await response.json();
       setClients(data);
-      console.log("Clientes:", data); //QUITARLO
     } catch (error) {
       console.log("Error al obtener usuaros:", error);
     }
@@ -95,7 +95,6 @@ const CreateInvoiceForm = ({
     e.preventDefault();
     console.log("Form data:", formData); //QUITARLO
     
-
     // Aquí puedes hacer la lógica para enviar los datos al servidor
     try {
       const response = await fetch(`${api}/invoices`, {
@@ -108,11 +107,11 @@ const CreateInvoiceForm = ({
       });
       if (!response.ok) throw new Error("Error al crear la factura");
       const data = await response.json();
-      alert("Factura creada correctamente");
+      onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
+      //alert(`Factura creada correctamente ${data.results.insertId}`);
     } catch (error) {
       console.error("Error al crear la factura:", error);
     }
-
 
     // TODO: Validate Invoice Concept data
     setCreateShowForm(false);
