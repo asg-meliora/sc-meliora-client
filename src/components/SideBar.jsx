@@ -7,7 +7,6 @@ import { MdOutlineDashboard, MdMenu, MdClose } from "react-icons/md";
 import { IoFileTrayFullOutline } from "react-icons/io5";
 import { RiLogoutBoxLine } from "react-icons/ri";
 
-
 const menuItems = [
   { name: "Dashboard", route: "/dashboard", icon: <MdOutlineDashboard /> },
   { name: "Expedientes", route: "/files", icon: <FaRegFileAlt /> },
@@ -60,7 +59,7 @@ const SideBar = ({ setFullSideBar }) => {
           >
             <MdMenu />
           </button>
-					{/* <div className="h-24"></div> */}
+          {/* <div className="h-24"></div> */}
           {menuItems.map((item, index) => (
             <div key={index} className="group relative flex items-center">
               <button
@@ -78,7 +77,7 @@ const SideBar = ({ setFullSideBar }) => {
                  bg-white text-black px-3 py-1 rounded-md shadow-lg 
                  whitespace-nowrap text-base z-[999] 
                  opacity-0 group-hover:opacity-100 
-                 transition-opacity duration-500"
+                 transition-opacity duration-500 pointer-events-none"
               >
                 {item.name}
               </span>
@@ -91,15 +90,15 @@ const SideBar = ({ setFullSideBar }) => {
             >
               <RiLogoutBoxLine />
             </button>
-						<span
-                className="absolute left-full top-1/2 -translate-y-1/2 ml-3 
+            <span
+              className="absolute left-full top-1/2 -translate-y-1/2 ml-3 
                  bg-white text-black px-3 py-1 rounded-md shadow-lg 
                  whitespace-nowrap text-base z-50 
                  opacity-0 group-hover:opacity-100 
-                 transition-opacity duration-500"
-              >
-                Cerrar Sesión
-              </span>
+                 transition-opacity duration-500 pointer-events-none"
+            >
+              Cerrar Sesión
+            </span>
           </div>
         </nav>
       </div>
