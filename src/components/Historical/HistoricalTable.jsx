@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "../../styles";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { BsSend } from "react-icons/bs";
-import { IoCloudDownloadOutline, IoFilter } from "react-icons/io5";
+import { IoCloudDownloadOutline, IoFilter, IoCaretUpOutline, IoCaretDownOutline } from "react-icons/io5";
 import { SlOptionsVertical } from "react-icons/sl";
 
 import LoadingScreen from "../LoadingScreen";
@@ -33,30 +33,28 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false); // Estado de carga
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
 
-  const columns = ["ID", "Tipo", "Asignado", "Concepto", "Ciclo de Vida", "Subtotal", "Iva", "Monto", "Razón Social (Receptor)", "Estatus", "Acciones"];
-
-  const handleCheckAll = () => {
-    if (checkAll) {
-      setSelectedIds([]);
-    } else {
-      const allValidIds = dataBoard
-        .filter((item) => item.status !== "Anulado")
-        .map((item) => item.pipeline_id);
-      setSelectedIds(allValidIds);
-    }
-    setCheckAll(!checkAll);
-  };
+  const columns = [
+    { label: "ID", key: "pipeline_id" },
+    { label: "Tipo", key: "type_pipeline" },
+    { label: "Asignado", key: "assigned_user_sender" },
+    { label: "Concepto", key: "concept" },
+    { label: "Ciclo de Vida", key: "created_at" },
+    { label: "Subtotal", key: "subtotal" },
+    { label: "Iva", key: "iva" },
+    { label: "Monto", key: "total_refund" },
+    { label: "Razón Social (Receptor)", key: "receiver_name_rs" },
+    { label: "Estatus", key: "status" },
+    { label: "Acciones", key: "acciones" },
+  ];
 
   const handleDownload = async () => {
-    console.log(selectedIds);
+    setLoading(true); // Carga inicial
     if (selectedIds.length === 0) {
       alert("No hay elementos seleccionados.");
       return;
     }
-
-    setLoading(true); // Carga inicial
-
     try {
       const response = await fetch(`${api}/historical/docs/byid`, {
         method: "POST",
@@ -86,6 +84,56 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
       setLoading(false); // Carga finalizada
       setSelectedIds([]);
     }
+  }
+
+  const handleCheckAll = () => {
+    if (checkAll) {
+      setSelectedIds([]);
+    } else {
+      const allValidIds = dataBoard
+        .filter((item) => item.status !== "Anulado")
+        .map((item) => item.pipeline_id);
+      setSelectedIds(allValidIds);
+    }
+    setCheckAll(!checkAll);
+  };
+
+  //*
+  const handleSort = (columnKey) => {
+    setSortConfig((prev) => {
+      if (prev.key === columnKey) {
+        const nextDirection =
+          prev.direction === 'default' ? 'asc'
+            : prev.direction === 'asc' ? 'desc'
+              : 'default';
+        return { key: columnKey, direction: nextDirection };
+      } else {
+        return { key: columnKey, direction: 'asc' };
+      }
+    });
+  };
+
+  const sortedData = [...dataBoard];
+  if (sortConfig.key && sortConfig.direction !== 'default') {
+    sortedData.sort((a, b) => {
+      const aVal = a[sortConfig.key];
+      const bVal = b[sortConfig.key];
+
+      // Especial para fechas
+      if (sortConfig.key === "created_at") {
+        const aDate = new Date(aVal);
+        const bDate = new Date(bVal);
+        return sortConfig.direction === 'asc' ? aDate - bDate : bDate - aDate;
+      }
+
+      if (typeof aVal === "number") {
+        return sortConfig.direction === "asc" ? aVal - bVal : bVal - aVal;
+      }
+
+      return sortConfig.direction === "asc"
+        ? String(aVal).localeCompare(String(bVal))
+        : String(bVal).localeCompare(String(aVal));
+    });
   }
 
   if (loading) {
@@ -119,6 +167,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
             </button>
           </div>
 
+          {/** */}
           <table className={styles.table}>
             <thead className={styles.table_header}>
               <tr>
@@ -135,16 +184,36 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                     {!checkAll && <div className="text-xl leading-none">−</div>}
                   </button>
                 </th>
-                {columns.map((title) => (
-                  <th key={title} className={styles.table_header_cell}>
-                    {title}
+                {columns.map((item) => (
+                  <th
+                    key={item.key}
+                    className={`${styles.table_header_cell} p-4 text-center ${item.key !== "acciones" ? "cursor-pointer select-none" : ""}`}
+                    onClick={() => item.key !== "acciones" && handleSort(item.key)}
+                  >
+                    <div className="flex items-center justify-center gap-1">
+                      <span>{item.label}</span>
+                      {item.key !== "acciones" && (
+                        <span>
+                          {sortConfig.key === item.key ? (
+                            sortConfig.direction === "asc" ? <IoCaretUpOutline className="text-sm" />
+                              : sortConfig.direction === "desc" ? <IoCaretDownOutline className="text-sm" />
+                                : <IoFilter className="text-sm" />
+                          ) : (
+                            <IoFilter className="text-sm" />
+                          )}
+                        </span>
+                      )}
+
+                    </div>
                   </th>
                 ))}
               </tr>
             </thead>
+
+            {/** */}
             <tbody className={styles.table_body}>
-              {dataBoard.length > 0 ? (
-                dataBoard.map((item, index) => (
+              {sortedData.length > 0 ? (
+                sortedData.map((item, index) => (
                   <tr key={item.pipeline_id}
                     className={`border-b-[2.5px] border-[#b9b9b9] last:border-none ${index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
                       } hover:bg-[#313131] hover:text-white transition-all`}
