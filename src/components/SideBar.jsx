@@ -43,7 +43,7 @@ const SideBar = ({ setFullSideBar }) => {
   return (
     <>
       {/* Sidebar compacto en desktop */}
-      <div className=" md:flex flex-col items-center w-16 h-screen bg-black-gradient text-white shadow-lg fixed">
+      <div className=" md:flex flex-col items-center w-16 h-screen bg-black-gradient z-50 text-white shadow-lg fixed">
         {/* <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="fixed top-4 left-4 z-50 text-white text-3xl bg-black-gradient p-2 rounded-lg"

@@ -10,7 +10,7 @@ const Navbar = () => {
       {fullSideBar ? (
         <SideMenu setFullSideBar={setFullSideBar} />
       ) : (
-        <SideBar setFullSideBar={setFullSideBar} />
+        <div className="hidden sm:inline"><SideBar setFullSideBar={setFullSideBar} /></div>
       )}
     </div>
   );
