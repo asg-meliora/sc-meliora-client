@@ -99,15 +99,16 @@ function InvoicesDetailsTable({ api, userId, invoiceId, setLoading }) {
 
   useEffect(() => {
     const fetchAllData = async () => {
+      setLoading(true); 
       await getInvoiceData();
       await getClientSenderData();
       await getClientReceiverData();
       await fetchUploadedDocs();
+      setLoading(false);
     };
 
     if (invoiceId) fetchAllData();
 
-    setLoading(false);
   }, [
     getInvoiceData,
     getClientSenderData,
