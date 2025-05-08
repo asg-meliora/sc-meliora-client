@@ -10,14 +10,7 @@ import { AnimatePresence } from "framer-motion";
 import LoadingScreen from "../components/LoadingScreen";
 
 function InvoicesUser({ api }) {
-  useEffect(() => {
-      const hasReloaded = sessionStorage.getItem("hasReloaded");
   
-      if (!hasReloaded) {
-        sessionStorage.setItem("hasReloaded", "true");
-        window.location.reload();
-      }
-    }, []);
     
   const { userId } = useParams();
   const [dataBoard, setDataBoard] = useState({ results: [] });

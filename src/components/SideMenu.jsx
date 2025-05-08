@@ -16,41 +16,45 @@ import lion from "../assets/lion.webp";
 
 console.log(Cookies.get("role_id"));
 
-function GetMenuItems() {
-  const roleId = Cookies.get("role_id");
-  switch (roleId) {
-    case "1":
-      return [
-        {
-          name: "Dashboard",
-          route: "/dashboard",
-          icon: <MdOutlineDashboard />,
-        },
-        { name: "Expedientes", route: "/files", icon: <FaRegFileAlt /> },
-        { name: "Usuarios", route: "/users", icon: <FaUsers /> },
-        { name: "Facturas", route: "/invoices", icon: <FaFileInvoiceDollar /> },
-        {
-          name: "Histórico",
-          route: "/historical",
-          icon: <IoFileTrayFullOutline />,
-        },
-      ];
-    case "2":
-      return [
-        {
-          name: "Facturas",
-          route: "/user/invoices/:userId",
-          icon: <FaFileInvoiceDollar />,
-        },
-      ];
-    default:
-      return [];
-  }
-}
-
-const menuItems = GetMenuItems();
-
 const SideMenu = ({ setFullSideBar }) => {
+  function GetMenuItems() {
+    const roleId = Cookies.get("role_id");
+    switch (roleId) {
+      case "1":
+        return [
+          {
+            name: "Dashboard",
+            route: "/dashboard",
+            icon: <MdOutlineDashboard />,
+          },
+          { name: "Expedientes", route: "/files", icon: <FaRegFileAlt /> },
+          { name: "Usuarios", route: "/users", icon: <FaUsers /> },
+          {
+            name: "Facturas",
+            route: "/invoices",
+            icon: <FaFileInvoiceDollar />,
+          },
+          {
+            name: "Histórico",
+            route: "/historical",
+            icon: <IoFileTrayFullOutline />,
+          },
+        ];
+      case "2":
+        return [
+          {
+            name: "Facturas",
+            route: "/user/invoices/:userId",
+            icon: <FaFileInvoiceDollar />,
+          },
+        ];
+      default:
+        return [];
+    }
+  }
+
+  const menuItems = GetMenuItems();
+
   const navigate = useNavigate();
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
