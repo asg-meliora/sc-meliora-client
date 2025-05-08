@@ -14,22 +14,24 @@ function InvoicesDetails({ api }) {
   const [loading, setLoading] = useState(true);
 
   console.log("Loading ", loading);
-  
+
   return (
     <>
-    <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
+      <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
       <div className={styles.blank_page}>
         <Navbar />
         <div className={styles.page_container}>
           <div className={styles.header_container}>
-            <h2 className={styles.heading_page}>Facturas</h2>
+            <h2 className={styles.heading_page}>Factura {id}</h2>
           </div>
-          <InvoicesDetailsTable
-            api={api}
-            userId={-1}
-            invoiceId={id}
-            setLoading={setLoading}
-          />
+          <div className="w-full mb-6">
+            <InvoicesDetailsTable
+              api={api}
+              userId={-1}
+              invoiceId={id}
+              setLoading={setLoading}
+            />
+          </div>
         </div>
       </div>
     </>

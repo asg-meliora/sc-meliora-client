@@ -218,23 +218,22 @@ function FileDetail({ api }) {
           </div>
 
           {/*Detalles de Documento */}
-          <section className="bg-white shadow-sm border border-gray-200 w-[80%] mx-auto rounded-lg py-10 px-5 grid grid-cols-1 lg:grid-cols-3 gap-6 place-items-center grid-cols-auto justify-items-center">
+          <section className={styles.d_files_container}>
             {fileUrl.urls.map((urls) => (
               <article
                 key={urls.document_id}
                 style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                className="flex flex-col items-center justify-center w-[90%] max-w-xd  bg-whiteN rounded-lg"
+                className={styles.d_files_article}
               >
-                {/* Contenido con padding */}
-                <div className="w-full px-4 py-4 flex flex-col items-center">
-                  <header className="flex flex-col items-center">
-                    <SiGoogledocs className="w-24 h-24 my-2 text-gray-800" />
-                    <h3 className="text-center font-semibold font-inter text-lg text-gray-800 md:text-base">
+                <div className={styles.d_files_info_container}>
+                  <header className={styles.d_files_info_header}>
+                    <SiGoogledocs className={styles.d_files_info_icon} />
+                    <h3 className={styles.d_files_info_title}>
                       {documentTypeMap[urls.document_type] ||
                         urls.document_type}
                     </h3>
                     <time
-                      className="text-sm text-gray-600 italic font-inter"
+                      className={styles.d_files_info_date}
                       dateTime={urls.created_at}
                     >
                       ({FormattedDate(urls.created_at)})
@@ -242,9 +241,9 @@ function FileDetail({ api }) {
                   </header>
                 </div>
 
-                <hr className="w-full border-t-6 border-white" />
+                <hr className={styles.d_files_hr} />
 
-                <div className="w-full px-4 mt-4 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center gap-3 text-center justify-center">
+                <div className={styles.d_files_buttons_container}>
                   <a
                     href={urls.signedUrl}
                     download={`${urls.document_type}-${id}`}
