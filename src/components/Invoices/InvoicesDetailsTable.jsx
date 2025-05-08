@@ -10,13 +10,12 @@ const FormattedDate = (dateString) => {
     return formattedDate;
 };
 
-function InvoicesDetailsTable({ api, userId, invoiceId }) {
+function InvoicesDetailsTable({ api, userId, invoiceId, setLoading }) {
     const [dataInvoice, setDataInvoice] = useState({}); // Estado para los datos de la factura
     const [clientSenderId, setClientSenderId] = useState(null);
     const [clientReceiverId, setClientReceiverId] = useState(null);
     const [dataClientSender, setDataClientSender] = useState({});
     const [dataClientReceiver, setDataClientReceiver] = useState({});
-    const [loading, setLoading] = useState(true); // Estado de carga
 
     const [uploadedDocs, setUploadedDocs] = useState({});
 
@@ -90,7 +89,6 @@ function InvoicesDetailsTable({ api, userId, invoiceId }) {
 
 
     useEffect(() => {
-        setLoading(true); // Carga inicial
         const fetchAllData = async () => {
             await getInvoiceData();
             await getClientSenderData();
@@ -99,8 +97,9 @@ function InvoicesDetailsTable({ api, userId, invoiceId }) {
         };
 
         if (invoiceId) fetchAllData();
-        setLoading(false); // Carga inicial
-    }, [getInvoiceData, getClientSenderData, getClientReceiverData, fetchUploadedDocs, invoiceId,]);
+        
+        setLoading(false); 
+    }, [getInvoiceData, getClientSenderData, getClientReceiverData, fetchUploadedDocs, invoiceId, setLoading]);
 
 
 
@@ -217,9 +216,6 @@ function InvoicesDetailsTable({ api, userId, invoiceId }) {
 
     const isAllDocsUploaded = documentTypes.every((docType) => uploadedDocs[docType]);
 
-    if (loading) {
-        return <LoadingScreen message="Cargando..." />; // Pantalla de carga
-    }
 
     return (
         <>

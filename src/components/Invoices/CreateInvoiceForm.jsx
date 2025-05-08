@@ -7,6 +7,9 @@ const CreateInvoiceForm = ({
   setCreateShowForm,
   serverErrorMessage = null,
   onAddInvoice,
+  setSuccess,
+  setSuccessMessage,
+  setErrorGeneral
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
@@ -36,6 +39,7 @@ const CreateInvoiceForm = ({
     const token = Cookies.get("token");
     if (!token) {
       console.error("Token no encontrado. Por favor, inicia sesión.");
+      setErrorGeneral("Token no encontrado. Por favor, inicia sesión.");
       return;
     }
     try {
@@ -53,8 +57,9 @@ const CreateInvoiceForm = ({
 
     } catch (error) {
       console.log("Error al obtener usuaros:", error);
+      setErrorGeneral("Error al obtener usuarios");
     }
-  }, [api]);
+  }, [api, setErrorGeneral]);
 
   /**
    * Function that fetches the list of clients from the server and updates the clients board state
@@ -67,6 +72,7 @@ const CreateInvoiceForm = ({
     const token = Cookies.get("token");
     if (!token) {
       console.error("Token no encontrado. Por favor, inicia sesión.");
+      setErrorGeneral("Token no encontrado. Por favor, inicia sesión.");
       return;
     }
 
@@ -82,7 +88,8 @@ const CreateInvoiceForm = ({
       const data = await response.json();
       setClients(data);
     } catch (error) {
-      console.log("Error al obtener usuaros:", error);
+      console.log("Error al obtener expedientes:", error);
+      setErrorGeneral("Error al obtener clientes");
     }
   }, [api]);
 
@@ -108,8 +115,10 @@ const CreateInvoiceForm = ({
       if (!response.ok) throw new Error("Error al crear la factura");
       const data = await response.json();
       onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
-      //alert(`Factura creada correctamente ${data.results.insertId}`);
+      setSuccessMessage("Factura creada correctamente");
+      setSuccess(true);
     } catch (error) {
+      setErrorMessage("Error al crear la factura");
       console.error("Error al crear la factura:", error);
     }
 

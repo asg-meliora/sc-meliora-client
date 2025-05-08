@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
 import Cookies from "js-cookie";
 import styles from "../../styles";
 
-function AnnulledInvoiceModal({ setCancelShowForm, serverErrorMessage = null, api, invoiceId}) {
+function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuccess, setSuccessMessage, setError }) {
 
     const handleAnnulled = async (e) => {
         console.log("Anulled invoice", invoiceId);
@@ -19,11 +18,12 @@ function AnnulledInvoiceModal({ setCancelShowForm, serverErrorMessage = null, ap
             if (!res.ok) throw new Error("Error al subir archivo");
 
             const result = await res.json();
-            alert(`subido correctamente`);
+            setSuccessMessage("Factura anulada exitosamente");
+            setSuccess(true);
             // Opcional: refrescar datos
         } catch (err) {
             console.error(err);
-            alert(`Error al terminar`);
+            setError(err.message);
         }
         setCancelShowForm(false); // Cierra el modal después de la acción
     };

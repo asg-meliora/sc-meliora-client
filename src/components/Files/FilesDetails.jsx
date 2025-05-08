@@ -11,6 +11,7 @@ import { FaEdit } from "react-icons/fa";
 
 import LoadingScreen from "../LoadingScreen.jsx";
 import styles from "../../styles.js";
+import Navbar from "../Navbar.jsx";
 
 const FormattedDate = (dateString) => {
   const date = new Date(dateString);
@@ -188,9 +189,7 @@ function FileDetail({ api }) {
     <>
       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
       <div className={styles.blank_page}>
-        <div className="w-64">
-          <SideMenu />
-        </div>
+        <Navbar />
         <div className={styles.page_container}>
           <div className={styles.header_container}>
             <h2 className={styles.heading_page}>{newData.results.name_rs}</h2>
