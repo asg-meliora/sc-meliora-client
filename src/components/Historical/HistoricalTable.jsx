@@ -167,7 +167,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
             </button>
           </div>
 
-          {/** */}
+          {/*Header */}
           <table className={styles.table}>
             <thead className={styles.table_header}>
               <tr>
@@ -193,7 +193,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                     <div className="flex items-center justify-center gap-1">
                       <span>{item.label}</span>
                       {item.key !== "acciones" && (
-                        <span>
+                        <>
                           {sortConfig.key === item.key ? (
                             sortConfig.direction === "asc" ? <IoCaretUpOutline className="text-sm" />
                               : sortConfig.direction === "desc" ? <IoCaretDownOutline className="text-sm" />
@@ -201,16 +201,15 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                           ) : (
                             <IoFilter className="text-sm" />
                           )}
-                        </span>
+                        </>
                       )}
-
                     </div>
                   </th>
                 ))}
               </tr>
             </thead>
-
-            {/** */}
+            
+            {/*Body*/}
             <tbody className={styles.table_body}>
               {sortedData.length > 0 ? (
                 sortedData.map((item, index) => (
@@ -228,7 +227,6 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                         />
                       )}
                     </td>
-
                     <td className="p-4 text-center font-semibold">{item.pipeline_id}</td>
                     <td className="p-4 text-center">{item.type_pipeline}</td>
                     <td className="p-4 text-center">{item.assigned_user_sender}</td>
@@ -243,7 +241,6 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                         {item.status || "Desconocido"}
                       </span>
                     </td>
-
                     <td className="p-4 text-center">
                       {item.status !== "Anulado" && item.status !== "Cancelada" && (
                         <button
@@ -254,13 +251,12 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                         </button>
                       )}
                     </td>
-
                   </tr>
                 ))
               ) : (
                 // Si no hay facturas, muestra un mensaje
                 <tr>
-                  <td colSpan={columns.length} className="text-center py-5 text-gray-600 font-semibold">
+                  <td colSpan={columns.length + 1} className="text-center py-5 text-gray-600 font-semibold">
                     No hay datos disponibles.
                   </td>
                 </tr>

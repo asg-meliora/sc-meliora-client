@@ -314,7 +314,7 @@ function InvoicesDetailsTable({ api, userId, invoiceId }) {
                                     Ver archivo
                                 </a>
                             ) : (
-                                <>
+                                userId >= 0 && (<>
                                     <label
                                         htmlFor={`upload-file-${index}`}
                                         className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
@@ -328,7 +328,7 @@ function InvoicesDetailsTable({ api, userId, invoiceId }) {
                                         accept=".pdf,.xml"
                                         onChange={(e) => handleDocInvoiceUpload(e, index)}
                                     />
-                                </>
+                                </>)
                             )}
                         </footer>
                     </article>
