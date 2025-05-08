@@ -1,9 +1,10 @@
+import React, { useState } from "react";
 import styles from "../../styles";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { BsSend } from "react-icons/bs";
 import { IoCloudDownloadOutline, IoFilter } from "react-icons/io5";
 import { SlOptionsVertical } from "react-icons/sl";
-import { useState } from "react";
+
 import LoadingScreen from "../LoadingScreen";
 import Cookies from "js-cookie";
 
@@ -30,8 +31,8 @@ const statusColor = {
 
 const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
   const [selectedIds, setSelectedIds] = useState([]);
-  const [loading, setLoading] = useState(false); // Estado de carga
   const [checkAll, setCheckAll] = useState(false);
+  const [loading, setLoading] = useState(false); // Estado de carga
 
   const columns = ["ID", "Tipo", "Asignado", "Concepto", "Ciclo de Vida", "Subtotal", "Iva", "Monto", "Razón Social (Receptor)", "Estatus", "Acciones"];
 
@@ -74,12 +75,13 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = "Facturas.zip"; // Nombre del archivo
+      a.download = `Facturas_${new Date().toISOString().split("T")[0]}.zip`;
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {
       //setError(err.message);
       console.error(err);
+      alert("Ocurrió un error al descargar los archivos.");
     } finally {
       setLoading(false); // Carga finalizada
       setSelectedIds([]);

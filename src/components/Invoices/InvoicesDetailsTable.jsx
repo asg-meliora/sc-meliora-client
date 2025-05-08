@@ -160,6 +160,7 @@ function InvoicesDetailsTable({ api, userId, invoiceId }) {
     const documentTypes = ["PreXML", "FacXML", "PrePDF", "FacPDF"];
 
     const handleDocInvoiceUpload = async (e, docType) => {
+        setLoading(true);
         const file = e.target.files[0];
         if (!file) return;
 
@@ -186,6 +187,9 @@ function InvoicesDetailsTable({ api, userId, invoiceId }) {
         } catch (err) {
             console.error(err);
             alert(`Error al subir archivo ${docType}`);
+        }finally{
+            setLoading(false);
+            window.location.reload()
         }
     };
 

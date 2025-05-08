@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import styles from "../../styles";
 import Cookies from 'js-cookie';
 
+import LoadingScreen from "../LoadingScreen";
 
-const CancelInvoiceForm = ({setCancelShowForm, serverErrorMessage = null, api, invoiceId}) => {
+
+const CancelInvoiceForm = ({ setCancelShowForm, serverErrorMessage = null, api, invoiceId }) => {
   const [errorMessage, setErrorMessage] = useState("");
-  const [formData, setFormData] = useState({invoice_file: null });
+  const [formData, setFormData] = useState({ invoice_file: null });
+  const [loading, setLoading] = useState(false); // Estado de carga
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
     if (!formData.invoice_file) {
       setErrorMessage("Debes subir un archivo para cancelar la factura.");
       return;
@@ -29,23 +33,28 @@ const CancelInvoiceForm = ({setCancelShowForm, serverErrorMessage = null, api, i
 
       if (!response.ok) throw new Error("Error al subir el archivo");
       // manejar éxito...
-      
+
     } catch (err) {
       setErrorMessage(err.message);
     }
-    finally{
+    finally {
+      setLoading(false);
       alert('Exitosamente exitoso');
       setCancelShowForm(false);
+      window.location.reload()
     }
   };
 
   const handleChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
-    setFormData((prev) => ({...prev, invoice_file: file,}));
+
+    setFormData((prev) => ({ ...prev, invoice_file: file, }));
   };
-  
+
+  if (loading) {
+    return <LoadingScreen message="Cargando..." />; // Pantalla de carga
+  }
 
   return (
     <>
