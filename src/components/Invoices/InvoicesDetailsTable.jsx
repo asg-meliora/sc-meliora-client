@@ -358,7 +358,7 @@ function InvoicesDetailsTable({ api, userId, invoiceId, setLoading }) {
                   <>
                     <label
                       htmlFor={`upload-file-${index}`}
-                      className="cursor-pointer updateButton text-white px-3 py-1 rounded font-medium font-inter w-[50%] shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
+                      className="cursor-pointer updateButton text-white px-3 py-1 text-sm rounded font-medium font-inter w-[80%] shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
                     >
                       Seleccionar archivo
                     </label>

@@ -1,18 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import styles from "../styles";
-import SideMenu from "../components/SideMenu";
 
 import InvoicesTable from "../components/Invoices/InvoicesTable";
+import Navbar from "../components/Navbar";
+import { AnimatePresence } from "framer-motion";
+import LoadingScreen from "../components/LoadingScreen";
 
 function InvoicesUser({ api }) {
+  useEffect(() => {
+      const hasReloaded = sessionStorage.getItem("hasReloaded");
+  
+      if (!hasReloaded) {
+        sessionStorage.setItem("hasReloaded", "true");
+        window.location.reload();
+      }
+    }, []);
+    
   const { userId } = useParams();
   const [dataBoard, setDataBoard] = useState({ results: [] });
+  const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(false);
-
-  console.log("ID de usuario:", userId); // Verifica el ID del usuario
+  
 
   const getPipelines = useCallback(async () => {
     setLoading(true); // Carga inicial
@@ -36,19 +47,24 @@ function InvoicesUser({ api }) {
     } finally {
       setLoading(false); // Carga finalizada
     }
-  }, [api]);
+  }, [api, userId]);
 
   useEffect(() => {
     getPipelines();
   }, [getPipelines]);
 
-  console.log("DataBoard:", dataBoard); // Verifica el contenido de dataBoard
+  // if (loading) {
+  //   return <LoadingScreen message="Cargando..." />; // Pantalla de carga
+  // }
+
   return (
-    <div>
+    <>
+      <AnimatePresence>
+        {loading && <LoadingScreen message={"Cargando información"} />}
+      </AnimatePresence>
+
       <div className={styles.blank_page}>
-        <div className="w-64">
-          <SideMenu />
-        </div>
+        <Navbar />
 
         <div className={styles.page_container}>
           <div className={styles.header_container}>
@@ -59,13 +75,31 @@ function InvoicesUser({ api }) {
             invoiceStatus={1}
             adminStatus={0}
           />
-          <InvoicesTable dataBoard={dataBoard} invoiceStatus={2} adminStatus={0}/>
-          <InvoicesTable dataBoard={dataBoard} invoiceStatus={3} adminStatus={0}/>
+          <InvoicesTable
+            dataBoard={dataBoard}
+            invoiceStatus={2}
+            adminStatus={0}
+          />
+          <InvoicesTable
+            dataBoard={dataBoard}
+            invoiceStatus={3}
+            adminStatus={0}
+          />
         </div>
       </div>
-    </div>
-
-  )
+      <div className="fixed bottom-4 right-4 z-50">
+        <AnimatePresence>
+          {error && (
+            <ErrorToast
+              message={error}
+              onClose={() => setError(null)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    </>
+  );
 }
 
-export default InvoicesUser
+export default InvoicesUser;

@@ -103,13 +103,13 @@ const Invoices = ({ api }) => {
     }
   };
 
-  if (loading) {
-    return <LoadingScreen message="Cargando..." />; // Pantalla de carga
-  }
+  // if (loading) {
+  //   return <LoadingScreen message="Cargando..." />; // Pantalla de carga
+  // }
 
   return (
     <>
-      {/* <AnimatePresence>{loading && <LoadingScreen message={loadingMessage} />}</AnimatePresence> */}
+      <AnimatePresence>{loading && <LoadingScreen message={"Cargando información"} />}</AnimatePresence>
 
       <div className={styles.blank_page}>
         <Navbar />

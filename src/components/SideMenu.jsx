@@ -13,31 +13,42 @@ import { IoFileTrayFullOutline } from "react-icons/io5";
 import { RiLogoutBoxLine } from "react-icons/ri";
 
 import lion from "../assets/lion.webp";
-import styles from "../styles";
 
-const menuItems = [
-  {
-    name: "Dashboard",
-    route: "/dashboard",
-    icon: <MdOutlineDashboard />,
-  },
-  {
-    name: "Expedientes",
-    route: "/files",
-    icon: <FaRegFileAlt />,
-  },
-  { name: "Usuarios", route: "/users", icon: <FaUsers />, active: false },
-  {
-    name: "Facturas",
-    route: "/invoices",
-    icon: <FaFileInvoiceDollar />,
-  },
-  {
-    name: "Histórico",
-    route: "/historical",
-    icon: <IoFileTrayFullOutline />,
-  },
-];
+console.log(Cookies.get("role_id"));
+
+function GetMenuItems() {
+  const roleId = Cookies.get("role_id");
+  switch (roleId) {
+    case "1":
+      return [
+        {
+          name: "Dashboard",
+          route: "/dashboard",
+          icon: <MdOutlineDashboard />,
+        },
+        { name: "Expedientes", route: "/files", icon: <FaRegFileAlt /> },
+        { name: "Usuarios", route: "/users", icon: <FaUsers /> },
+        { name: "Facturas", route: "/invoices", icon: <FaFileInvoiceDollar /> },
+        {
+          name: "Histórico",
+          route: "/historical",
+          icon: <IoFileTrayFullOutline />,
+        },
+      ];
+    case "2":
+      return [
+        {
+          name: "Facturas",
+          route: "/user/invoices/:userId",
+          icon: <FaFileInvoiceDollar />,
+        },
+      ];
+    default:
+      return [];
+  }
+}
+
+const menuItems = GetMenuItems();
 
 const SideMenu = ({ setFullSideBar }) => {
   const navigate = useNavigate();
@@ -58,6 +69,7 @@ const SideMenu = ({ setFullSideBar }) => {
    */
   const handleLogout = () => {
     Cookies.remove("token");
+    sessionStorage.removeItem("hasReloaded");
     navigate("/");
   };
 
