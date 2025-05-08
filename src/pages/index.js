@@ -5,7 +5,8 @@ import Invoices from './Invoices';
 import Login from './Login';
 import Users from './Users';
 import NotFound from './NotFound';
-import FilesCreate from '../components/Files/FilesDetails';
+import FilesDetails from '../components/Files/FilesDetails';
+import InvoicesDetails from '../components/Invoices/InvoicesDetails';
 
 export {
   Dashboard,
@@ -15,5 +16,6 @@ export {
   Login,
   Users,
   NotFound,
-  FilesCreate
+  FilesDetails,
+  InvoicesDetails
 }

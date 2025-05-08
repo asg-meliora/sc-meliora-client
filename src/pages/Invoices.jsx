@@ -1,30 +1,108 @@
-import { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import SideMenu from "../components/SideMenu";
 import styles from "../styles";
 import { FaPlus } from "react-icons/fa";
+import Cookies from "js-cookie";
+
+import LoadingScreen from "../components/LoadingScreen";
+import { AnimatePresence } from "framer-motion";
 
 import InvoicesTable from "../components/Invoices/InvoicesTable";
-import { invoicesData } from "../constants";
+//import { invoicesData } from "../constants";
 
 import CreateInvoiceForm from "../components/Invoices/CreateInvoiceForm";
-import CancelInvoiceForm from "../components/Invoices/CancelInvoiceForm";
+import AnnulledInvoiceForm from "../components/Invoices/AnnulledInvoiceModal";
 import Navbar from "../components/Navbar";
 
 const Invoices = ({ api }) => {
-  const [dataBoard, setDataBoard] = useState(invoicesData);
+  const [dataBoard, setDataBoard] = useState({ results: [] });
   const [showCreateForm, setCreateShowForm] = useState(false);
   const [showCancelForm, setCancelShowForm] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
+  const [error, setError] = useState(null); // Estado de error
+  const [loading, setLoading] = useState(false); // Estado de carga
 
-  const handleOpenCreateForm = () => {
-    setCreateShowForm(true);
-  };
+  // Muestra todas los datos de las facturas
+  const getPipelines = useCallback(async () => {
+    setLoading(true); // Carga inicial
 
-  const handleOpenCancelForm = () => {
+    try {
+      const response = await fetch(`${api}/invoices/recent`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": Cookies.get("token"),
+        },
+      });
+
+      //Error handling
+      if (!response.ok) throw new Error("Error en la petición");
+
+      const data = await response.json();
+      setDataBoard(data.results);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false); // Carga finalizada
+    }
+  }, [api]);
+
+  // Muestra la factura creada por el usuario
+  const getNewPipeline = useCallback(async (pipelineId) => {
+    setLoading(true); // Carga inicial
+    try {
+      const response = await fetch(`${api}/invoices/byid/${pipelineId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": Cookies.get("token"),
+        },
+      });
+
+      //Error handling
+      if (!response.ok) throw new Error("Error en la petición");
+
+      //Asegúrate de que data.results sea un array antes de acceder a su primer elemento
+      const data = await response.json();
+      return Array.isArray(data.results) ? data.results[0] : data.results;
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false); // Carga finalizada
+    }
+  }, [api]);
+
+  useEffect(() => {
+    getPipelines();
+  }, [getPipelines]);
+
+  const handleOpenCreateForm = () => setCreateShowForm(true);
+
+  const handleAnnulledForm = (invoiceId) => {
+    setSelectedInvoiceId(invoiceId);
     setCancelShowForm(true);
   };
 
+
+  // Función para manejar la adición de una nueva factura
+  const handleNewInvoice = async (newInvoiceId) => {
+    try {
+      const newInvoice = await getNewPipeline(newInvoiceId);
+      if (!newInvoice) return;
+      setDataBoard((prevInvoices) => [newInvoice, ...prevInvoices]);
+    } catch (error) {
+      console.error("Error adding new invoice:", error);
+    }
+  };
+
+  if (loading) {
+    return <LoadingScreen message="Cargando..." />; // Pantalla de carga
+  }
+
   return (
     <>
+      {/* <AnimatePresence>{loading && <LoadingScreen message={loadingMessage} />}</AnimatePresence> */}
+
       <div className={styles.blank_page}>
         <Navbar />
 
@@ -43,10 +121,11 @@ const Invoices = ({ api }) => {
           <InvoicesTable
             dataBoard={dataBoard}
             invoiceStatus={1}
-            handleOpenCancelForm={handleOpenCancelForm}
+            handleAnnulledForm={handleAnnulledForm}
+            adminStatus={1}
           />
-          <InvoicesTable dataBoard={dataBoard} invoiceStatus={2} />
-          <InvoicesTable dataBoard={dataBoard} invoiceStatus={3} />
+          <InvoicesTable dataBoard={dataBoard} invoiceStatus={2} adminStatus={1} />
+          <InvoicesTable dataBoard={dataBoard} invoiceStatus={3} adminStatus={1} />
         </div>
       </div>
 
@@ -54,15 +133,15 @@ const Invoices = ({ api }) => {
       {showCreateForm && (
         <div className={styles.form_container}>
           <div className={styles.form_modal_bg}></div>
-          <CreateInvoiceForm api={api} setCreateShowForm={setCreateShowForm} />
+          <CreateInvoiceForm api={api} setCreateShowForm={setCreateShowForm} onAddInvoice={handleNewInvoice} />
         </div>
       )}
 
-      {/* Cancel Form Modal */}
+      {/* Annulled Form Modal */}
       {showCancelForm && (
         <div className={styles.form_container}>
           <div className={styles.form_modal_bg}></div>
-          <CancelInvoiceForm setCancelShowForm={setCancelShowForm} />
+          <AnnulledInvoiceForm setCancelShowForm={setCancelShowForm} api={api} invoiceId={selectedInvoiceId}/>
         </div>
       )}
     </>
