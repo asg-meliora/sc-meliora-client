@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "../../styles";
 
 const FormattedDate = (dateString) => {
@@ -12,7 +12,13 @@ const FormattedDate = (dateString) => {
   return formattedDate;
 };
 
-function FileTableDetail({ data, onSave, userAssigns, setLoading }) {
+function FileTableDetail({
+  data,
+  onSave,
+  userAssigns,
+  isEditing,
+  setIsEditing,
+}) {
   const DiccHead = {
     name_rs: { label: "Razón Social" },
     rfc: { label: "RFC" },
@@ -28,11 +34,10 @@ function FileTableDetail({ data, onSave, userAssigns, setLoading }) {
 
   // TODO: Fix error when deleted
   if (!data || !data.results || data.results.length === 0) {
-    return <div className="text-white">.</div>;
+    return null;
   }
 
   const [item, setItem] = useState(data.results); // Estado para los datos
-  const [isEditing, setIsEditing] = useState(false); // Estado para determinar si estamos editando
   const [originalItem, setOriginalItem] = useState(data.results); // Estado para cancelar cambios
 
   // Divide las claves en dos mitades
@@ -49,7 +54,7 @@ function FileTableDetail({ data, onSave, userAssigns, setLoading }) {
 
   // Función para guardar y preparar los datos modificados para enviarlos al backend
   const handleSave = () => {
-    console.log("Datos actualizados:", item); //Quitarlo
+    // console.log("Datos actualizados:", item); //Quitarlo
     onSave(item); // Envía los datos al padre
     setIsEditing(false); // Desactivar modo edición después de guardar
   };
@@ -60,28 +65,69 @@ function FileTableDetail({ data, onSave, userAssigns, setLoading }) {
     setIsEditing(false);
   };
 
+  const leftTableRef = useRef(null);
+  const rightTableRef = useRef(null);
+
+  useEffect(() => {
+    const leftRows = leftTableRef.current?.querySelectorAll("tr");
+    const rightRows = rightTableRef.current?.querySelectorAll("tr");
+
+    if (!leftRows || !rightRows) return;
+
+    const numRows = Math.max(leftRows.length, rightRows.length);
+
+    for (let i = 0; i < numRows; i++) {
+      const leftRow = leftRows[i];
+      const rightRow = rightRows[i];
+
+      if (!leftRow || !rightRow) continue;
+
+      // Reset height first
+      leftRow.style.height = "auto";
+      rightRow.style.height = "auto";
+
+      const leftHeight = leftRow.offsetHeight;
+      const rightHeight = rightRow.offsetHeight;
+      const maxHeight = Math.max(leftHeight, rightHeight);
+
+      leftRow.style.height = `${maxHeight}px`;
+      rightRow.style.height = `${maxHeight}px`;
+    }
+  }, [item, isEditing]);
+
   return (
     <>
-      <div className="flex flex-col lg:flex-row justify-between gap-6 p-4">
+      {/* bg-white rounded-2xl shadow-sm border border-gray-200 */}
+      <div className={`${styles.d_table_container}`}>
         {/* Tabla izquierda */}
-        <div className="w-full lg:w-1/2 overflow-x-auto">
-          <h2 className="text-lg font-semibold mb-4">Datos Generales</h2>
-          <table
-            className="w-full border border-gray-300 rounded-lg shadow min-w-[300px]" /*table-fixed*/
-          >
+        <div className={`${styles.d_table_column_container}`}>
+          <h2 className={`${styles.d_table_heading}`}>Datos Generales</h2>
+          <table ref={leftTableRef} className={`${styles.d_table}`}>
             <tbody>
-              {leftKeys.map((key) => (
-                <tr key={key} className="border-b">
-                  <th className="text-left p-2 bg-gray-300 font-medium whitespace-nowrap w-1/3">
+              {leftKeys.map((key, index) => (
+                <tr key={key} className="align-center">
+                  <th
+                    style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
+                    className={`${styles.d_table_header} ${
+                      index === leftKeys.length - 1 ? "" : "border-b-6"
+                    } w-1/3 sm:w-1/4`}
+                  >
                     {DiccHead[key].label}
                   </th>
-                  <td className="p-2 max-w-[200px] break-words">
+                  <td
+                    style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
+                    className={`${styles.d_table_data} ${isEditing ? "" : ""} ${
+                      index === leftKeys.length - 1 ? "" : "border-b-6"
+                    }`}
+                  >
                     {isEditing ? (
                       <input
                         type="text"
                         value={item[key] || ""}
                         onChange={(e) => handleChange(e, key)}
-                        className="p-2 border rounded w-full"
+                        // className={`${styles.d_table_input}`}
+                        className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105  transition-all  px-3 py-2 focus:outline-none`}
+
                       />
                     ) : (
                       item[key] ?? "—"
@@ -94,26 +140,32 @@ function FileTableDetail({ data, onSave, userAssigns, setLoading }) {
         </div>
 
         {/* Tabla derecha */}
-        <div className="w-full lg:w-1/2 overflow-x-auto">
-          <h2 className="text-lg font-semibold mb-4">Información adicional</h2>
-          <table className="w-full border border-gray-300 rounded-lg shadow table-fixed min-w-[300px]">
+        <div className={`${styles.d_table_column_container}`}>
+          <h2 className={`${styles.d_table_heading}`}>Información adicional</h2>
+          <table ref={rightTableRef} className={`${styles.d_table}`}>
             <tbody>
-              {rightKeys.map((key) => (
-                <tr key={key} className="border-b">
-                  <th className="text-left p-2 bg-gray-300 font-medium whitespace-nowrap">
+              {rightKeys.map((key, index) => (
+                <tr key={key} className="align-center">
+                  <th
+                    style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
+                    className={`${styles.d_table_header} ${
+                      index === leftKeys.length - 1 ? "" : "border-b-6"
+                    } w-1/3`}
+                  >
                     {DiccHead[key].label}
                   </th>
-                  <td className="p-2 max-w-[200px] break-words">
+                  <td
+                    style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
+                    className={`${styles.d_table_data} ${
+                      index === leftKeys.length - 1 ? "" : "border-b-6"
+                    }`}
+                  >
                     {key === "created_at" ? (
-                      FormattedDate(item[key])
+                      <p>{FormattedDate(item[key])}</p>
                     ) : isEditing && key === "user_name" ? (
                       <select
                         onChange={(e) => handleChange(e, "user_name")}
-                        className={`${styles.select_form} ${
-                          isEditing
-                            ? "text-black font-normal"
-                            : "italic text-gray-500"
-                        }`}
+                        className={`${styles.select_form} w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
                         required
                       >
                         <option key={key} value={item[key] || ""}>
@@ -134,7 +186,9 @@ function FileTableDetail({ data, onSave, userAssigns, setLoading }) {
                         type="text"
                         value={item[key] || ""}
                         onChange={(e) => handleChange(e, key)}
-                        className="p-2 border rounded w-full"
+                        // className={`${styles.d_table_input}`}
+                        className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105  transition-all  px-3 py-2 focus:outline-none`}
+
                       />
                     ) : (
                       item[key] || "—"
@@ -145,36 +199,25 @@ function FileTableDetail({ data, onSave, userAssigns, setLoading }) {
             </tbody>
           </table>
         </div>
-
-        {/* Botón */}
-        <div className="mt-4 self-start lg:self-center">
-          <button
-            onClick={() => {
-              if (isEditing) {
-                handleSave();
-              } else {
-                setIsEditing(true);
-              }
-            }}
-            className={`px-4 py-2 ${
-              isEditing
-                ? "bg-green-500 hover:bg-green-600"
-                : "bg-blue-500 hover:bg-blue-600"
-            } text-white rounded`}
-          >
-            {isEditing ? "Guardar Cambios" : "Editar Datos"}
-          </button>
-          {/*Boton de cancelar */}
-          {isEditing && (
-            <button
-              onClick={handleCancel}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
-            >
-              Cancelar
-            </button>
-          )}
-        </div>
       </div>
+
+      {/* Botones de acción */}
+      {isEditing && (
+        <div className="flex gap-4 my-[-10px] justify-center items-center">
+          <button
+            onClick={handleSave}
+            className="px-5 py-2 rounded-xl confirmButton text-white font-medium font-inter shadow-md shadow-green-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
+          >
+            Guardar Cambios
+          </button>
+          <button
+            onClick={handleCancel}
+            className="px-5 py-2 rounded-xl logoutButton text-white font-medium font-inter shadow-md shadow-red-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
     </>
   );
 }

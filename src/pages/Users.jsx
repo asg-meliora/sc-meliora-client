@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import SideMenu from "../components/SideMenu";
 import UserForm from "../components/Users/UserForm";
 import UsersTable from "../components/Users/UsersTable";
 import { FaPlus } from "react-icons/fa";
@@ -9,6 +8,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import { AnimatePresence } from "framer-motion";
 
 import styles from "../styles";
+import Navbar from "../components/Navbar";
 
 const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
@@ -17,7 +17,7 @@ const Users = ({ api }) => {
   const [loadingMessage, setLoadingMessage] = useState("Cargando usuarios...");
   const [dataBoard, setUsersBoard] = useState({ results: [] });
   const [success, setSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] =useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const url = editingUser ? `${api}/users/update` : `${api}/accesslog`;
 
@@ -60,8 +60,7 @@ const Users = ({ api }) => {
     } catch (error) {
       // TODO: Set error message to show fail in fetching or other way
       console.log("Error al obtener usuarios:", error);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   }, [api]);
@@ -115,7 +114,11 @@ const Users = ({ api }) => {
       return Promise.reject(error);
     } finally {
       setLoading(false);
-      setSuccessMessage(editingUser ? "El usuario se modificó correctamente" : "El usuario se creó correctamente")
+      setSuccessMessage(
+        editingUser
+          ? "El usuario se modificó correctamente"
+          : "El usuario se creó correctamente"
+      );
       setSuccess(true);
     }
   };
@@ -132,11 +135,11 @@ const Users = ({ api }) => {
 
   return (
     <>
-      <AnimatePresence>{loading && <LoadingScreen message={loadingMessage} />}</AnimatePresence>
+      <AnimatePresence>
+        {loading && <LoadingScreen message={loadingMessage} />}
+      </AnimatePresence>
       <div className={styles.blank_page}>
-        <div className="w-64">
-          <SideMenu />
-        </div>
+        <Navbar />
 
         <div className={styles.page_container}>
           <div className={styles.header_container}>

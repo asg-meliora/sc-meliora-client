@@ -7,20 +7,39 @@ const styles = {
   input_icon: "absolute top-3 right-3 text-gray-600 text-xl align self-center",
 
   // > General
-  blank_page: "flex bg-whiteN min-h-screen",
+  blank_page: "sm:flex bg-white sm:bg-[#F4F4F7] min-h-screen",
   page_container: "w-full flex flex-col flex-grow",
-  header_container: "flex items-center justify-between bg-black-gradient h-20 px-6 py-1 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]",
-  heading_page: "text-4xl font-cinzel font-medium heading-gradient",
+  header_container: "flex items-center justify-between bg-black-gradient h-20 px-5 py-1 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]",
+  heading_page: "text-lg text-center sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl md:text-start font-cinzel font-medium heading-gradient",
   button_header_container: "flex flex-col justify-end my-4",
-  button_header: "flex items-center gap-2 bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium hover:font-bold px-4 py-2 rounded-lg hover:scale-110 transform transition-all",
+  button_header: "flex items-center gap-2 bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium hover:font-bold px-5 py-4 sm:px-4 sm:py-3 rounded-xl sm:rounded-lg  hover:scale-110 transform transition-all",
  
-  // > Table
+  // > Table General
   table_layout: "w-full px-1 border-collapse overflow-hidden",
   table_container: "overflow-x-auto bg-whiteN p-4",
-  table: "w-full border-collapse overflow-hidden rounded-b-xl shadow-mid shad",
-  table_header: "bg-radial from-[#dd9206] via-[#835f1c] to-[#6d581d] drop-shadow-[0_0_12px_rgba(0,0,0,0.5)] text-white font-raleway uppercase text-sm",
-  table_header_cell: "p-4 text-center ",
+  table: "w-full border-collapse overflow-hidden rounded-b-xl shadow-mid",
+  table_header: "bg-radial from-[#dd9206] via-[#835f1c] to-[#6d581d] text-white font-raleway uppercase text-sm",
+  table_header_cell: "p-4 text-center",
   table_body: "text-gray-700 font-inter text-sm",
+
+  // > Table Details
+  d_table_container: "flex flex-col lg:flex-row justify-between gap-6 mt-1 ml-2 mr-2 p-4",
+  d_table_column_container: "w-full lg:w-1/2 overflow-x-auto h-full",
+  d_table_heading: "text-2xl font-raleway font-bold mb-2 text-gray-800 text-center",
+  d_table: "w-full h-full table-fixed border-separate border-spacing-0 border-6  border-[#F4F4F7] rounded-md min-w-[300px]",
+  d_table_header: "bg-gray-100 text-gray-700 border-r-6 border-[#F4F4F7] rounded-sm text-sm md:text-base font-bold font-raleway p-3",
+  d_table_data: "p-3 text-sm text-gray-800 border-[#F4F4F7] rounded-sm whitespace-pre-wrap font-inter break-words w-2/3",
+  d_table_input: "w-full p-2 rounded-md bg-linear-0 from-[#ffffff] via-[#eeeeee] to-[#ffffff] border border-gray-300 shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-blue-400 focus:scale-105 focus:mt-0.5 transition-all  px-3 py-2 text-sm shadow-sm focus:outline-none",
+  // > Details Files
+  d_files_container: "bg-white shadow-sm border border-gray-200 w-[80%] mx-auto rounded-lg py-10 px-5 grid grid-cols-1 lg:grid-cols-3 gap-6 place-items-center grid-cols-auto justify-items-center",
+  d_files_article: "flex flex-col items-center justify-center w-[90%] max-w-xd  bg-whiteN rounded-lg",
+  d_files_info_container: "w-full px-4 py-4 flex flex-col items-center",
+  d_files_info_header:"flex flex-col items-center",
+  d_files_info_icon: "w-24 h-24 my-2 text-gray-800",
+  d_files_info_title: "text-center font-semibold font-inter text-lg text-gray-800 md:text-base",
+  d_files_info_date: "text-sm text-gray-600 italic font-inter",
+  d_files_hr: "w-full border-t-6 border-white",
+  d_files_buttons_container: "w-full px-4 mt-4 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center gap-3 text-center justify-center",
 
   // > Form
   form_container: "fixed top-0 right-0 w-full h-full flex justify-center items-center",

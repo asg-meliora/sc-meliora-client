@@ -40,7 +40,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
     { label: "Tipo", key: "type_pipeline" },
     { label: "Asignado", key: "assigned_user_sender" },
     { label: "Concepto", key: "concept" },
-    { label: "Ciclo de Vida", key: "created_at" },
+    { label: "Tiempo", key: "created_at" },
     { label: "Subtotal", key: "subtotal" },
     { label: "Iva", key: "iva" },
     { label: "Monto", key: "total_refund" },

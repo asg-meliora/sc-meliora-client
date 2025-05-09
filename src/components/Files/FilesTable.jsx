@@ -7,17 +7,6 @@ import { SlOptionsVertical } from "react-icons/sl";
 function FilesTable({ newFiles }) {
   const navigate = useNavigate();
 
-  // "client_id": 6,
-  // "name_rs": "exampleRS5",
-  // "rfc": "GFC435",
-  // "curp": "LPKI2RTY5",
-  // "address": "calle5",
-  // "zip_code": "904504",
-  // "phone": "7771232334",
-  // "email": "exapmle2cliente@ex.com",
-  // "bank_account": "0129301923"
-  // "created_at": "2025-03-25T00:57:41.000Z"
-
   const FormattedDate = ({ dateString }) => {
     const date = new Date(dateString);
     const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(
@@ -36,11 +25,10 @@ function FilesTable({ newFiles }) {
           <table className={`${styles.table} rounded-2xl`}>
             <thead className={styles.table_header}>
               <tr>
+                {/* <tr>
                 {[
                   "Razón Social",
                   "RFC",
-                  "CURP",
-                  "Dirección",
                   "Teléfono",
                   "Email",
                   "Número de cuenta",
@@ -51,6 +39,28 @@ function FilesTable({ newFiles }) {
                     {title}
                   </th>
                 ))}
+              </tr> */}
+                <th className={`${styles.table_header_cell}`}>Razón Social</th>
+                <th className={`${styles.table_header_cell}`}>RFC</th>
+                <th
+                  className={`${styles.table_header_cell} hidden lg:table-cell`}
+                >
+                  Teléfono
+                </th>
+                <th
+                  className={`${styles.table_header_cell} hidden md:table-cell`}
+                >
+                  Email
+                </th>
+                <th className={`${styles.table_header_cell}   hidden sm:table-cell`}>
+                  Número de Cuenta
+                </th>
+                <th
+                  className={`${styles.table_header_cell} hidden lg:table-cell`}
+                >
+                  Fecha de creación
+                </th>
+                <th className={`${styles.table_header_cell}`}>Acciones</th>
               </tr>
             </thead>
             <tbody className={styles.table_body}>
@@ -62,19 +72,22 @@ function FilesTable({ newFiles }) {
                   } hover:bg-[#313131] hover:text-white transition-all`}
                 >
                   <td
-                    className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transform transition-all"
+                    className="p-3 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transition-all"
                     onClick={() => navigate(`/files/details/${item.client_id}`)}
                   >
                     {item.name_rs}
                   </td>
-                  <td className="p-4 text-center">{item.rfc}</td>
-                  <td className="p-4 text-center">{item.curp}</td>
-                  <td className="p-4 text-center">{item.address}</td>
-                  <td className="p-4 text-center">{item.phone}</td>
-                  <td className="p-4 text-center">{item.email}</td>
-                  {/* <td className="p-4 text-center">{item.zip_code}</td> */}
-                  <td className="p-4 text-center">{item.bank_account}</td>{" "}
-                  <td className="p-4 text-center">
+                  <td className="px-2 text-center">{item.rfc}</td>
+                  <td className="px-1 text-center hidden lg:table-cell">
+                    {item.phone}
+                  </td>
+                  <td className="px-3 text-center hidden md:table-cell text-[12px] lg:text-sm">
+                    {item.email}
+                  </td>
+                  <td className=" text-center md-text-[12px] lg:text-sm hidden sm:table-cell">
+                    {item.bank_account}
+                  </td>
+                  <td className=" text-center hidden lg:table-cell">
                     <FormattedDate dateString={item.created_at} />
                   </td>
                   <td className="p-4 text-center">

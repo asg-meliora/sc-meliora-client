@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import LoadingScreen from "../components/LoadingScreen";
 
 import HistoricalTable from '../components/Historical/HistoricalTable';
+import Navbar from '../components/Navbar';
 import CancelInvoiceForm from '../components/Historical/CancelInvoiceForm';
 
 const Historical = ({ api }) => {
@@ -56,10 +57,8 @@ const Historical = ({ api }) => {
   return (
     <>
       <div className={styles.blank_page}>
-        <div className="w-64">
-          <SideMenu />
-        </div>
-
+        <Navbar />
+        
         <div className={styles.page_container}>
           <div className={styles.header_container}>
             <h2 className={styles.heading_page}>Histórico</h2>

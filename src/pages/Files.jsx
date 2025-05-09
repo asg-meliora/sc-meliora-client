@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import SideMenu from "../components/SideMenu";
 import FilesTable from "../components/Files/FilesTable";
 import FilesCreate from "../components/Files/FilesCreate";
 import Cookies from "js-cookie";
@@ -7,13 +6,19 @@ import LoadingScreen from "../components/LoadingScreen";
 import styles from "../styles";
 import { FaPlus } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
+import Navbar from "../components/Navbar";
+import { MdMenu } from "react-icons/md";
+import SideMenu from "../components/SideMenu";
 
 const Files = ({ api }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); //Estado para manejar el status del modal
   const [newFiles, setNewFiles] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(true); // Estado de carga
-  const [loadingMessage, setLoadingMessage] = useState("Cargando expedientes...");
+  const [loadingMessage, setLoadingMessage] = useState(
+    "Cargando expedientes..."
+  );
+  const [showSidemenu, setShowSideMenu] = useState(false);
 
   useEffect(() => {
     const getClients = async () => {
@@ -37,23 +42,15 @@ const Files = ({ api }) => {
 
     getClients();
   }, [api]);
-  // vacío, se ejecuta cada vez que renderiza el componente
-  // [], se ejecuta la primera vez que renderiza el componente
-  // [estado], se ejecuta solo cuando se actualice el estado, sin bucle
-
-  //Pantalla de Carga
-  // if (loading) {
-  //   return <LoadingScreen />;
-  // }
 
   // Manejo de errores
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-red-500 text-xl font-semibold">{error}</p>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <p className="text-red-500 text-xl font-semibold">{error}</p>
+  //     </div>
+  //   );
+  // }
 
   // Función para manejar la adición de un nuevo expediente
   const handleNewFile = (newFile) => {
@@ -67,23 +64,33 @@ const Files = ({ api }) => {
   //console.log('Debug Padre',newFiles);
   return (
     <>
-      <AnimatePresence>{loading && <LoadingScreen message={loadingMessage} />}</AnimatePresence>
-      
-      <div className={styles.blank_page}>
-        <div className="w-64">
-          <SideMenu />
-        </div>
+      <AnimatePresence>
+        {loading && <LoadingScreen message={loadingMessage} />}
+      </AnimatePresence>
 
+      <div className={styles.blank_page}>
+        <Navbar />
+        {showSidemenu && <SideMenu setFullSideBar={setShowSideMenu} />}
         <div className={styles.page_container}>
           <div className={styles.header_container}>
+            <div className="inline sm:hidden text-white">
+              <div>
+                <button
+                  onClick={() => setShowSideMenu(true)}
+                  className="mt-auto mb-6 p-2 text-3xl rounded-lg hover:cursor-pointer hover:scale-115 transform transition-all"
+                >
+                  <MdMenu />
+                </button>
+              </div>
+            </div>
             <h2 className={styles.heading_page}>Expedientes</h2>
             <div className={styles.button_header_container}>
               <button
                 onClick={() => setIsModalOpen(true)}
                 className={styles.button_header}
               >
-                {" "}
-                <FaPlus /> Crear Expediente
+                <FaPlus />{" "}
+                <span className="hidden sm:inline-block">Crear Expediente</span>
               </button>
             </div>
           </div>
