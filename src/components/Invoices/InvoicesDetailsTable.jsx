@@ -330,7 +330,7 @@ function InvoicesDetailsTable({ api, userId, invoiceId, setLoading }) {
             </div>
 
             {/* Botón de Terminado */}
-            {isAllDocsUploaded && userId > 0 && (
+            {isAllDocsUploaded && userId >= 0 && (
                 <div className="flex justify-center">
                     <button
                         className="bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow"
@@ -352,7 +352,7 @@ function InvoicesDetailsTable({ api, userId, invoiceId, setLoading }) {
                         <header className={styles.d_files_info_header}>
                             <SiGoogledocs className={styles.d_files_info_icon} />
                             <h3 className={styles.d_files_info_title}>Archivo {DiccDocs[index]}</h3>
-                            <p className={styles.d_files_info_date}>(Subir Archivo {index.endsWith("XML") ? ".xml" : ".pdf"})</p>
+                            <p className={styles.d_files_info_date}>{userId >= 0 ? `(Subir Archivo ${index.endsWith("XML") ? ".xml" : ".pdf"})` : "(Archivo Faltante)"}</p>
                         </header>
 
                         <hr className={styles.d_files_hr} />
