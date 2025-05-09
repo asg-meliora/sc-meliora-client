@@ -31,7 +31,7 @@ const ErrorToast = ({ message, onClose, variant = "text", autoClose = true, dura
           <p>{message}</p>
           <button
             onClick={handleReload}
-            className="mt-2 flex items-center gap-2 text-red-700 hover:underline text-sm"
+            className="mt-2 flex items-center gap-2 text-red-700 hover:underline hover:cursor-pointer text-sm hover:scale-110 transition-all"
           >
             <IoReload className="w-4 h-4" />
             Recargar página

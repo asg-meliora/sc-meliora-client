@@ -9,6 +9,8 @@ import { AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import { MdMenu } from "react-icons/md";
 import SideMenu from "../components/SideMenu";
+import ErrorToast from "../components/ErrorToast";
+import SuccessToast from "../components/SuccessToast";
 
 const Files = ({ api }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); //Estado para manejar el status del modal
@@ -19,6 +21,8 @@ const Files = ({ api }) => {
     "Cargando expedientes..."
   );
   const [showSidemenu, setShowSideMenu] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     const getClients = async () => {
@@ -107,9 +111,35 @@ const Files = ({ api }) => {
             onAddFile={handleNewFile}
             setLoading={setLoading}
             setLoadingMessage={setLoadingMessage}
-          />
+            />
+            setSuccess={setSuccess}
+            setSuccessMessage={setSuccessMessage}
         </div>
       )}
+
+      <div className="fixed bottom-4 right-4 z-50">
+        <AnimatePresence>
+          {error && (
+            <ErrorToast
+              message={error}
+              onClose={() => setError(null)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="fixed bottom-4 right-4 z-50">
+        <AnimatePresence>
+          {success && (
+            <SuccessToast
+              message={successMessage}
+              onClose={() => setSuccess(false)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
 };

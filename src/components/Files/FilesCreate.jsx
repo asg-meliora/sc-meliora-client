@@ -71,6 +71,8 @@ function FilesCreate({
   onAddFile,
   setLoading,
   setLoadingMessage,
+  setSuccess,
+  setSuccessMessage,
 }) {
   if (!isOpen) return null;
 
@@ -216,6 +218,8 @@ function FilesCreate({
         const newClient = await clientResponse.json();
         onAddFile(newClient.results);
         onClose();
+        setSuccess(true);
+        setSuccessMessage("Expediente creado exitosamente");
       }
     } catch (error) {
       setErrorMessage(
@@ -225,7 +229,6 @@ function FilesCreate({
       console.error("Error:", error);
       // alert(error.message);
     } finally {
-      console.log("Ended");
       setLoading(false);
     }
   };

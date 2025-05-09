@@ -3,6 +3,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa6";
 import { motion } from "framer-motion";
 
+
 const SuccessToast = ({ message, onClose, variant = "text", autoClose = true, duration = 5000 }) => {
   useEffect(() => {
     if (!autoClose) return;
@@ -30,7 +31,7 @@ const SuccessToast = ({ message, onClose, variant = "text", autoClose = true, du
       {variant === "text" ? (
         <button
           onClick={onClose}
-          className="text-green-700 font-semibold hover:underline"
+          className="text-green-700 font-semibold hover:underline  hover:cursor-pointer text-sm hover:scale-110 transition-all"
         >
           Cerrar
         </button>

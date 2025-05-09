@@ -275,42 +275,6 @@ const CreateInvoiceForm = ({
                 $MXN
               </span>
             </div>
-            {/* Invoice Subtotal */}
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                name="invoice_subtotal"
-                placeholder="Subtotal"
-                step={0.01}
-                min={0}
-                value={formData.invoice_subtotal || ""}
-                onChange={handleChange}
-                required
-                className={`${styles.input_form} pr-16`}
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                $MXN
-              </span>
-            </div>
-            {/* Invoice Iva */}
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                name="invoice_iva"
-                placeholder="Iva"
-                step={0.01}
-                min={0}
-                value={formData.invoice_iva || ""}
-                onChange={handleChange}
-                required
-                className={`${styles.input_form} pr-16`}
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                $MXN
-              </span>
-            </div>
 
             {/* Invoice Comision */}
             <div className="relative">
@@ -331,7 +295,57 @@ const CreateInvoiceForm = ({
               </span>
             </div>
 
-            {/* Select de Razón Social Primario */}
+            {/* Invoice Iva */}
+            <div className="relative">
+              <input
+                type="number"
+                inputMode="decimal"
+                name="invoice_iva"
+                placeholder="Iva"
+                step={0.01}
+                min={0}
+                value={formData.invoice_iva || ""}
+                onChange={handleChange}
+                required
+                disabled
+                className={`${styles.input_form} pr-16`}
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                $MXN
+              </span>
+            </div>
+            
+            {/* Today date */}
+            <input
+              type="text"
+              name="invoice_concept"
+              value="08/05/2025"
+              onChange={handleChange}
+              disabled
+              className={styles.input_form}
+            />
+           
+            {/* Invoice Subtotal */}
+            <div className="relative">
+              <input
+                type="number"
+                inputMode="decimal"
+                name="invoice_subtotal"
+                placeholder="Subtotal"
+                step={0.01}
+                min={0}
+                value={formData.invoice_subtotal || ""}
+                onChange={handleChange}
+                disabled
+                required
+                className={`${styles.input_form} pr-16`}
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                $MXN
+              </span>
+            </div>
+
+             {/* Select de Razón Social Primario */}
             <select
               name="invoice_client_sender"
               value={formData.invoice_client_sender || ""}
@@ -358,6 +372,7 @@ const CreateInvoiceForm = ({
                   </option>
                 ))}
             </select>
+
             {/* Usuario asignado */}
             <div className={`${styles.input_form} pr-16`}>
               {users.user_name ? (
