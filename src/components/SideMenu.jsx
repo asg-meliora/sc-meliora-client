@@ -44,7 +44,7 @@ const SideMenu = ({ setFullSideBar }) => {
         return [
           {
             name: "Facturas",
-            route: "/user/invoices/:userId",
+            route: `/user/invoices/${Cookies.get("user_id")}`,
             icon: <FaFileInvoiceDollar />,
           },
         ];

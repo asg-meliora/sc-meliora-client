@@ -111,9 +111,9 @@ const Files = ({ api }) => {
             onAddFile={handleNewFile}
             setLoading={setLoading}
             setLoadingMessage={setLoadingMessage}
-            />
             setSuccess={setSuccess}
             setSuccessMessage={setSuccessMessage}
+            />
         </div>
       )}
 

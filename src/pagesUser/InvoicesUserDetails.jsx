@@ -7,10 +7,15 @@ import styles from "../styles";
 import { AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import LoadingScreen from "../components/LoadingScreen";
+import SuccessToast from "../components/SuccessToast";
+import ErrorToast from "../components/ErrorToast";
 
 function InvoicesUserDetails({ api }) {
   const { userId, invoiceId } = useParams();
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [error, setError] = useState(false);
 
   //TODO: cambiar a useCallback y cambiar el uso de localStorage por otra forma de guardar el progreso
   useEffect(() => {
@@ -61,8 +66,35 @@ function InvoicesUserDetails({ api }) {
             userId={userId}
             invoiceId={invoiceId}
             setLoading={setLoading}
+            setSuccess={setSuccess}
+            setSuccessMessage={setSuccessMessage}
+            setError={setError}
           />
         </div>
+      </div>
+
+      <div className="fixed bottom-4 right-4 z-50">
+        <AnimatePresence>
+          {error && (
+            <ErrorToast
+              message={error}
+              onClose={() => setError(null)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="fixed bottom-4 right-4 z-50">
+        <AnimatePresence>
+          {success && (
+            <SuccessToast
+              message={successMessage}
+              onClose={() => setSuccess(false)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
