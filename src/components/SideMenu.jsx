@@ -14,7 +14,6 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 
 import lion from "../assets/lion.webp";
 
-console.log(Cookies.get("role_id"));
 
 const SideMenu = ({ setFullSideBar }) => {
   function GetMenuItems() {

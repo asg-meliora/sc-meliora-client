@@ -73,6 +73,7 @@ function FilesCreate({
   setLoadingMessage,
   setSuccess,
   setSuccessMessage,
+  getClients,
 }) {
   if (!isOpen) return null;
 
@@ -118,6 +119,8 @@ function FilesCreate({
     const { name, files } = e.target;
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
+
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -202,21 +205,7 @@ function FilesCreate({
       if (!response.ok) throw new Error("Error al crear el cliente");
 
       const result = await response.json();
-      if (result.client_id) {
-        const clientResponse = await fetch(
-          `${api}/clients/byid/${result.client_id}`,
-          {
-            headers: { "x-access-token": Cookies.get("token") },
-          }
-        );
-        if (!clientResponse.ok)
-          throw new Error("Error al obtener los datos del cliente");
-        const newClient = await clientResponse.json();
-        onAddFile(newClient.results);
-        onClose();
-        setSuccess(true);
-        setSuccessMessage("Expediente creado exitosamente");
-      }
+      getClients();
     } catch (error) {
       setErrorMessage(
         error.message || "Hubo un error en el servidor. Inténtalo de nuevo."

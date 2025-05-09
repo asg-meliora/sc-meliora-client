@@ -5,7 +5,7 @@ import styles from "../../styles";
 import { SlOptionsVertical } from "react-icons/sl";
 import { MdOutlineCancel } from "react-icons/md";
 
-function FilesTable({ newFiles }) {
+function FilesTable({ newFiles, handleAnnulledForm }) {
   const navigate = useNavigate();
 
   const FormattedDate = ({ dateString }) => {
@@ -53,7 +53,9 @@ function FilesTable({ newFiles }) {
                 >
                   Email
                 </th>
-                <th className={`${styles.table_header_cell}   hidden sm:table-cell`}>
+                <th
+                  className={`${styles.table_header_cell}   hidden sm:table-cell`}
+                >
                   Número de Cuenta
                 </th>
                 <th
@@ -93,7 +95,7 @@ function FilesTable({ newFiles }) {
                   </td>
                   <td className="p-4 text-center">
                     <button
-                      onClick={() => {}}
+                      onClick={() => handleAnnulledForm(item.client_id)}
                       className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
                     >
                       {/* <SlOptionsVertical size={18} /> */}

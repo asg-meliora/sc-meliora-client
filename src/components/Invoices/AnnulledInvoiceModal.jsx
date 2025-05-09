@@ -26,7 +26,7 @@ function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuc
             setError(err.message);
         } finally {
             setCancelShowForm(false); // Cierra el modal después de la acción
-            window.location.reload()
+            window.location.reload() // TODO: recharge with USestate instead of reload
         }
     };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, use } from "react";
 import FilesTable from "../components/Files/FilesTable";
 import FilesCreate from "../components/Files/FilesCreate";
 import Cookies from "js-cookie";
@@ -11,9 +11,11 @@ import { MdMenu } from "react-icons/md";
 import SideMenu from "../components/SideMenu";
 import ErrorToast from "../components/ErrorToast";
 import SuccessToast from "../components/SuccessToast";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const Files = ({ api }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false); //Estado para manejar el status del modal
+  const [createModalOpen, setCreateModalOpen] = useState(false); //Estado para manejar el status del modal
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false); //Estado para manejar el status del modal
   const [newFiles, setNewFiles] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(true); // Estado de carga
@@ -23,9 +25,32 @@ const Files = ({ api }) => {
   const [showSidemenu, setShowSideMenu] = useState(false);
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [clientId, setClientId] = useState(null);
 
-  useEffect(() => {
-    const getClients = async () => {
+  // useEffect(() => {
+  //   const getClients = async () => {
+  //     try {
+  //       const response = await fetch(`${api}/clients/active`, {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "x-access-token": Cookies.get("token"),
+  //         },
+  //       });
+
+  //       const data = await response.json();
+  //       setNewFiles(data);
+  //     } catch (err) {
+  //       setError(err.message);
+  //     } finally {
+  //       setLoading(false); // Carga finalizada
+  //     }
+  //   };
+
+  //   getClients();
+  // }, [api]);
+ 
+    const getClients = useCallback(async () => {
       try {
         const response = await fetch(`${api}/clients/active`, {
           method: "GET",
@@ -42,19 +67,11 @@ const Files = ({ api }) => {
       } finally {
         setLoading(false); // Carga finalizada
       }
-    };
+    }, [api]);
 
+  useEffect(() => {
     getClients();
-  }, [api]);
-
-  // Manejo de errores
-  // if (error) {
-  //   return (
-  //     <div className="flex items-center justify-center h-screen">
-  //       <p className="text-red-500 text-xl font-semibold">{error}</p>
-  //     </div>
-  //   );
-  // }
+  }, [getClients])
 
   // Función para manejar la adición de un nuevo expediente
   const handleNewFile = (newFile) => {
@@ -63,6 +80,11 @@ const Files = ({ api }) => {
       ...prevFiles,
       results: [...prevFiles.results, ...updatedResults],
     })); // Acceder a prevFiles.results
+  };
+
+  const handleAnnulledForm = (clientId) => {
+    setClientId(clientId);
+    setDeleteModalOpen(true);
   };
 
   //console.log('Debug Padre',newFiles);
@@ -90,7 +112,7 @@ const Files = ({ api }) => {
             <h2 className={styles.heading_page}>Expedientes</h2>
             <div className={styles.button_header_container}>
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setCreateModalOpen(true)}
                 className={styles.button_header}
               >
                 <FaPlus />{" "}
@@ -98,22 +120,43 @@ const Files = ({ api }) => {
               </button>
             </div>
           </div>
-          <FilesTable api={api} newFiles={newFiles} />
+          <FilesTable
+            api={api}
+            newFiles={newFiles}
+            handleAnnulledForm={handleAnnulledForm}
+          />
         </div>
       </div>
-      {isModalOpen && (
+      {createModalOpen && (
         <div className={`${styles.form_container}`}>
           <div className={styles.form_modal_bg}></div>
           <FilesCreate
             api={api}
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+            isOpen={createModalOpen}
+            onClose={() => setCreateModalOpen(false)}
             onAddFile={handleNewFile}
             setLoading={setLoading}
             setLoadingMessage={setLoadingMessage}
             setSuccess={setSuccess}
             setSuccessMessage={setSuccessMessage}
-            />
+            setClientId={setClientId}
+            getClients={getClients}
+          />
+        </div>
+      )}
+
+      {deleteModalOpen && (
+        <div className={`${styles.form_container}`}>
+          <div className={styles.form_modal_bg}></div>
+          <ConfirmDeleteModal
+            setDeleteModalOpen={setDeleteModalOpen}
+            api={api} 
+            clientId={clientId}
+            setSuccess={setSuccess}
+            setSuccessMessage={setSuccessMessage}
+            setError={setError}
+            getClients={getClients}
+          />
         </div>
       )}
 
