@@ -109,7 +109,7 @@ const Invoices = ({ api }) => {
 
   return (
     <>
-      <AnimatePresence>{loading && <LoadingScreen message={"Cargando información"} />}</AnimatePresence>
+      <AnimatePresence>{loading && <LoadingScreen message={"Cargando facturas..."} />}</AnimatePresence>
 
       <div className={styles.blank_page}>
         <Navbar />

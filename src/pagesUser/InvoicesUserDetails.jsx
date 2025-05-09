@@ -6,6 +6,7 @@ import InvoicesDetailsTable from "../components/Invoices/InvoicesDetailsTable";
 import styles from "../styles";
 import { AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
+import LoadingScreen from "../components/LoadingScreen";
 
 function InvoicesUserDetails({ api }) {
   const { userId, invoiceId } = useParams();
@@ -47,7 +48,7 @@ function InvoicesUserDetails({ api }) {
   return (
     <>
       <AnimatePresence>
-        {loading && <LoadingScreen message={"Cargando información"} />}
+        {loading && <LoadingScreen message={"Cargando..."} />}
       </AnimatePresence>
       <div className={styles.blank_page}>
         <Navbar />

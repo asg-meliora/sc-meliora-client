@@ -130,13 +130,12 @@ function FileDetail({ api }) {
 
       const result = await response.json();
       // setNewFiles({ results: result });
-      console.log(result);
+      setSuccess(true);
+      setSuccessMessage("Datos actualizados exitosamente");
     } catch (err) {
       setError(err.message);
     } finally {
       setIsEditing(false); // Finaliza la edición
-      setSuccess(true);
-      setSuccessMessage("Datos actualizados exitosamente");
     }
   };
 
@@ -145,11 +144,6 @@ function FileDetail({ api }) {
     // setLoading(true); // Carga finalizada
     const formData = new FormData();
     formData.append("document", file);
-
-    console.log("Contenido de FormData Antes de:");
-    for (let pair of formData.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
 
     try {
       const response = await fetch(`${api}/docs/update/${documentId}`, {
@@ -163,8 +157,6 @@ function FileDetail({ api }) {
       if (!response.ok) throw new Error("Error al subir el archivo");
 
       const data = await response.json();
-      console.log("Archivo subido:", data);
-      //alert("Archivo actualizado exitosamente");
 
       // Refresca la lista de archivos
       const updatedDocs = await fetch(`${api}/docs/byid/${id}`, {
@@ -182,8 +174,6 @@ function FileDetail({ api }) {
       setSuccess(true);
     }
   };
-
-  console.log(fileUrl);
 
   return (
     <>
