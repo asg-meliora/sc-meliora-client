@@ -10,7 +10,8 @@ const styles = {
   blank_page: "sm:flex bg-white sm:bg-[#F4F4F7] min-h-screen",
   page_container: "w-full flex flex-col flex-grow",
   header_container: "flex items-center justify-between bg-black-gradient h-20 px-5 py-1 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]",
-  heading_page: "text-lg text-center sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl md:text-start font-cinzel font-medium heading-gradient",
+  heading_page: "text-3xl text-center sm:text-4xl  md:text-start font-cinzel font-medium heading-gradient",
+  heading_details_page: "text-lg text-center sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl md:text-start font-cinzel font-medium heading-gradient",
   button_header_container: "flex flex-col justify-end my-4",
   button_header: "flex items-center gap-2 bg-gold-gradient menuButton hover:cursor-pointer text-white font-lora font-medium hover:font-bold px-5 py-4 sm:px-4 sm:py-3 rounded-xl sm:rounded-lg  hover:scale-110 transform transition-all",
  

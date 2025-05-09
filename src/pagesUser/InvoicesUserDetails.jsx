@@ -53,7 +53,7 @@ function InvoicesUserDetails({ api }) {
         <Navbar />
         <div className={styles.page_container}>
           <div className={styles.header_container}>
-            <h2 className={styles.heading_page}>Facturas</h2>
+            <h2 className={styles.heading_details_page}>Facturas</h2>
           </div>
           <InvoicesDetailsTable
             api={api}

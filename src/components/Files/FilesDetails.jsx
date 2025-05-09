@@ -192,7 +192,7 @@ function FileDetail({ api }) {
         <Navbar />
         <div className={styles.page_container}>
           <div className={styles.header_container}>
-            <h2 className={styles.heading_page}>{newData.results.name_rs}</h2>
+            <h2 className={styles.heading_details_page}>{newData.results.name_rs}</h2>
             {/* <h2 className={styles.heading_page}>Expediente No. {id}</h2> */}
             {!isEditing && (
               <div className={styles.button_header_container}>

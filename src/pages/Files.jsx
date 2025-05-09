@@ -73,7 +73,7 @@ const Files = ({ api }) => {
         {showSidemenu && <SideMenu setFullSideBar={setShowSideMenu} />}
         <div className={styles.page_container}>
           <div className={styles.header_container}>
-            <div className="inline sm:hidden text-white">
+            <div className="inline pt-5.5 sm:hidden text-white">
               <div>
                 <button
                   onClick={() => setShowSideMenu(true)}

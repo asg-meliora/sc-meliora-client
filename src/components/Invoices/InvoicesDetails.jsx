@@ -22,7 +22,7 @@ function InvoicesDetails({ api }) {
         <Navbar />
         <div className={styles.page_container}>
           <div className={styles.header_container}>
-            <h2 className={styles.heading_page}>Factura {id}</h2>
+            <h2 className={styles.heading_details_page}>Factura {id}</h2>
           </div>
           <div className="w-full mb-6">
             <InvoicesDetailsTable
