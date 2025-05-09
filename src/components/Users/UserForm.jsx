@@ -82,7 +82,7 @@ const UserForm = ({
       !formData.user_name.length > 20
     ) {
       setErrorMessage(
-        "Por favor, introduce un nombre valido. (Mínimo 3 y máximo 20 caracteres)"
+        "Por favor, introduce un nombre válido. (Mínimo 3 y máximo 20 caracteres)."
       );
       return;
     }
@@ -108,7 +108,7 @@ const UserForm = ({
     // > Invalid password format
     else if (!initialData && !validatePassword(formData.password_hash)) {
       setErrorMessage(
-        "La contraseña debe tener al menos 8 caracteres, una mayuscula, un número y un símbolo."
+        "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo."
       );
       return;
     }

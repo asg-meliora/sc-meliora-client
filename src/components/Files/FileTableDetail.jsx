@@ -48,7 +48,6 @@ function FileTableDetail({
 
   // Función para manejar el cambio de valor en un campo
   const handleChange = (e, key) => {
-    console.log(item); //Quitarlo
     setItem({ ...item, [key]: e.target.value });
   };
 

@@ -79,7 +79,7 @@ const CreateInvoiceForm = ({
     }
 
     try {
-      const response = await fetch(`${api}/clients`, {
+      const response = await fetch(`${api}/clients/active`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

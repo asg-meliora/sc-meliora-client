@@ -53,7 +53,7 @@ function InvoicesUser({ api }) {
   return (
     <>
       <AnimatePresence>
-        {loading && <LoadingScreen message={"Cargando información"} />}
+        {loading && <LoadingScreen message={"Cargando Facturas"} />}
       </AnimatePresence>
 
       <div className={styles.blank_page}>

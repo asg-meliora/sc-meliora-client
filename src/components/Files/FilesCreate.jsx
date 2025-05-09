@@ -109,8 +109,6 @@ function FilesCreate({
     fetchUsers(api);
   }, [api]);
 
-  console.log(formData); //QUITARLO
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -123,7 +121,6 @@ function FilesCreate({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Phone", formData.phone, validatePhone(formData.phone));
 
     if (!validateNameRS(formData.name_rs)) {
       setErrorMessage(
@@ -191,10 +188,10 @@ function FilesCreate({
     Object.entries(formData).forEach(([key, value]) => {
       if (value) data.append(key, value);
     });
-    console.log("Contenido de FormData:");
-    for (let pair of data.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+    // console.log("Contenido de FormData:");
+    // for (let pair of data.entries()) {
+    //   console.log(`${pair[0]}:`, pair[1]);
+    // }
     try {
       const response = await fetch(`${api}/clients/complete`, {
         method: "POST",
@@ -202,7 +199,6 @@ function FilesCreate({
         body: data,
       });
 
-      console.log(response);
       if (!response.ok) throw new Error("Error al crear el cliente");
 
       const result = await response.json();
@@ -226,8 +222,6 @@ function FilesCreate({
         error.message || "Hubo un error en el servidor. Inténtalo de nuevo."
       );
       setErrorExist(true);
-      console.error("Error:", error);
-      // alert(error.message);
     } finally {
       setLoading(false);
     }
