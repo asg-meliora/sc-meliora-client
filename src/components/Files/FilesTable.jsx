@@ -3,6 +3,7 @@ import "./FilesTable.css";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles";
 import { SlOptionsVertical } from "react-icons/sl";
+import { MdOutlineCancel } from "react-icons/md";
 
 function FilesTable({ newFiles }) {
   const navigate = useNavigate();
@@ -93,9 +94,10 @@ function FilesTable({ newFiles }) {
                   <td className="p-4 text-center">
                     <button
                       onClick={() => {}}
-                      className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2  hover:cursor-pointer transition-all transform hover:scale-120"
+                      className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
                     >
-                      <SlOptionsVertical size={18} />
+                      {/* <SlOptionsVertical size={18} /> */}
+                      <MdOutlineCancel size={18} />
                     </button>
                   </td>
                 </tr>
