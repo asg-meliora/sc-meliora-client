@@ -26,11 +26,11 @@ import {
   InvoicesUserDetails
 } from "./pagesUser/indexUser"
 
-const apiLink = import.meta.env.VITE_API_URL || "http://localhost:3001/api"; //import.meta.env.VITE_API_URL ||
+const apiLink = import.meta.env.VITE_API_URL;
 
 const router = createBrowserRouter(
   createRoutesFromElements([
-    <Route path="/" element={<Login api = {apiLink} />} />,
+    <Route path="/sc-meliora-client" element={<Login api = {apiLink} />} />,
     //Rutas de Admin
     <Route path="/files" element={<ProtectedRoute allowedRoles={[1]}> <Files api={apiLink}/> </ProtectedRoute>} />,
     <Route path="/files/details/:id" element={<ProtectedRoute allowedRoles={[1]}> <FilesDetails api={apiLink}/> </ProtectedRoute>} />,
