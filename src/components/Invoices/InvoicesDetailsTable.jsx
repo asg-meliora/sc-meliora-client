@@ -157,14 +157,14 @@ function InvoicesDetailsTable({
   };
   const Dicc3Head = {
     pipeline_id: "ID",
-    type_pipeline: "Tipo",
+    type_pipeline: "Tipo de Factura",
     concept: "Concepto",
     total_amount: "Total",
     subtotal: "Subtotal",
     iva: "IVA",
     total_refund: "Total Devolución",
     comision: "Cantidad de Comisión",
-    comision_percentage: "Porcentaje de Comisión",
+    comision_percentage: "Comisión (%)",
     payment_type: "Tipo de pago",
     status: "Estatus",
     created_at: "Fecha de creación",
@@ -335,6 +335,8 @@ function InvoicesDetailsTable({
                       ? "—"
                       : key === "created_at"
                       ? FormattedDate(dataInvoice[key])
+                      : key === "comision_percentage" 
+                      ? dataInvoice[key].slice(0,4)
                       : dataInvoice[key]}
                   </td>
                 </tr>
@@ -383,7 +385,7 @@ function InvoicesDetailsTable({
             <footer className={styles.d_files_buttons_container}>
               {uploadedDocs[index] ? (
                 <a
-                  className="cursor-pointer downloadButton text-white px-3 py-1 rounded font-medium font-inter w-[50%] shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all"
+                  className="cursor-pointer downloadButton text-white px-3 py-1 text-sm rounded font-medium font-inter w-[50%] shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all"
                   href={uploadedDocs[index]}
                 >
                   Ver archivo

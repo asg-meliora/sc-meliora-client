@@ -79,22 +79,22 @@ const Login = ({ api }) => {
       // Guardar el token y el role_id en las cookies
       Cookies.set("token", data.token, {
         expires: expireCookie,
-        secure: true,
+        //secure: true,
         sameSite: "strict",
       });
       Cookies.set("role_id", data.role_id, {
         expires: expireCookie,
-        secure: true,
+        // secure: true,
         sameSite: "strict",
       });
       Cookies.set("is_active", data.is_active, {
         expires: expireCookie,
-        secure: true,
+        //secure: true,
         sameSite: "strict",
       });
       Cookies.set("user_id", data.user_id, {
         expires: expireCookie,
-        secure: true,
+        //secure: true,
         sameSite: "strict",
       }); 
   

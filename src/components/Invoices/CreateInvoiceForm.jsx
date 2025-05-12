@@ -319,7 +319,7 @@ const CreateInvoiceForm = ({
             <input
               type="text"
               name="invoice_concept"
-              value="08/05/2025"
+              value="12/05/2025"
               onChange={handleChange}
               disabled
               className={styles.input_form}
