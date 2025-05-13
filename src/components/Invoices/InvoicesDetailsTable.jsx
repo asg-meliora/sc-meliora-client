@@ -106,7 +106,7 @@ function InvoicesDetailsTable({
       const data = await res.json();
       setUploadedDocs(data);
     } catch (error) {
-    //   setError("Error al obtener el documentos"); TODO When there are files has to exist
+      //   setError("Error al obtener el documentos"); TODO When there are files has to exist
       console.error("Error al obtener documentos:", error);
     }
   }, [api, invoiceId]);
@@ -190,7 +190,7 @@ function InvoicesDetailsTable({
   const facturaKeys = Object.keys(Dicc3Head); //(keys)
 
   // Lista de los 4 tipos de documentos
-  const documentTypes = ["PreXML", "FacXML", "PrePDF", "FacPDF"];
+  const documentTypes = ["PreXML", "PrePDF", "FacXML", "FacPDF"];
 
   const handleDocInvoiceUpload = async (e, docType) => {
     setLoading(true);
@@ -357,60 +357,126 @@ function InvoicesDetailsTable({
       )}
 
       {/* Todos los Documentos */}
-      <section
-        className={`bg-white shadow-sm border border-gray-200 w-[80%] mx-auto rounded-lg py-10 px-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 place-items-center grid-cols-auto justify-items-center`}
-      >
-        {documentTypes.map((index) => (
-          <article
-            key={index}
-            style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-            className={styles.d_files_article}
-          >
-            <header className={styles.d_files_info_header}>
-              <SiGoogledocs className={styles.d_files_info_icon} />
-              <h3 className={styles.d_files_info_title}>
-                Archivo {DiccDocs[index]}
-              </h3>
-              <p className={styles.d_files_info_date}>
-                {userId >= 0
-                  ? `(Subir Archivo ${index.endsWith("XML") ? ".xml" : ".pdf"})`
-                  : "(Archivo Faltante)"}
-              </p>
-            </header>
-
-            <hr className={styles.d_files_hr} />
-
-            <footer className={styles.d_files_buttons_container}>
-              {uploadedDocs[index] ? (
-                <a
-                  className="cursor-pointer downloadButton text-white px-3 py-1 rounded font-medium font-inter w-[50%] shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all"
-                  href={uploadedDocs[index]}
-                >
-                  Ver archivo
-                </a>
-              ) : (
-                userId >= 0 && (
-                  <>
-                    <label
-                      htmlFor={`upload-file-${index}`}
-                      className="cursor-pointer updateButton text-white px-3 py-1 text-sm rounded font-medium font-inter w-[80%] shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
+      <section className="bg-white shadow-sm border border-gray-200 w-[80%] mx-auto rounded-lg py-10 px-5 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Sección Prefactura */}
+        <div className="w-full mt-[-25px]">
+          <h2 className="text-3xl font-semibold font-inter text-gray-700 mb-2 text-center">
+            Prefactura
+          </h2>
+          <div className="flex flex-row gap-6 items-center">
+            {["PreXML", "PrePDF"].map((index) => (
+              <article
+                key={index}
+                style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
+                className={styles.d_files_article}
+              >
+                <header className={styles.d_files_info_header}>
+                  <SiGoogledocs className={styles.d_files_info_icon} />
+                  <h3 className={styles.d_files_info_title}>
+                    Archivo {DiccDocs[index]}
+                  </h3>
+                  <p className={styles.d_files_info_date}>
+                    {userId >= 0
+                      ? `(Subir Archivo ${
+                          index.endsWith("XML") ? ".xml" : ".pdf"
+                        })`
+                      : "(Archivo Faltante)"}
+                  </p>
+                </header>
+                <hr className={styles.d_files_hr} />
+                <footer className={styles.d_files_buttons_container}>
+                  {uploadedDocs[index] ? (
+                    <a
+                      className="cursor-pointer downloadButton text-white px-3 py-1 rounded font-medium font-inter w-[50%] shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all"
+                      href={uploadedDocs[index]}
                     >
-                      Seleccionar archivo
-                    </label>
-                    <input
-                      id={`upload-file-${index}`}
-                      type="file"
-                      hidden
-                      accept={index.includes("XML") ? ".xml" : ".pdf"}
-                      onChange={(e) => handleDocInvoiceUpload(e, index)}
-                    />
-                  </>
-                )
-              )}
-            </footer>
-            <div className="mb-4"></div>
-          </article>
-        ))}
+                      Ver archivo
+                    </a>
+                  ) : (
+                    userId >= 0 && (
+                      <>
+                        <label
+                          htmlFor={`upload-file-${index}`}
+                          className="cursor-pointer updateButton text-white px-3 py-1 text-sm rounded font-medium font-inter w-[80%] shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
+                        >
+                          Seleccionar archivo
+                        </label>
+                        <input
+                          id={`upload-file-${index}`}
+                          type="file"
+                          hidden
+                          accept={index.includes("XML") ? ".xml" : ".pdf"}
+                          onChange={(e) => handleDocInvoiceUpload(e, index)}
+                        />
+                      </>
+                    )
+                  )}
+                </footer>
+                <div className="mb-4"></div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        {/* Sección Factura */}
+        <div className="w-full mt-[-25px]">
+          <h2 className="text-3xl font-semibold font-inter text-gray-700 mb-2 text-center">
+            Factura
+          </h2>
+          <div className="flex flex-row gap-6 items-center">
+            {["FacXML", "FacPDF"].map((index) => (
+              <article
+                key={index}
+                style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
+                className={styles.d_files_article}
+              >
+                <header className={styles.d_files_info_header}>
+                  <SiGoogledocs className={styles.d_files_info_icon} />
+                  <h3 className={styles.d_files_info_title}>
+                    Archivo {DiccDocs[index]}
+                  </h3>
+                  <p className={styles.d_files_info_date}>
+                    {userId >= 0
+                      ? `(Subir Archivo ${
+                          index.endsWith("XML") ? ".xml" : ".pdf"
+                        })`
+                      : "(Archivo Faltante)"}
+                  </p>
+                </header>
+                <hr className={styles.d_files_hr} />
+                <footer className={styles.d_files_buttons_container}>
+                  {uploadedDocs[index] ? (
+                    <a
+                      className="cursor-pointer downloadButton text-white px-3 py-1 rounded font-medium font-inter w-[50%] shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all"
+                      href={uploadedDocs[index]}
+                    >
+                      Ver archivo
+                    </a>
+                  ) : (
+                    userId >= 0 && (
+                      <>
+                        <label
+                          htmlFor={`upload-file-${index}`}
+                          className="cursor-pointer updateButton text-white px-3 py-1 text-sm rounded font-medium font-inter w-[80%] shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
+                        >
+                          Seleccionar archivo
+                        </label>
+                        <input
+                          id={`upload-file-${index}`}
+                          type="file"
+                          hidden
+                          accept={index.includes("XML") ? ".xml" : ".pdf"}
+                          onChange={(e) => handleDocInvoiceUpload(e, index)}
+                        />
+                      </>
+                    )
+                  )}
+                </footer>
+                <div className="mb-4"></div>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
     </>
   );
