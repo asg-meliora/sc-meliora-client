@@ -261,15 +261,14 @@ function FileDetail({ api }) {
                       if (file) {
                         const isPdf = file.type === "application/pdf";
                         if (!isPdf) {
-                          setError("Solo se permiten archivos en formato PDF");
+                          setError("Solo se permiten archivos en formato PDF");//Rechazar si no es pdf
                         } else if (file.size > maxSizeBytes) {
-                          setError(`El archivo supera el límite de ${maxSizeMB}MB`);
+                          setError(`El archivo supera el límite de ${maxSizeMB}MB`);//Rechazar si pesa mucho
                         } else {
-                          handleFileUpload(file, urls.document_id);
+                          handleFileUpload(file, urls.document_id);//Subir Archivo
                         }
                       }
-                      e.target.value = null;
-                      console.log(e.target.value);
+                      e.target.value = null;//Resetear cualquier archivo cargado local
                     }}
                   />
                 </div>
