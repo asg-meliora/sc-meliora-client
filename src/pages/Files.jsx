@@ -11,7 +11,7 @@ import { MdMenu } from "react-icons/md";
 import SideMenu from "../components/SideMenu";
 import ErrorToast from "../components/ErrorToast";
 import SuccessToast from "../components/SuccessToast";
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import ConfirmDeleteModal from "../components/Files/ConfirmDeleteModal";
 
 const Files = ({ api }) => {
   const [createModalOpen, setCreateModalOpen] = useState(false); //Estado para manejar el status del modal
