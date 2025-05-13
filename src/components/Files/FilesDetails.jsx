@@ -141,7 +141,7 @@ function FileDetail({ api }) {
 
   //Función para Actulizar el archivo
   const handleFileUpload = async (file, documentId) => {
-    // setLoading(true); // Carga finalizada
+    setLoading(true); // Carga Iniciada
     const formData = new FormData();
     formData.append("document", file);
 
@@ -166,12 +166,12 @@ function FileDetail({ api }) {
       });
       const updatedRes = await updatedDocs.json();
       setFileUrl(updatedRes);
+      setSuccess(true);
+      setSuccessMessage("Archivo actualizado exitosamente");
     } catch (err) {
       setError(err.message);
-      alert("Hubo un error al subir el archivo");
     } finally {
-      setSuccessMessage("Archivo actualizado exitosamente");
-      setSuccess(true);
+      setLoading(false); // Carga Finalizada
     }
   };
 
@@ -255,9 +255,21 @@ function FileDetail({ api }) {
                     hidden
                     onChange={(e) => {
                       const file = e.target.files[0];
+                      const maxSizeMB = 2;
+                      const maxSizeBytes = maxSizeMB * 1024 * 1024; //Limite de tamaño de archivo 2MB
+
                       if (file) {
-                        handleFileUpload(file, urls.document_id);
+                        const isPdf = file.type === "application/pdf";
+                        if (!isPdf) {
+                          setError("Solo se permiten archivos en formato PDF");
+                        } else if (file.size > maxSizeBytes) {
+                          setError(`El archivo supera el límite de ${maxSizeMB}MB`);
+                        } else {
+                          handleFileUpload(file, urls.document_id);
+                        }
                       }
+                      e.target.value = null;
+                      console.log(e.target.value);
                     }}
                   />
                 </div>
