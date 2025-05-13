@@ -3,12 +3,12 @@ import styles from "../../styles";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { BsSend } from "react-icons/bs";
 import { IoCloudDownloadOutline, IoFilter, IoCaretUpOutline, IoCaretDownOutline } from "react-icons/io5";
-import { SlOptionsVertical } from "react-icons/sl";
+import { MdOutlineCancel } from "react-icons/md";
 
 import LoadingScreen from "../LoadingScreen";
 import Cookies from "js-cookie";
 
-// TODO: Date convertion to days
+// Formato Fecha
 const dateToDays = (date) => {
   const today = new Date();
   const invoiceDate = new Date(date);
@@ -17,9 +17,9 @@ const dateToDays = (date) => {
   return `${diffDays} día(s)`;
 };
 
-// TODO: Format subtotal to currency
+// Formato Moneda
 const formatCurrency = (value) => {
-  return Number(value).toLocaleString("es-MX", { style: "currency", currency: "MXN", });
+  return Number(value).toLocaleString("es-MX", { style: "currency", currency: "MXN" });
 };
 
 const statusColor = {
@@ -28,12 +28,12 @@ const statusColor = {
   Anulado: "bg-[#014293] shadow-blue-500/70 shadow-lg",
 };
 
-
 const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [checkAll, setCheckAll] = useState(false);
-  const [loading, setLoading] = useState(false); // Estado de carga
+  const [loading, setLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
+  const [filters, setFilters] = useState({});
 
   const columns = [
     { label: "ID", key: "pipeline_id" },
@@ -53,6 +53,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
     setLoading(true); // Carga inicial
     if (selectedIds.length === 0) {
       alert("No hay elementos seleccionados.");
+      setLoading(false);
       return;
     }
     try {
@@ -65,12 +66,10 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
         body: JSON.stringify({ ids: selectedIds }),
       });
 
-      //Error handling
       if (!response.ok) throw new Error("Error en la petición");
 
       const blob = await response.blob(); // Obtener el ZIP como blob
       const url = window.URL.createObjectURL(blob);
-
       const a = document.createElement("a");
       a.href = url;
       a.download = `Facturas_${new Date().toISOString().split("T")[0]}.zip`;
@@ -84,7 +83,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
       setLoading(false); // Carga finalizada
       setSelectedIds([]);
     }
-  }
+  };
 
   const handleCheckAll = () => {
     if (checkAll) {
@@ -98,7 +97,6 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
     setCheckAll(!checkAll);
   };
 
-  //*
   const handleSort = (columnKey) => {
     setSortConfig((prev) => {
       if (prev.key === columnKey) {
@@ -113,7 +111,17 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
     });
   };
 
-  const sortedData = [...dataBoard];
+  // FILTRADO
+  const filteredData = dataBoard.filter((item) => {
+    return Object.entries(filters).every(([key, value]) => {
+      if (!value) return true;
+      const cellValue = item[key];
+      return String(cellValue).toLowerCase().includes(value.toLowerCase());
+    });
+  });
+
+  // ORDENAMIENTO
+  const sortedData = [...filteredData];
   if (sortConfig.key && sortConfig.direction !== 'default') {
     sortedData.sort((a, b) => {
       const aVal = a[sortConfig.key];
@@ -136,19 +144,14 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
     });
   }
 
-  if (loading) {
-    return <LoadingScreen message="Cargando..." />; // Pantalla de carga
-  }
-
+  if (loading) return <LoadingScreen message="Cargando..." />;
 
   return (
     <>
       <div className={styles.table_layout}>
         <div className={styles.table_container}>
           {/* Botones */}
-          <div
-            className={`flex flex-row items-end justify-end gap-5 px-4 py-3 bg-[#313131] border-[#313131] rounded-t-lg`}
-          >
+          <div className="flex flex-row items-end justify-end gap-5 px-4 py-3 bg-[#313131] border-[#313131] rounded-t-lg">
             {/* <button className="flex items-center gap-2 text-sm p-2 font-semibold text-white hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all">
               <FaRegTrashAlt className="w-4 h-4 fill-current" />
               Eliminar
@@ -170,18 +173,15 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
           {/*Header */}
           <table className={styles.table}>
             <thead className={styles.table_header}>
+              {/* Encabezado principal con ordenamiento */}
               <tr>
                 <th className="flex p-4">
                   <button
                     onClick={handleCheckAll}
                     className={`w-6 h-6 flex items-center justify-center rounded-md border-2 hover:cursor-pointer hover:scale-120 transform transition-all 
-                    ${checkAll
-                        ? "bg-[#1a1a1a] border-[#eeb13f] text-[#eeb13f]"
-                        : "bg-[#1a1a1a] border-[#fff] text-[#fff]"
-                      }`}
+                    ${checkAll ? "bg-[#1a1a1a] border-[#eeb13f] text-[#eeb13f]" : "bg-[#1a1a1a] border-[#fff] text-[#fff]"}`}
                   >
-                    {checkAll && <div className="text-xl leading-none">✓</div>}
-                    {!checkAll && <div className="text-xl leading-none">−</div>}
+                    {checkAll ? "✓" : "−"}
                   </button>
                 </th>
                 {columns.map((item) => (
@@ -193,17 +193,46 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                     <div className="flex items-center justify-center gap-1">
                       <span>{item.label}</span>
                       {item.key !== "acciones" && (
-                        <>
-                          {sortConfig.key === item.key ? (
-                            sortConfig.direction === "asc" ? <IoCaretUpOutline className="text-sm" />
-                              : sortConfig.direction === "desc" ? <IoCaretDownOutline className="text-sm" />
-                                : <IoFilter className="text-sm" />
-                          ) : (
-                            <IoFilter className="text-sm" />
-                          )}
-                        </>
+                        sortConfig.key === item.key
+                          ? (sortConfig.direction === "asc" ? <IoCaretUpOutline className="text-sm" />
+                            : sortConfig.direction === "desc" ? <IoCaretDownOutline className="text-sm" />
+                              : <IoFilter className="text-sm" />)
+                          : <IoFilter className="text-sm" />
                       )}
                     </div>
+                  </th>
+                ))}
+              </tr>
+
+              {/* Filtros */}
+              <tr>
+                <th></th>
+                {columns.map((item) => (
+                  <th key={`${item.key}-filter`} className="p-1 text-center">
+                    {item.key !== "acciones" && item.key !== "status" ? (
+                      <input
+                        type="text"
+                        value={filters[item.key] || ""}
+                        onChange={(e) =>
+                          setFilters({ ...filters, [item.key]: e.target.value })
+                        }
+                        placeholder="Filtrar"
+                        className="w-full px-1 py-0.5 text-xs rounded border border-gray-300"
+                      />
+                    ) : item.key === "status" ? (
+                      <select
+                        value={filters[item.key] || ""}
+                        onChange={(e) =>
+                          setFilters({ ...filters, [item.key]: e.target.value })
+                        }
+                        className="w-full px-1 py-0.5 text-xs rounded border border-gray-300 text-black"
+                      >
+                        <option value="">Todos</option>
+                        <option value="Terminado">Terminado</option>
+                        <option value="Cancelada">Cancelada</option>
+                        <option value="Anulado">Anulado</option>
+                      </select>
+                    ) : null}
                   </th>
                 ))}
               </tr>
@@ -214,8 +243,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
               {sortedData.length > 0 ? (
                 sortedData.map((item, index) => (
                   <tr key={item.pipeline_id}
-                    className={`border-b-[2.5px] border-[#b9b9b9] last:border-none ${index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
-                      } hover:bg-[#313131] hover:text-white transition-all`}
+                    className={`border-b-[2.5px] border-[#b9b9b9] last:border-none ${index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"} hover:bg-[#313131] hover:text-white transition-all`}
                   >
                     <td className="p-4 text-center">
                       {item.status !== "Anulado" && (
@@ -245,9 +273,9 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                       {item.status !== "Anulado" && item.status !== "Cancelada" && (
                         <button
                           onClick={() => handleAnnulledForm(item.pipeline_id)}
-                          className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 hover:cursor-pointer transition-all transform hover:scale-120"
+                          className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
                         >
-                          <SlOptionsVertical size={18} />
+                          <MdOutlineCancel size={18} />
                         </button>
                       )}
                     </td>
