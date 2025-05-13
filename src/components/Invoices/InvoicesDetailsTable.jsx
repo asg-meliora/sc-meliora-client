@@ -254,6 +254,32 @@ function InvoicesDetailsTable({
     (docType) => uploadedDocs[docType]
   );
 
+  const validateDoc = (docType, file) => {
+    const maxSize = 2 * 1024 * 1024; // 2MB
+
+    if (docType === "XML") {
+      if (!file.name.endsWith(".xml")) {
+        setError("El archivo debe tener extensión .xml");
+        return false;
+      }
+    } else if (docType === "PDF") {
+      if (!file.name.endsWith(".pdf")) {
+        setError("El archivo debe tener extensión .pdf");
+        return false;
+      }
+    } else {
+      setError("Tipo de documento no válido");
+      return false;
+    }
+
+    if (file.size > maxSize) {
+      setError("El archivo debe ser menor a 2MB.");
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <>
       {/* <div>InvoicesUserDetails {userId}/{invoiceId}</div> */}
@@ -364,31 +390,31 @@ function InvoicesDetailsTable({
             Prefactura
           </h2>
           <div className="flex flex-row gap-6 items-center">
-            {["PreXML", "PrePDF"].map((index) => (
+            {["PreXML", "PrePDF"].map((item) => (
               <article
-                key={index}
+                key={item}
                 style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
                 className={styles.d_files_article}
               >
                 <header className={styles.d_files_info_header}>
                   <SiGoogledocs className={styles.d_files_info_icon} />
                   <h3 className={styles.d_files_info_title}>
-                    Archivo {DiccDocs[index]}
+                    Archivo {DiccDocs[item]}
                   </h3>
                   <p className={styles.d_files_info_date}>
                     {userId >= 0
                       ? `(Subir Archivo ${
-                          index.endsWith("XML") ? ".xml" : ".pdf"
+                          item.endsWith("XML") ? ".xml" : ".pdf"
                         })`
                       : "(Archivo Faltante)"}
                   </p>
                 </header>
                 <hr className={styles.d_files_hr} />
                 <footer className={styles.d_files_buttons_container}>
-                  {uploadedDocs[index] ? (
+                  {uploadedDocs[item] ? (
                     <a
                       className="cursor-pointer downloadButton text-white px-3 py-1 rounded font-medium font-inter w-[50%] shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all"
-                      href={uploadedDocs[index]}
+                      href={uploadedDocs[item]}
                     >
                       Ver archivo
                     </a>
@@ -396,17 +422,28 @@ function InvoicesDetailsTable({
                     userId >= 0 && (
                       <>
                         <label
-                          htmlFor={`upload-file-${index}`}
+                          htmlFor={`upload-file-${item}`}
                           className="cursor-pointer updateButton text-white px-3 py-1 text-sm rounded font-medium font-inter w-[80%] shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
                         >
                           Seleccionar archivo
                         </label>
                         <input
-                          id={`upload-file-${index}`}
+                          id={`upload-file-${item}`}
                           type="file"
                           hidden
-                          accept={index.includes("XML") ? ".xml" : ".pdf"}
-                          onChange={(e) => handleDocInvoiceUpload(e, index)}
+                          accept={item.includes("XML") ? ".xml" : ".pdf"}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+
+                            const type = item.includes("XML") ? "XML" : "PDF";
+
+                            if (!validateDoc(type, file)) {
+                              e.target.value = ""; // Limpiar si falla la validación
+                              return;
+                            }
+                            handleDocInvoiceUpload(e, item);
+                          }}
                         />
                       </>
                     )
@@ -424,31 +461,31 @@ function InvoicesDetailsTable({
             Factura
           </h2>
           <div className="flex flex-row gap-6 items-center">
-            {["FacXML", "FacPDF"].map((index) => (
+            {["FacXML", "FacPDF"].map((item) => (
               <article
-                key={index}
+                key={item}
                 style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
                 className={styles.d_files_article}
               >
                 <header className={styles.d_files_info_header}>
                   <SiGoogledocs className={styles.d_files_info_icon} />
                   <h3 className={styles.d_files_info_title}>
-                    Archivo {DiccDocs[index]}
+                    Archivo {DiccDocs[item]}
                   </h3>
                   <p className={styles.d_files_info_date}>
                     {userId >= 0
                       ? `(Subir Archivo ${
-                          index.endsWith("XML") ? ".xml" : ".pdf"
+                          item.endsWith("XML") ? ".xml" : ".pdf"
                         })`
                       : "(Archivo Faltante)"}
                   </p>
                 </header>
                 <hr className={styles.d_files_hr} />
                 <footer className={styles.d_files_buttons_container}>
-                  {uploadedDocs[index] ? (
+                  {uploadedDocs[item] ? (
                     <a
                       className="cursor-pointer downloadButton text-white px-3 py-1 rounded font-medium font-inter w-[50%] shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all"
-                      href={uploadedDocs[index]}
+                      href={uploadedDocs[item]}
                     >
                       Ver archivo
                     </a>
@@ -456,17 +493,28 @@ function InvoicesDetailsTable({
                     userId >= 0 && (
                       <>
                         <label
-                          htmlFor={`upload-file-${index}`}
+                          htmlFor={`upload-file-${item}`}
                           className="cursor-pointer updateButton text-white px-3 py-1 text-sm rounded font-medium font-inter w-[80%] shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
                         >
                           Seleccionar archivo
                         </label>
                         <input
-                          id={`upload-file-${index}`}
+                          id={`upload-file-${item}`}
                           type="file"
                           hidden
-                          accept={index.includes("XML") ? ".xml" : ".pdf"}
-                          onChange={(e) => handleDocInvoiceUpload(e, index)}
+                          accept={item.includes("XML") ? ".xml" : ".pdf"}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+
+                            const type = item.includes("XML") ? "XML" : "PDF";
+
+                            if (!validateDoc(type, file)) {
+                              e.target.value = ""; // Limpiar si falla la validación
+                              return;
+                            }
+                            handleDocInvoiceUpload(e, item);
+                          }}
                         />
                       </>
                     )
