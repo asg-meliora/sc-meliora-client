@@ -106,10 +106,18 @@ const CreateInvoiceForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMessage(null);
+    if (!formData.invoice_type) {
+      setErrorMessage("El tipo de factura es obligatorio.");
+      return;
+    }
     if (!validateConcept(formData.invoice_concept)) {
       setErrorMessage(
         "El concepto de la factura debe tener al menos 5 caracteres y no contener caracteres especiales."
       );
+      return;
+    }
+    if (!formData.invoice_payment_type) {
+      setErrorMessage("El tipo de pago es obligatorio.");
       return;
     }
     if (!validateAmount(formData.invoice_total)) {
@@ -120,14 +128,7 @@ const CreateInvoiceForm = ({
       setErrorMessage(
         "El porcentaje de comisión no es válido. Debe estar entre 0 y 100.")
     }
-    if (!formData.invoice_type) {
-      setErrorMessage("El tipo de factura es obligatorio.");
-      return;
-    }
-    if (!formData.invoice_payment_type) {
-      setErrorMessage("El tipo de pago es obligatorio.");
-      return;
-    }
+    
     if (!formData.invoice_client_sender) {
       setErrorMessage("El cliente emisor es obligatorio.");
       return;

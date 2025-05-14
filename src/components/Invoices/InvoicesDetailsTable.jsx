@@ -383,9 +383,9 @@ function InvoicesDetailsTable({
       )}
 
       {/* Todos los Documentos */}
-      <section className="bg-white shadow-sm border border-gray-200 w-[80%] mx-auto rounded-lg py-10 px-5 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <section className="w-[95%] mx-auto py-10 px-5 grid grid-cols-1 md:grid-cols-2 gap-8 mt-[-15px]">
         {/* Sección Prefactura */}
-        <div className="w-full mt-[-25px]">
+        <div className="w-full mt-[-25px] px-6 py-4 bg-white shadow-sm border border-gray-200 rounded-lg">
           <h2 className="text-3xl font-semibold font-inter text-gray-700 mb-2 text-center">
             Prefactura
           </h2>
@@ -456,7 +456,7 @@ function InvoicesDetailsTable({
         </div>
 
         {/* Sección Factura */}
-        <div className="w-full mt-[-25px]">
+        <div className="w-full mt-[-25px] px-6 py-4 bg-white shadow-sm border border-gray-200 rounded-lg">
           <h2 className="text-3xl font-semibold font-inter text-gray-700 mb-2 text-center">
             Factura
           </h2>
