@@ -50,12 +50,9 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
   ];
 
   const handleDownload = async () => {
+    if (selectedIds.length === 0) return alert("No hay elementos seleccionados.");
+    
     setLoading(true); // Carga inicial
-    if (selectedIds.length === 0) {
-      alert("No hay elementos seleccionados.");
-      setLoading(false);
-      return;
-    }
     try {
       const response = await fetch(`${api}/historical/docs/byid`, {
         method: "POST",
