@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "../../styles";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { BsSend } from "react-icons/bs";
-import { IoCloudDownloadOutline, IoFilter, IoCaretUpOutline, IoCaretDownOutline } from "react-icons/io5";
+import { IoCloudDownloadOutline, IoFilter, IoCaretUpOutline, IoCaretDownOutline, IoSearchSharp } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 
 import LoadingScreen from "../LoadingScreen";
@@ -34,11 +34,12 @@ const statusColor = {
   Anulado: "bg-[#014293] shadow-blue-500/70 shadow-lg",
 };
 
-const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
+const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
+  const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     type_pipeline: "",
     assigned_user_sender: "",
@@ -50,7 +51,6 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
     total_refund: "",
     receiver_name_rs: "",
   });
-
 
   const columns = [
     { label: "ID", key: "pipeline_id" },
@@ -176,11 +176,31 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
               <IoFilter className="w-4 h-4 fill-current" />
               Filtros
             </button> */}
-            {/* <button className="flex items-center gap-2 text-sm p-2 font-semibold text-white border-[1px] rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all">
-              <BsSend className="w-4 h-4 fill-current" />
-              Enviar
-            </button> */}
-            <button onClick={handleDownload} className="flex items-center gap-2 text-sm p-2 font-semibold text-white border-[1px] rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all">
+            <div className="flex flex-row items-center">
+              <input
+                className="text-sm px-2 py-2 rounded-l-md border border-white text-white bg-[#1f1f1f] placeholder-gray-400 focus:outline-none"
+                type="text"
+                placeholder="Buscar..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    console.log(searchTerm);
+                    getSearch(searchTerm);
+                  }
+                }}
+              />
+              <button
+                className="flex items-center gap-2 text-sm px-3 py-2 font-semibold text-white border border-white border-l-0 rounded-r-md hover:text-[#eeb13f] cursor-pointer"
+                onClick={() => {
+                  console.log(searchTerm);
+                  getSearch(searchTerm);
+                }}
+              >
+                Buscar
+              </button>
+            </div>
+            <button onClick={handleDownload} className="flex items-center gap-2 text-sm p-2 font-semibold text-white border-[1px] rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 hover:rounded transition-all">
               <IoCloudDownloadOutline className="w-4 h-4 fill-current" />
               Descargar
             </button>
@@ -203,7 +223,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                 {columns.map((item) => (
                   <th
                     key={item.key}
-                    className={`${styles.table_header_cell} p-4 text-center ${item.key !== "acciones" ? "cursor-pointer select-none" : ""}`}
+                    className={`${styles.table_header_cell} ${item.key !== "acciones" ? "cursor-pointer select-none" : ""}`}
                     onClick={() => item.key !== "acciones" && handleSort(item.key)}
                   >
                     <div className="flex items-center justify-center gap-1">
