@@ -1,4 +1,4 @@
-import styles from "../styles";
+import styles from "../../styles";
 import Cookies from "js-cookie";
 
 const ConfirmDeleteModal = ({ setDeleteModalOpen, clientId, api, setSuccess, setSuccessMessage, setError, getClients }) => {

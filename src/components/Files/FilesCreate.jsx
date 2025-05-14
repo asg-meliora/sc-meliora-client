@@ -14,6 +14,8 @@ import {
   validateFiles,
 } from "../../validations";
 
+
+
 //Diccionario para los labels del formulario
 const DiccLabels = {
   name_rs: { label: "Razón Social" },
@@ -120,8 +122,6 @@ function FilesCreate({
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
-  
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -206,6 +206,8 @@ function FilesCreate({
 
       const result = await response.json();
       getClients();
+      setSuccessMessage("El expediente se ha creado correctamente.");
+      setSuccess(true);
     } catch (error) {
       setErrorMessage(
         error.message || "Hubo un error en el servidor. Inténtalo de nuevo."
