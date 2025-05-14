@@ -26,7 +26,7 @@ import {
   InvoicesUserDetails
 } from "./pagesUser/indexUser"
 
-const apiLink = import.meta.env.VITE_API_URL || "http://localhost:3001/api"; //import.meta.env.VITE_API_URL ||
+const apiLink = "http://localhost:3001/api"; //import.meta.env.VITE_API_URL ||
 
 const router = createBrowserRouter(
   createRoutesFromElements([

@@ -9,13 +9,12 @@ import LoadingScreen from "../LoadingScreen";
 import Cookies from "js-cookie";
 
 // Formato Fecha
-const dateToDays = (date) => {
-  const today = new Date();
-  const invoiceDate = new Date(date);
-  const timeDiff = Math.abs(today - invoiceDate);
-  const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert to days
-  return `${diffDays} día(s)`;
+const FormattedDate = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`;
+  return formattedDate;
 };
+
 
 // Formato Moneda
 const formatCurrency = (value) => {
@@ -33,14 +32,25 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({
+    type_pipeline: "",
+    assigned_user_sender: "",
+    status: "",
+    concept: "",
+    created_at: "",
+    subtotal: "",
+    iva: "",
+    total_refund: "",
+    receiver_name_rs: "",
+  });
+
 
   const columns = [
     { label: "ID", key: "pipeline_id" },
     { label: "Tipo", key: "type_pipeline" },
     { label: "Asignado", key: "assigned_user_sender" },
     { label: "Concepto", key: "concept" },
-    { label: "Tiempo", key: "created_at" },
+    { label: "Fecha Creación", key: "created_at" },
     { label: "Subtotal", key: "subtotal" },
     { label: "Iva", key: "iva" },
     { label: "Monto", key: "total_refund" },
@@ -51,7 +61,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
 
   const handleDownload = async () => {
     if (selectedIds.length === 0) return alert("No hay elementos seleccionados.");
-    
+
     setLoading(true); // Carga inicial
     try {
       const response = await fetch(`${api}/historical/docs/byid`, {
@@ -112,8 +122,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
   const filteredData = dataBoard.filter((item) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
-      const cellValue = item[key];
-      return String(cellValue).toLowerCase().includes(value.toLowerCase());
+      return item[key] === value;
     });
   });
 
@@ -204,37 +213,33 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
               {/* Filtros */}
               <tr>
                 <th></th>
-                {columns.map((item) => (
-                  <th key={`${item.key}-filter`} className="p-1 text-center">
-                    {item.key !== "acciones" && item.key !== "status" ? (
-                      <input
-                        type="text"
-                        value={filters[item.key] || ""}
-                        onChange={(e) =>
-                          setFilters({ ...filters, [item.key]: e.target.value })
-                        }
-                        placeholder="Filtrar"
-                        className="w-full px-1 py-0.5 text-xs rounded border border-gray-300"
-                      />
-                    ) : item.key === "status" ? (
+                {columns.map((col) => (
+                  <th key={`filter-${col.key}`}>
+                    {col.key !== "acciones" & col.key !== "pipeline_id" ? (
                       <select
-                        value={filters[item.key] || ""}
-                        onChange={(e) =>
-                          setFilters({ ...filters, [item.key]: e.target.value })
-                        }
-                        className="w-full px-1 py-0.5 text-xs rounded border border-gray-300 text-black"
+                        value={filters[col.key] || ""}
+                        onChange={(e) => setFilters((prev) => ({ ...prev, [col.key]: e.target.value }))}
+                        className="bg-black border border-white rounded-md text-sm font-inter text-white w-4/5"
                       >
-                        <option value="">Todos</option>
-                        <option value="Terminado">Terminado</option>
-                        <option value="Cancelada">Cancelada</option>
-                        <option value="Anulado">Anulado</option>
+                        <option value="" className="bg-white text-black">Todos</option>
+                        {[...new Set(dataBoard.map(item => item[col.key]))].map((option) => {
+                          const isCurrency = ["subtotal", "iva", "total_refund"].includes(col.key);
+                          const displayValue = isCurrency ? formatCurrency(option) : option;
+                          return (
+                            <option key={option} value={option} className="bg-white text-black">
+                              {displayValue}
+                            </option>
+                          );
+                        })}
+
                       </select>
                     ) : null}
                   </th>
                 ))}
               </tr>
+
             </thead>
-            
+
             {/*Body*/}
             <tbody className={styles.table_body}>
               {sortedData.length > 0 ? (
@@ -256,7 +261,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                     <td className="p-4 text-center">{item.type_pipeline}</td>
                     <td className="p-4 text-center">{item.assigned_user_sender}</td>
                     <td className="p-4 text-center">{item.concept}</td>
-                    <td className="p-4 text-center">{dateToDays(item.created_at)}</td>
+                    <td className="p-4 text-center">{FormattedDate(item.created_at)}</td>
                     <td className="p-4 text-center">{formatCurrency(item.subtotal)}</td>
                     <td className="p-4 text-center">{formatCurrency(item.iva)}</td>
                     <td className="p-4 text-center">{formatCurrency(item.total_refund)}</td>
