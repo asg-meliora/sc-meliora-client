@@ -8,13 +8,20 @@ import { MdOutlineCancel } from "react-icons/md";
 import LoadingScreen from "../LoadingScreen";
 import Cookies from "js-cookie";
 
-// Formato Fecha
-const FormattedDate = (dateString) => {
+// Formato Fecha //TODO cambiar formato fechas
+function FormattedDate(dateString) {
   const date = new Date(dateString);
-  const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`;
-  return formattedDate;
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  return `${day}/${month}/${year}`;
+}
+// Formato Fecha para comparar YYYY-MM-DD
+const FormatDateForComparison = (dateString) => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  return date.toISOString().split("T")[0];
 };
-
 
 // Formato Moneda
 const formatCurrency = (value) => {
@@ -122,6 +129,9 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
   const filteredData = dataBoard.filter((item) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
+      if (key === "created_at") {
+        return FormatDateForComparison(item[key]) === value;
+      }
       return item[key] === value;
     });
   });
@@ -222,16 +232,21 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                         className="bg-black border border-white rounded-md text-sm font-inter text-white w-4/5"
                       >
                         <option value="" className="bg-white text-black">Todos</option>
-                        {[...new Set(dataBoard.map(item => item[col.key]))].map((option) => {
-                          const isCurrency = ["subtotal", "iva", "total_refund"].includes(col.key);
-                          const displayValue = isCurrency ? formatCurrency(option) : option;
-                          return (
-                            <option key={option} value={option} className="bg-white text-black">
-                              {displayValue}
-                            </option>
-                          );
-                        })}
-
+                        {[...new Set(
+                          dataBoard.map(item => {
+                            if (col.key === "created_at") {
+                              return FormatDateForComparison(item[col.key]); // Formato de fecha
+                            }
+                            return item[col.key];
+                          }))].map((option) => {
+                            const isCurrency = ["subtotal", "iva", "total_refund"].includes(col.key);
+                            const displayValue = isCurrency ? formatCurrency(option) : col.key === "created_at" ? FormattedDate(option) : option;
+                            return (
+                              <option key={option} value={option} className="bg-white text-black">
+                                {displayValue}
+                              </option>
+                            );
+                          })}
                       </select>
                     ) : null}
                   </th>
