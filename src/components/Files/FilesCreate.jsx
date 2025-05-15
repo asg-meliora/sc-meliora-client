@@ -13,6 +13,7 @@ import {
   validateBankAccount,
   validateFiles,
 } from "../../validations";
+import { SuccessTexts } from "../../constants/Texts";
 
 
 
@@ -206,7 +207,7 @@ function FilesCreate({
 
       const result = await response.json();
       getClients();
-      setSuccessMessage("El expediente se ha creado correctamente.");
+      setSuccessMessage(SuccessTexts.fileCreation);
       setSuccess(true);
     } catch (error) {
       setErrorMessage(

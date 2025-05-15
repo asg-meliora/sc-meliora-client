@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styles from "../../styles";
 import Cookies from "js-cookie";
 import { validateAmount, validateConcept, validateCommission } from "../../validations";
+import { SuccessTexts } from "../../constants/Texts";
 
 const CreateInvoiceForm = ({
   api,
@@ -157,7 +158,7 @@ const CreateInvoiceForm = ({
       if (!response.ok) throw new Error("Error al crear la factura");
       const data = await response.json();
       onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
-      setSuccessMessage("Factura creada correctamente");
+      setSuccessMessage(SuccessTexts.invoiceCreate);
       setSuccess(true);
     } catch (error) {
       setErrorMessage("Error al crear la factura");

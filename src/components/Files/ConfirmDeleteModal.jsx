@@ -1,3 +1,4 @@
+import { SuccessTexts } from "../../constants/Texts";
 import styles from "../../styles";
 import Cookies from "js-cookie";
 
@@ -15,7 +16,7 @@ const ConfirmDeleteModal = ({ setDeleteModalOpen, clientId, api, setSuccess, set
       if (!res.ok) throw new Error("Error al eliminar el expediente");
 
       const result = await res.json();
-      setSuccessMessage("Expediente elimanado exitosamente");
+      setSuccessMessage(SuccessTexts.fileDeletion);
       setSuccess(true);
       getClients();
     } catch (err) {

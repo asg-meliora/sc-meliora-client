@@ -12,6 +12,7 @@ import { FaEdit } from "react-icons/fa";
 import LoadingScreen from "../LoadingScreen.jsx";
 import styles from "../../styles.js";
 import Navbar from "../Navbar.jsx";
+import { SuccessTexts } from "../../constants/Texts.js";
 
 const FormattedDate = (dateString) => {
   const date = new Date(dateString);
@@ -93,17 +94,6 @@ function FileDetail({ api }) {
     getAllData();
   }, [getUsers, getClients, getFileDetail]);
 
-  // Manejo de errores
-  // if (error) {
-  //     return (
-  //         <div className="flex items-center justify-center h-screen">
-  //             <p className="text-red-500 text-xl font-semibold">{error}</p>
-  //         </div>
-  //     );
-  // }
-
-  // console.log(newData);//Quitarlo
-  // console.log('data', userAssigns);
 
   const documentTypeMap = {
     CSF: "CSF",
@@ -131,7 +121,7 @@ function FileDetail({ api }) {
       const result = await response.json();
       // setNewFiles({ results: result });
       setSuccess(true);
-      setSuccessMessage("Datos actualizados exitosamente");
+      setSuccessMessage(SuccessTexts.filesModify);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -167,7 +157,7 @@ function FileDetail({ api }) {
       const updatedRes = await updatedDocs.json();
       setFileUrl(updatedRes);
       setSuccess(true);
-      setSuccessMessage("Archivo actualizado exitosamente");
+      setSuccessMessage(SuccessTexts.fileUpdate);
     } catch (err) {
       setError(err.message);
     } finally {

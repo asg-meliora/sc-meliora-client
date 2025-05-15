@@ -9,6 +9,7 @@ import { AnimatePresence } from "framer-motion";
 
 import styles from "../styles";
 import Navbar from "../components/Navbar";
+import { SuccessTexts } from "../constants/Texts";
 
 const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
@@ -116,8 +117,8 @@ const Users = ({ api }) => {
       setLoading(false);
       setSuccessMessage(
         editingUser
-          ? "El usuario se modificó correctamente"
-          : "El usuario se creó correctamente"
+          ? SuccessTexts.userModify
+          : SuccessTexts.userCreate
       );
       setSuccess(true);
     }

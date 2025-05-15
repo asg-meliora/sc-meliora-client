@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import styles from "../../styles";
+import { SuccessTexts } from "../../constants/Texts";
 
 function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuccess, setSuccessMessage, setError }) {
 
@@ -18,7 +19,7 @@ function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuc
             if (!res.ok) throw new Error("Error al subir archivo");
 
             const result = await res.json();
-            setSuccessMessage("Factura anulada exitosamente");
+            setSuccessMessage(SuccessTexts.invoiceAnnule);
             setSuccess(true);
             // Opcional: refrescar datos
         } catch (err) {

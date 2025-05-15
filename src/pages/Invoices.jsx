@@ -24,9 +24,7 @@ const Invoices = ({ api }) => {
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(false); // Estado de carga
   const [success, setSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(
-    "Operacion realizada exitosamente"
-  );
+  const [successMessage, setSuccessMessage] = useState(null);
 
   // Muestra todas los datos de las facturas
   const getPipelines = useCallback(async () => {
@@ -109,7 +107,9 @@ const Invoices = ({ api }) => {
 
   return (
     <>
-      <AnimatePresence>{loading && <LoadingScreen message={"Cargando facturas..."} />}</AnimatePresence>
+      <AnimatePresence>
+        {loading && <LoadingScreen message={"Cargando facturas..."} />}
+      </AnimatePresence>
 
       <div className={styles.blank_page}>
         <Navbar />
