@@ -16,7 +16,8 @@ import ConfirmDeleteModal from "../components/Files/ConfirmDeleteModal";
 const Files = ({ api }) => {
   const [createModalOpen, setCreateModalOpen] = useState(false); //Estado para manejar el status del modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false); //Estado para manejar el status del modal
-  const [newFiles, setNewFiles] = useState({ results: [] }); //Estado para manejar los nuevos datos del formulario
+  const [newFiles, setNewFiles] = useState({ despacho: [], client: [], });
+  ; //Estado para manejar los nuevos datos del formulario
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(true); // Estado de carga
   const [loadingMessage, setLoadingMessage] = useState(
@@ -27,47 +28,24 @@ const Files = ({ api }) => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [clientId, setClientId] = useState(null);
 
-  // useEffect(() => {
-  //   const getClients = async () => {
-  //     try {
-  //       const response = await fetch(`${api}/clients/active`, {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "x-access-token": Cookies.get("token"),
-  //         },
-  //       });
+  const getClients = useCallback(async () => {
+    try {
+      const response = await fetch(`${api}/clients/activencategory`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": Cookies.get("token"),
+        },
+      });
 
-  //       const data = await response.json();
-  //       setNewFiles(data);
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false); // Carga finalizada
-  //     }
-  //   };
-
-  //   getClients();
-  // }, [api]);
- 
-    const getClients = useCallback(async () => {
-      try {
-        const response = await fetch(`${api}/clients/active`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-access-token": Cookies.get("token"),
-          },
-        });
-
-        const data = await response.json();
-        setNewFiles(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false); // Carga finalizada
-      }
-    }, [api]);
+      const data = await response.json();
+      setNewFiles(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false); // Carga finalizada
+    }
+  }, [api]);
 
   useEffect(() => {
     getClients();
@@ -87,7 +65,7 @@ const Files = ({ api }) => {
     setDeleteModalOpen(true);
   };
 
-  //console.log('Debug Padre',newFiles);
+  console.log('Debug Padre', newFiles);
   return (
     <>
       <AnimatePresence>
@@ -122,12 +100,12 @@ const Files = ({ api }) => {
           </div>
           <FilesTable
             api={api}
-            newFiles={newFiles}
+            newFiles={Array.isArray(newFiles.despacho) ? newFiles.despacho : []}
             handleAnnulledForm={handleAnnulledForm}
           />
           <FilesTable
             api={api}
-            newFiles={newFiles}
+            newFiles={Array.isArray(newFiles.client) ? newFiles.client : []}
             handleAnnulledForm={handleAnnulledForm}
           />
         </div>
@@ -139,7 +117,6 @@ const Files = ({ api }) => {
             api={api}
             isOpen={createModalOpen}
             onClose={() => setCreateModalOpen(false)}
-            onAddFile={handleNewFile}
             setLoading={setLoading}
             setLoadingMessage={setLoadingMessage}
             setSuccess={setSuccess}
@@ -155,7 +132,7 @@ const Files = ({ api }) => {
           <div className={styles.form_modal_bg}></div>
           <ConfirmDeleteModal
             setDeleteModalOpen={setDeleteModalOpen}
-            api={api} 
+            api={api}
             clientId={clientId}
             setSuccess={setSuccess}
             setSuccessMessage={setSuccessMessage}

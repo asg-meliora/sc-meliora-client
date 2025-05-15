@@ -67,7 +67,7 @@ function FilesTable({ newFiles, handleAnnulledForm }) {
               </tr>
             </thead>
             <tbody className={styles.table_body}>
-              {newFiles.results.map((item, index) => (
+              {newFiles.map((item, index) => (
                 <tr
                   key={item.client_id || item.insertId}
                   className={`border-b-[2.5px] border-[#b9b9b9]  last:border-none ${

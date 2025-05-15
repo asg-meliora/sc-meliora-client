@@ -64,7 +64,6 @@ function FilesCreate({
   api,
   isOpen,
   onClose,
-  onAddFile,
   setLoading,
   setLoadingMessage,
   setSuccess,
@@ -169,10 +168,10 @@ function FilesCreate({
     Object.entries(formData).forEach(([key, value]) => {
       if (value) data.append(key, value);
     });
-    console.log("Contenido de FormData:");
-    for (let pair of data.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+    // console.log("Contenido de FormData:");
+    // for (let pair of data.entries()) {
+    //   console.log(`${pair[0]}:`, pair[1]);
+    // }
     try {
       const response = await fetch(`${api}/clients/complete`, {
         method: "POST",
