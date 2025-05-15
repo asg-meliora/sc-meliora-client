@@ -2,34 +2,28 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import styles from "../../styles";
 
-import {
-  validateNameRS,
-  validateRFC,
-  validateCURP,
-  validateAddress,
-  validateZipCode,
-  validatePhone,
-  validateEmail,
-  validateBankAccount,
-  validateFiles,
-} from "../../validations";
+import { validateFormData } from "../../validations";
+import { constructFromSymbol } from "date-fns/constants";
 import { SuccessTexts } from "../../constants/Texts";
-
-
 
 //Diccionario para los labels del formulario
 const DiccLabels = {
-  name_rs: { label: "Razón Social" },
-  rfc: { label: "RFC" },
-  curp: { label: "CURP" },
-  address: { label: "Dirección" },
-  zip_code: { label: "Código Postal" },
-  phone: { label: "Teléfono" },
-  email: { label: "Correo Electrónico" },
-  bank_account: { label: "No. Cuenta Bancaria" },
-  fileCSF: { label: "CSF" },
-  fileCDB: { label: "Comprabante de Domicilio" },
-  fileCDD: { label: "Carátula Bancaria" },
+  name_rs: "Razón Social",
+  rfc: "RFC",
+  curp: "CURP",
+  street: "Calle", //Nuevos campos de Dirección
+  ext_number: "Número Exterior",
+  int_number: "Número Interior",
+  neighborhood: "Colonia",
+  municipality: "Municipio",
+  state: "Estado",
+  zip_code: "Codigo Postal",
+  phone: "Teléfono",
+  email: "Correo Electrónico",
+  bank_account: "No. Cuenta Bancaria",
+  fileCSF: "CSF",
+  fileCDB: "Comprabante de Domicilio",
+  fileCDD: "Carátula Bancaria",
 };
 
 const TextInput = ({ placeholder, name, value, onChange, type = "text" }) => (
@@ -84,11 +78,17 @@ function FilesCreate({
     name_rs: "",
     rfc: "",
     curp: "",
-    address: "",
+    street: "", //Nuevos campos de Dirección
+    ext_number: "",
+    int_number: "",
+    neighborhood: "",
+    municipality: "",
+    state: "",
     zip_code: "",
     phone: "",
     email: "",
     bank_account: "",
+    category: "",
     userAssign: "",
     fileCSF: null,
     fileCDB: null,
@@ -126,60 +126,15 @@ function FilesCreate({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!validateNameRS(formData.name_rs)) {
-      setErrorMessage(
-        "La Razón Social debe tener al menos 3 caracteres y no contener caracteres especiales."
-      );
+    const validation = validateFormData(formData);
+    console.log("Validacion", validation);
+
+    if (!validation.valid) {
+      setErrorMessage(validation.error);
       setErrorExist(true);
       return;
     }
-    if (!validateRFC(formData.rfc)) {
-      setErrorMessage("El RFC no es válido.");
-      setErrorExist(true);
-      return;
-    }
-    if (!validateCURP(formData.curp)) {
-      setErrorMessage("El CURP no es válido.");
-      setErrorExist(true);
-      return;
-    }
-    if (!validateAddress(formData.address)) {
-      setErrorMessage("La dirección debe tener al menos 10 caracteres.");
-      setErrorExist(true);
-      return;
-    }
-    if (!validateZipCode(formData.zip_code)) {
-      setErrorMessage("El código postal no es válido.");
-      setErrorExist(true);
-      return;
-    }
-    if (!validatePhone(formData.phone)) {
-      setErrorMessage("El número de teléfono no es valido.");
-      setErrorExist(true);
-      return;
-    }
-    if (!validateEmail(formData.email)) {
-      setErrorMessage("El correo electrónico no es válido.");
-      setErrorExist(true);
-      return;
-    }
-    if (!validateBankAccount(formData.bank_account)) {
-      setErrorMessage("La cuenta bancaria no es válida.");
-      setErrorExist(true);
-      return;
-    }
-    if (!validateFiles(formData)) {
-      setErrorMessage(
-        "Debes subir todos los archivos requeridos: CSF, Comprobante de Domicilio y Carátula Bancaria."
-      );
-      setErrorExist(true);
-      return;
-    }
-    if (!formData.userAssign) {
-      setErrorMessage("Favor de seleccionar un usuario asignado.");
-      setErrorExist(true);
-      return;
-    }
+
     setErrorExist(false);
     setErrorMessage(null);
     onSubmit(formData);
@@ -192,31 +147,32 @@ function FilesCreate({
     Object.entries(formData).forEach(([key, value]) => {
       if (value) data.append(key, value);
     });
-    // console.log("Contenido de FormData:");
-    // for (let pair of data.entries()) {
-    //   console.log(`${pair[0]}:`, pair[1]);
-    // }
-    try {
-      const response = await fetch(`${api}/clients/complete`, {
-        method: "POST",
-        headers: { "x-access-token": Cookies.get("token") },
-        body: data,
-      });
-
-      if (!response.ok) throw new Error("Error al crear el cliente");
-
-      const result = await response.json();
-      getClients();
-      setSuccessMessage(SuccessTexts.fileCreation);
-      setSuccess(true);
-    } catch (error) {
-      setErrorMessage(
-        error.message || "Hubo un error en el servidor. Inténtalo de nuevo."
-      );
-      setErrorExist(true);
-    } finally {
-      setLoading(false);
+    console.log("Contenido de FormData:");
+    for (let pair of data.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
     }
+    // try {
+    //   const response = await fetch(`${api}/clients/complete`, {
+    //     method: "POST",
+    //     headers: { "x-access-token": Cookies.get("token") },
+    //     body: data,
+    //   });
+
+    //   if (!response.ok) throw new Error("Error al crear el cliente");
+
+    //   const result = await response.json();
+    //   getClients();
+    //   setSuccessMessage("El expediente se ha creado correctamente.");
+    //   setSuccess(true);
+    // } catch (error) {
+    //   setErrorMessage(
+    //     error.message || "Hubo un error en el servidor. Inténtalo de nuevo."
+    //   );
+    //   setErrorExist(true);
+    // } finally {
+    //   setLoading(false);
+    // }
+    setLoading(false);
   };
 
   return (
@@ -243,19 +199,35 @@ function FilesCreate({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto p-6 w-full max-w-5xl">
           {/* Form Fields */}
           {Object.entries(formData).map(([key, value]) =>
-            key.startsWith("file") ? (
-              <FileInput
+            // key.startsWith("file") ? ( // Renderizar el nuevo campo "Files"
+            //   <FileInput
+            //     key={key}
+            //     name={key}
+            //     file={value}
+            //     onChange={handleFileChange}
+            //     label={DiccLabels[key].label}
+            //   />
+            // ) : 
+            key === "category" ? ( // Renderizar el nuevo campo "Category"
+              <select
                 key={key}
                 name={key}
-                file={value}
-                onChange={handleFileChange}
-                label={DiccLabels[key].label}
-              />
+                value={formData.category || ""}
+                onChange={handleInputChange}
+                className={`${styles.select_form} col-span-2  ${formData.category ? "text-black font-normal" : "italic text-gray-500"}`}
+                required
+              >
+                <option value="" hidden disabled>
+                  Categoría
+                </option>
+                <option value="Despacho">Despacho</option>
+                <option value="Clientes">Clientes</option>
+              </select>
             ) : (
-              key !== "userAssign" && (
+              key !== "userAssign" && ( // Renderizar todos los campos tipo "Text"
                 <TextInput
                   key={key}
-                  placeholder={DiccLabels[key].label}
+                  placeholder={DiccLabels[key]}
                   name={key}
                   value={value}
                   onChange={handleInputChange}
@@ -267,11 +239,7 @@ function FilesCreate({
             name="userAssign"
             value={formData.userAssign || ""}
             onChange={handleInputChange}
-            className={`${styles.select_form} col-span-2  ${
-              formData.userAssign
-                ? "text-black font-normal"
-                : "italic text-gray-500"
-            }`}
+            className={`${styles.select_form} col-span-2  ${formData.userAssign ? "text-black font-normal" : "italic text-gray-500"}`}
             required
           >
             <option value="" hidden disabled>

@@ -2,19 +2,25 @@ import React, { useState } from "react";
 import styles from "../../styles";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { BsSend } from "react-icons/bs";
-import { IoCloudDownloadOutline, IoFilter, IoCaretUpOutline, IoCaretDownOutline } from "react-icons/io5";
+import { IoCloudDownloadOutline, IoFilter, IoCaretUpOutline, IoCaretDownOutline, IoSearchSharp } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 
 import LoadingScreen from "../LoadingScreen";
 import Cookies from "js-cookie";
 
-// Formato Fecha
-const dateToDays = (date) => {
-  const today = new Date();
-  const invoiceDate = new Date(date);
-  const timeDiff = Math.abs(today - invoiceDate);
-  const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert to days
-  return `${diffDays} día(s)`;
+// Formato Fecha //TODO cambiar formato fechas
+function FormattedDate(dateString) {
+  const date = new Date(dateString);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  return `${day}/${month}/${year}`;
+}
+// Formato Fecha para comparar YYYY-MM-DD
+const FormatDateForComparison = (dateString) => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  return date.toISOString().split("T")[0];
 };
 
 // Formato Moneda
@@ -28,19 +34,30 @@ const statusColor = {
   Anulado: "bg-[#014293] shadow-blue-500/70 shadow-lg",
 };
 
-const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
+const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
-  const [filters, setFilters] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({
+    type_pipeline: "",
+    assigned_user_sender: "",
+    status: "",
+    concept: "",
+    created_at: "",
+    subtotal: "",
+    iva: "",
+    total_refund: "",
+    receiver_name_rs: "",
+  });
 
   const columns = [
     { label: "ID", key: "pipeline_id" },
     { label: "Tipo", key: "type_pipeline" },
     { label: "Asignado", key: "assigned_user_sender" },
     { label: "Concepto", key: "concept" },
-    { label: "Tiempo", key: "created_at" },
+    { label: "Fecha Creación", key: "created_at" },
     { label: "Subtotal", key: "subtotal" },
     { label: "Iva", key: "iva" },
     { label: "Monto", key: "total_refund" },
@@ -51,7 +68,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
 
   const handleDownload = async () => {
     if (selectedIds.length === 0) return alert("No hay elementos seleccionados.");
-    
+
     setLoading(true); // Carga inicial
     try {
       const response = await fetch(`${api}/historical/docs/byid`, {
@@ -112,8 +129,10 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
   const filteredData = dataBoard.filter((item) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
-      const cellValue = item[key];
-      return String(cellValue).toLowerCase().includes(value.toLowerCase());
+      if (key === "created_at") {
+        return FormatDateForComparison(item[key]) === value;
+      }
+      return item[key] === value;
     });
   });
 
@@ -157,11 +176,31 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
               <IoFilter className="w-4 h-4 fill-current" />
               Filtros
             </button> */}
-            {/* <button className="flex items-center gap-2 text-sm p-2 font-semibold text-white border-[1px] rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all">
-              <BsSend className="w-4 h-4 fill-current" />
-              Enviar
-            </button> */}
-            <button onClick={handleDownload} className="flex items-center gap-2 text-sm p-2 font-semibold text-white border-[1px] rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all">
+            <div className="flex flex-row items-center">
+              <input
+                className="text-sm px-2 py-2 rounded-l-md border border-white text-white bg-[#1f1f1f] placeholder-gray-400 focus:outline-none"
+                type="text"
+                placeholder="Buscar..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    console.log(searchTerm);
+                    getSearch(searchTerm);
+                  }
+                }}
+              />
+              <button
+                className="flex items-center gap-2 text-sm px-3 py-2 font-semibold text-white border border-white border-l-0 rounded-r-md hover:text-[#eeb13f] cursor-pointer"
+                onClick={() => {
+                  console.log(searchTerm);
+                  getSearch(searchTerm);
+                }}
+              >
+                Buscar
+              </button>
+            </div>
+            <button onClick={handleDownload} className="flex items-center gap-2 text-sm p-2 font-semibold text-white border-[1px] rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 hover:rounded transition-all">
               <IoCloudDownloadOutline className="w-4 h-4 fill-current" />
               Descargar
             </button>
@@ -184,7 +223,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                 {columns.map((item) => (
                   <th
                     key={item.key}
-                    className={`${styles.table_header_cell} p-4 text-center ${item.key !== "acciones" ? "cursor-pointer select-none" : ""}`}
+                    className={`${styles.table_header_cell} ${item.key !== "acciones" ? "cursor-pointer select-none" : ""}`}
                     onClick={() => item.key !== "acciones" && handleSort(item.key)}
                   >
                     <div className="flex items-center justify-center gap-1">
@@ -204,37 +243,38 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
               {/* Filtros */}
               <tr>
                 <th></th>
-                {columns.map((item) => (
-                  <th key={`${item.key}-filter`} className="p-1 text-center">
-                    {item.key !== "acciones" && item.key !== "status" ? (
-                      <input
-                        type="text"
-                        value={filters[item.key] || ""}
-                        onChange={(e) =>
-                          setFilters({ ...filters, [item.key]: e.target.value })
-                        }
-                        placeholder="Filtrar"
-                        className="w-full px-1 py-0.5 text-xs rounded border border-gray-300"
-                      />
-                    ) : item.key === "status" ? (
+                {columns.map((col) => (
+                  <th key={`filter-${col.key}`}>
+                    {col.key !== "acciones" & col.key !== "pipeline_id" ? (
                       <select
-                        value={filters[item.key] || ""}
-                        onChange={(e) =>
-                          setFilters({ ...filters, [item.key]: e.target.value })
-                        }
-                        className="w-full px-1 py-0.5 text-xs rounded border border-gray-300 text-black"
+                        value={filters[col.key] || ""}
+                        onChange={(e) => setFilters((prev) => ({ ...prev, [col.key]: e.target.value }))}
+                        className="bg-black border border-white rounded-md text-sm font-inter text-white w-4/5"
                       >
-                        <option value="">Todos</option>
-                        <option value="Terminado">Terminado</option>
-                        <option value="Cancelada">Cancelada</option>
-                        <option value="Anulado">Anulado</option>
+                        <option value="" className="bg-white text-black">Todos</option>
+                        {[...new Set(
+                          dataBoard.map(item => {
+                            if (col.key === "created_at") {
+                              return FormatDateForComparison(item[col.key]); // Formato de fecha
+                            }
+                            return item[col.key];
+                          }))].map((option) => {
+                            const isCurrency = ["subtotal", "iva", "total_refund"].includes(col.key);
+                            const displayValue = isCurrency ? formatCurrency(option) : col.key === "created_at" ? FormattedDate(option) : option;
+                            return (
+                              <option key={option} value={option} className="bg-white text-black">
+                                {displayValue}
+                              </option>
+                            );
+                          })}
                       </select>
                     ) : null}
                   </th>
                 ))}
               </tr>
+
             </thead>
-            
+
             {/*Body*/}
             <tbody className={styles.table_body}>
               {sortedData.length > 0 ? (
@@ -256,7 +296,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm }) => {
                     <td className="p-4 text-center">{item.type_pipeline}</td>
                     <td className="p-4 text-center">{item.assigned_user_sender}</td>
                     <td className="p-4 text-center">{item.concept}</td>
-                    <td className="p-4 text-center">{dateToDays(item.created_at)}</td>
+                    <td className="p-4 text-center">{FormattedDate(item.created_at)}</td>
                     <td className="p-4 text-center">{formatCurrency(item.subtotal)}</td>
                     <td className="p-4 text-center">{formatCurrency(item.iva)}</td>
                     <td className="p-4 text-center">{formatCurrency(item.total_refund)}</td>

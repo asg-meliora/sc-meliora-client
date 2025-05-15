@@ -125,6 +125,11 @@ const Files = ({ api }) => {
             newFiles={newFiles}
             handleAnnulledForm={handleAnnulledForm}
           />
+          <FilesTable
+            api={api}
+            newFiles={newFiles}
+            handleAnnulledForm={handleAnnulledForm}
+          />
         </div>
       </div>
       {createModalOpen && (
