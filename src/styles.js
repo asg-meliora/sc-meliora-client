@@ -20,7 +20,7 @@ const styles = {
   table_container: "overflow-x-auto bg-whiteN p-4",
   table: "w-full border-collapse overflow-hidden rounded-b-xl shadow-mid",
   table_header: "bg-radial from-[#dd9206] via-[#835f1c] to-[#6d581d] text-white font-raleway uppercase text-sm",
-  table_header_cell: "py-2 px-4 text-center",
+  table_header_cell: "p-4 text-center",
   table_body: "text-gray-700 font-inter text-sm",
 
   // > Table Details
