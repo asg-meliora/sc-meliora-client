@@ -3,6 +3,7 @@ import { MdOutlineCancel } from "react-icons/md";
 import styles from "../../styles";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { FaEdit } from "react-icons/fa";
 
 const InvoicesTable = ({
   dataBoard,
@@ -40,8 +41,18 @@ const InvoicesTable = ({
     "Ciclo de Vida",
     "Subtotal",
     "Razón Social (Receptor)",
-    ...(invoiceStatus === 1 && adminStatus === 1 ? ["Acciones"] : []),
+    "Acciones",
   ];
+  // const columns = [
+  //   "ID",
+  //   "Tipo",
+  //   "Asignado",
+  //   "Concepto",
+  //   "Ciclo de Vida",
+  //   "Subtotal",
+  //   "Razón Social (Receptor)",
+  //   ...(invoiceStatus === 1 && adminStatus === 1 ? ["Acciones"] : []),
+  // ];
 
   // TODO: Date convertion to days
   const dateToDays = (date) => {
@@ -114,8 +125,9 @@ const InvoicesTable = ({
                   } hover:bg-[#313131] hover:text-white transition-all`}
                 >
                   <td
-                    className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transform transition-all"
-                    onClick={() => handleNavigate(invoice.pipeline_id)}
+                    className="p-4 text-center font-semibold"
+                    // className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transition-all"
+                    // onClick={() => handleNavigate(invoice.pipeline_id)}
                   >
                     {invoice.pipeline_id}
                   </td>
@@ -137,10 +149,36 @@ const InvoicesTable = ({
                   {invoiceStatus === 1 && adminStatus === 1 && (
                     <td className="p-4 text-center">
                       <button
+                        onClick={() => handleNavigate(invoice.pipeline_id)}
+                        className="mr-1 text-[#9e824f] hover:text-[#eeb13f] scale-120 hover:cursor-pointer transition-all hover:scale-140"
+                      >
+                        <FaEdit size={18} />
+                      </button>
+                      <button
                         onClick={() => handleAnnulledForm(invoice.pipeline_id)}
-                        className="text-[#9e824f] hover:text-[#eeb13f] scale-120 hover:cursor-pointer transition-all transform hover:scale-140"
+                        className="ml-1 text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all hover:scale-150"
                       >
                         <MdOutlineCancel size={18} />
+                      </button>
+                    </td>
+                  )}
+                  {invoiceStatus !== 1 && adminStatus === 1 && (
+                    <td className="p-4 text-center">
+                      <button
+                        onClick={() => handleNavigate(invoice.pipeline_id)}
+                        className="text-[#9e824f] hover:text-[#eeb13f] scale-120 hover:cursor-pointer transition-all hover:scale-140"
+                      >
+                        <FaEdit size={18} />
+                      </button>
+                    </td>
+                  )}
+                  {adminStatus !== 1 && (
+                    <td className="p-4 text-center">
+                      <button
+                        onClick={() => handleNavigate(invoice.pipeline_id)}
+                        className="text-[#9e824f] hover:text-[#eeb13f] scale-120 hover:cursor-pointer transition-all  hover:scale-140"
+                      >
+                        <FaEdit size={18} />
                       </button>
                     </td>
                   )}

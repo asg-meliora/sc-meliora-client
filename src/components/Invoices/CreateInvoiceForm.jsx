@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "../../styles";
 import Cookies from "js-cookie";
+import { validateAmount, validateConcept, validateCommission } from "../../validations";
 
 const CreateInvoiceForm = ({
   api,
@@ -10,8 +11,10 @@ const CreateInvoiceForm = ({
   setSuccess,
   setSuccessMessage,
   setErrorGeneral,
+  setLoading,
+  setLoadingMessage,
 }) => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
   const [formData, setFormData] = useState({
     invoice_type: "",
     invoice_concept: "",
@@ -100,10 +103,47 @@ const CreateInvoiceForm = ({
     fetchClients();
   }, [/*fetchUsers,*/ fetchClients]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form data:", formData); //QUITARLO
+    setErrorMessage(null);
+    if (!formData.invoice_type) {
+      setErrorMessage("El tipo de factura es obligatorio.");
+      return;
+    }
+    if (!validateConcept(formData.invoice_concept)) {
+      setErrorMessage(
+        "El concepto de la factura debe tener al menos 5 caracteres y no contener caracteres especiales."
+      );
+      return;
+    }
+    if (!formData.invoice_payment_type) {
+      setErrorMessage("El tipo de pago es obligatorio.");
+      return;
+    }
+    if (!validateAmount(formData.invoice_total)) {
+      setErrorMessage("El total de la factura no es válido.");
+      return;
+    }
+    if (!validateCommission(formData.invoice_comision_percentage)) {
+      setErrorMessage(
+        "El porcentaje de comisión no es válido. Debe estar entre 0 y 100.")
+    }
+    
+    if (!formData.invoice_client_sender) {
+      setErrorMessage("El cliente emisor es obligatorio.");
+      return;
+    }
+    if (!formData.invoice_client_receiver) {
+      setErrorMessage("El cliente receptor es obligatorio.");
+      return;
+    }
+    setErrorMessage(null);
+  onSubmit(formData);
+  };
 
+  const onSubmit = async () => {
+    setLoadingMessage("Enviando información...");
+    setLoading(true);
     // Aquí puedes hacer la lógica para enviar los datos al servidor
     try {
       const response = await fetch(`${api}/invoices`, {
@@ -122,10 +162,10 @@ const CreateInvoiceForm = ({
     } catch (error) {
       setErrorMessage("Error al crear la factura");
       console.error("Error al crear la factura:", error);
+    } finally {
+      setCreateShowForm(false);
+      setLoading(false);
     }
-
-    // TODO: Validate Invoice Concept data
-    setCreateShowForm(false);
   };
 
   const handleChange = (e) => {
@@ -196,7 +236,7 @@ const CreateInvoiceForm = ({
         {/* Form Title */}
         <h2 className={styles.form_heading}>Agregar Nueva Factura</h2>
 
-        <form onSubmit={handleSubmit} className={styles.form} /*noValidate*/>
+        <form onSubmit={handleSubmit} className={styles.form} noValidate>
           <div className="mb-[-40px]">
             {/* Error Message */}
             {(errorMessage || serverErrorMessage) && (
@@ -314,7 +354,7 @@ const CreateInvoiceForm = ({
                 $MXN
               </span>
             </div>
-            
+
             {/* Today date */}
             <input
               type="text"
@@ -324,7 +364,7 @@ const CreateInvoiceForm = ({
               disabled
               className={styles.input_form}
             />
-           
+
             {/* Invoice Subtotal */}
             <div className="relative">
               <input
@@ -345,7 +385,7 @@ const CreateInvoiceForm = ({
               </span>
             </div>
 
-             {/* Select de Razón Social Primario */}
+            {/* Select de Razón Social Primario */}
             <select
               name="invoice_client_sender"
               value={formData.invoice_client_sender || ""}

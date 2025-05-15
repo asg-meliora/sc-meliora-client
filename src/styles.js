@@ -31,6 +31,7 @@ const styles = {
   d_table_header: "bg-gray-100 text-gray-700 border-r-6 border-[#F4F4F7] rounded-sm text-sm md:text-base font-bold font-raleway p-3",
   d_table_data: "p-3 text-sm text-gray-800 border-[#F4F4F7] rounded-sm whitespace-pre-wrap font-inter break-words w-2/3",
   d_table_input: "w-full p-2 rounded-md bg-linear-0 from-[#ffffff] via-[#eeeeee] to-[#ffffff] border border-gray-300 shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-blue-400 focus:scale-105 focus:mt-0.5 transition-all  px-3 py-2 text-sm shadow-sm focus:outline-none",
+  
   // > Details Files
   d_files_container: "bg-white shadow-sm border border-gray-200 w-[80%] mx-auto rounded-lg py-10 px-5 grid grid-cols-1 lg:grid-cols-3 gap-6 place-items-center grid-cols-auto justify-items-center",
   d_files_article: "flex flex-col items-center justify-center w-[90%] max-w-xd  bg-whiteN rounded-lg",

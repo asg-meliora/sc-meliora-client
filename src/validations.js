@@ -43,3 +43,22 @@ export const validateFiles = (formData) => {
   return true;
 };
 
+// > Invoice
+export const validateConcept = (concept) => {
+  const regex = /^[a-zA-Z0-9\s.,()\-]{5,100}$/;
+  return regex.test(concept.trim());
+};
+
+export const validateAmount = (amount) => {
+  const regex = /^\d+(\.\d{1,2})?$/;
+  return regex.test(amount.trim());
+};
+
+export const validateCommission = (value) => {
+  const regex = /^\d+(\.\d{1,2})?$/;
+  if (!regex.test(value.trim())) return false;
+
+  const number = parseFloat(value);
+  return number >= 0 && number <= 100;
+};
+

@@ -44,12 +44,12 @@ function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuc
                 </button>
 
                 {/* Form Title */}
-                <h2 className={styles.form_heading}>¿Estás Seguro que quieres anular la factura?</h2>
+                <h2 className={`${styles.form_heading} text-center`}>¿Estás Seguro que quieres anular la factura?</h2>
 
 
                 <div className="flex justify-center">
                     <button
-                        className="bg-red-700 hover:bg-red-800 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow cursor-pointer"
+                        className="px-8 py-3.5 text-lg rounded-xl logoutButton text-white font-medium font-inter shadow-md shadow-red-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
                         onClick={handleAnnulled}
                     >
                         Anular
