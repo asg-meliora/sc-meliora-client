@@ -113,9 +113,13 @@ function FilesCreate({
     fetchUsers(api);
   }, [api]);
 
+  const upperCaseFields = ["rfc", "curp", "bank_account"];
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: upperCaseFields.includes(name) ? value.toUpperCase() : value,
+    }));
   };
 
   const handleFileChange = (e) => {
@@ -207,14 +211,18 @@ function FilesCreate({
             //     onChange={handleFileChange}
             //     label={DiccLabels[key].label}
             //   />
-            // ) : 
+            // ) :
             key === "category" ? ( // Renderizar el nuevo campo "Category"
               <select
                 key={key}
                 name={key}
                 value={formData.category || ""}
                 onChange={handleInputChange}
-                className={`${styles.select_form} col-span-2  ${formData.category ? "text-black font-normal" : "italic text-gray-500"}`}
+                className={`${styles.select_form} col-span-2  ${
+                  formData.category
+                    ? "text-black font-normal"
+                    : "italic text-gray-500"
+                }`}
                 required
               >
                 <option value="" hidden disabled>
@@ -239,7 +247,11 @@ function FilesCreate({
             name="userAssign"
             value={formData.userAssign || ""}
             onChange={handleInputChange}
-            className={`${styles.select_form} col-span-2  ${formData.userAssign ? "text-black font-normal" : "italic text-gray-500"}`}
+            className={`${styles.select_form} col-span-2  ${
+              formData.userAssign
+                ? "text-black font-normal"
+                : "italic text-gray-500"
+            }`}
             required
           >
             <option value="" hidden disabled>
