@@ -11,7 +11,6 @@ import { SuccessTexts } from "../../constants/Texts";
 const CreateInvoiceForm = ({
   api,
   setCreateShowForm,
-  serverErrorMessage = null,
   onAddInvoice,
   setSuccess,
   setSuccessMessage,
@@ -241,7 +240,9 @@ const CreateInvoiceForm = ({
 
   return (
     <>
-      <div className={`${styles.form_layout} relative w-full max-w-5xl`}>
+      <div
+        className={`${styles.form_layout} relative w-[80vw] lg:w-full max-w-5xl max-h-[95vh] flex flex-col`}
+      >
         {/* Close Form Button */}
         <button
           onClick={() => setCreateShowForm(false)}
@@ -252,18 +253,15 @@ const CreateInvoiceForm = ({
 
         {/* Form Title */}
         <h2 className={styles.form_heading}>Agregar Nueva Factura</h2>
+        <div className={errorMessage ? "mb-[-5px]" : ""}>
+          {/* Error Message */}
+          {errorMessage && (
+            <div className={styles.error_message}>{errorMessage}</div>
+          )}
+        </div>
 
-        <form onSubmit={handleSubmit} className={styles.form} noValidate>
-          <div className="mb-[-40px]">
-            {/* Error Message */}
-            {(errorMessage || serverErrorMessage) && (
-              <div className={styles.error_message}>
-                {errorMessage ? errorMessage : serverErrorMessage}
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto p-6 w-full max-w-5xl">
+        <form onSubmit={handleSubmit} className={`${styles.form} overflow-y-auto max-h-[calc(100vh-120px)]`} noValidate>
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto py-2 px-6 w-full max-w-5xl">
             {/* Invoice Type Select */}
             <select
               name="invoice_type"
@@ -510,7 +508,7 @@ const CreateInvoiceForm = ({
           </div>
 
           {/* Add Invoice Button */}
-          <button type="submit" className={`${styles.send_button} mt-[-20px]`}>
+          <button type="submit" className={`${styles.send_button} mt-[-5px] mb-2`}>
             Agregar Factura
           </button>
         </form>

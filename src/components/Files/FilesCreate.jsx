@@ -97,7 +97,6 @@ function FilesCreate({
 
   const [userAssigns, setuserAssigns] = useState({ results: [] });
   const [errorMessage, setErrorMessage] = useState(null);
-  const [errorExist, setErrorExist] = useState(false); // > temporal for testing
 
   useEffect(() => {
     const fetchUsers = async (api) => {
@@ -180,27 +179,27 @@ function FilesCreate({
   };
 
   return (
-    <div className={`${styles.form_layout} relative w-full max-w-5xl`}>
+    <div
+      className={`${styles.form_layout} relative w-[80vw] lg:w-full max-w-5xl max-h-[95vh] flex flex-col`}
+    >
       {/* Close Form Button */}
       <button onClick={onClose} className={styles.close_form_button}>
         ✕
       </button>
 
       {/* Form Title */}
-      <h2 className={styles.form_heading}>Agregar Nuevo Expediente</h2>
-      <form onSubmit={handleSubmit} className={`${styles.form}`} noValidate>
-        {/* Error Message */}
-        {/* {(errorMessage || serverErrorMessage) && (
-          <div className={styles.error_message}>
-            {errorMessage ? errorMessage : serverErrorMessage}
-          </div>
-        )} */}
-        <div className="mb-[-40px]">
-          {errorMessage && errorExist && (
-            <div className={styles.error_message}>{errorMessage}</div>
-          )}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto p-6 w-full max-w-5xl">
+      <h2 className={`${styles.form_heading}`}>Agregar Nuevo Expediente</h2>
+      <div className={errorMessage ? "mb-[-5px]" : ""}>
+        {errorMessage && (
+          <div className={styles.error_message}>{errorMessage}</div>
+        )}
+      </div>
+      <form
+        onSubmit={handleSubmit}
+        className={`${styles.form} overflow-y-auto max-h-[calc(100vh-120px)]`}
+        noValidate
+      >
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto py-2 px-6 w-full max-w-5xl">
           {/* Form Fields */}
           {Object.entries(formData).map(([key, value]) =>
             // key.startsWith("file") ? ( // Renderizar el nuevo campo "Files"
@@ -265,7 +264,7 @@ function FilesCreate({
           </select>
         </div>
         {/* Add File Button */}
-        <button type="submit" className={`${styles.send_button} mt-[-20px]`}>
+        <button type="submit" className={`${styles.send_button} mb-2`}>
           {" "}
           Agregar Expediente
         </button>

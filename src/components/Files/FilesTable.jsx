@@ -1,8 +1,6 @@
-import React from "react";
-import "./FilesTable.css";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles";
-import { SlOptionsVertical } from "react-icons/sl";
+import { FaEdit } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 function FilesTable({ newFiles, handleAnnulledForm }) {
@@ -75,8 +73,7 @@ function FilesTable({ newFiles, handleAnnulledForm }) {
                   } hover:bg-[#313131] hover:text-white transition-all`}
                 >
                   <td
-                    className="p-3 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transition-all"
-                    onClick={() => navigate(`/files/details/${item.client_id}`)}
+                    className="p-3 text-center font-semibold hover:cursor-pointer hover:font-bold"
                   >
                     {item.name_rs}
                   </td>
@@ -95,10 +92,17 @@ function FilesTable({ newFiles, handleAnnulledForm }) {
                   </td>
                   <td className="p-4 text-center">
                     <button
-                      onClick={() => handleAnnulledForm(item.client_id)}
+                                          onClick={() => navigate(`/files/details/${item.client_id}`)}
+
                       className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
                     >
                       {/* <SlOptionsVertical size={18} /> */}
+                      <FaEdit size={18} />
+                    </button>
+                    <button
+                      onClick={() => handleAnnulledForm(item.client_id)}
+                      className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
+                    >
                       <MdOutlineCancel size={18} />
                     </button>
                   </td>

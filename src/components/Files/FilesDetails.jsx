@@ -13,6 +13,7 @@ import LoadingScreen from "../LoadingScreen.jsx";
 import styles from "../../styles.js";
 import Navbar from "../Navbar.jsx";
 import { SuccessTexts } from "../../constants/Texts.js";
+import { MdMenu } from "react-icons/md";
 
 const FormattedDate = (dateString) => {
   const date = new Date(dateString);
@@ -35,6 +36,7 @@ function FileDetail({ api }) {
   const [isEditing, setIsEditing] = useState(false); // Estado para determinar si estamos editando
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [showSidemenu, setShowSideMenu] = useState(false);
 
   const getUsers = useCallback(async () => {
     const response = await fetch(`${api}/users/byregnact`, {
@@ -93,7 +95,6 @@ function FileDetail({ api }) {
 
     getAllData();
   }, [getUsers, getClients, getFileDetail]);
-
 
   const documentTypeMap = {
     CSF: "CSF",
@@ -170,9 +171,22 @@ function FileDetail({ api }) {
       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
       <div className={styles.blank_page}>
         <Navbar />
+        {showSidemenu && <SideMenu setFullSideBar={setShowSideMenu} />}
         <div className={styles.page_container}>
           <div className={styles.header_container}>
-            <h2 className={styles.heading_details_page}>{newData.results.name_rs}</h2>
+            <div className="inline pt-5.5 sm:hidden text-white">
+              <div>
+                <button
+                  onClick={() => setShowSideMenu(true)}
+                  className="mt-auto mb-6 p-2 text-3xl rounded-lg hover:cursor-pointer hover:scale-115 transform transition-all"
+                >
+                  <MdMenu />
+                </button>
+              </div>
+            </div>
+            <h2 className={styles.heading_details_page}>
+              {newData.results.name_rs}
+            </h2>
             {/* <h2 className={styles.heading_page}>Expediente No. {id}</h2> */}
             {!isEditing && (
               <div className={styles.button_header_container}>
@@ -180,7 +194,8 @@ function FileDetail({ api }) {
                   className={styles.button_header}
                   onClick={() => setIsEditing(true)}
                 >
-                  <FaEdit /> Editar Datos
+                  <FaEdit />{" "}
+                  <span className="hidden sm:inline-block">Editar Datos</span>
                 </button>
               </div>
             )}
@@ -251,14 +266,16 @@ function FileDetail({ api }) {
                       if (file) {
                         const isPdf = file.type === "application/pdf";
                         if (!isPdf) {
-                          setError("Solo se permiten archivos en formato PDF");//Rechazar si no es pdf
+                          setError("Solo se permiten archivos en formato PDF"); //Rechazar si no es pdf
                         } else if (file.size > maxSizeBytes) {
-                          setError(`El archivo supera el límite de ${maxSizeMB}MB`);//Rechazar si pesa mucho
+                          setError(
+                            `El archivo supera el límite de ${maxSizeMB}MB`
+                          ); //Rechazar si pesa mucho
                         } else {
-                          handleFileUpload(file, urls.document_id);//Subir Archivo
+                          handleFileUpload(file, urls.document_id); //Subir Archivo
                         }
                       }
-                      e.target.value = null;//Resetear cualquier archivo cargado local
+                      e.target.value = null; //Resetear cualquier archivo cargado local
                     }}
                   />
                 </div>
