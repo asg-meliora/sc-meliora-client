@@ -16,7 +16,7 @@ import ConfirmDeleteModal from "../components/Files/ConfirmDeleteModal";
 const Files = ({ api }) => {
   const [createModalOpen, setCreateModalOpen] = useState(false); //Estado para manejar el status del modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false); //Estado para manejar el status del modal
-  const [newFiles, setNewFiles] = useState({ despacho: [], client: [], });
+  const [newFiles, setNewFiles] = useState({ despacho: [], clients: [], });
   ; //Estado para manejar los nuevos datos del formulario
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(true); // Estado de carga
@@ -52,13 +52,13 @@ const Files = ({ api }) => {
   }, [getClients])
 
   // Función para manejar la adición de un nuevo expediente
-  const handleNewFile = (newFile) => {
-    const updatedResults = Array.isArray(newFile) ? newFile.flat() : [newFile]; // Aplanar el array de resultados, si newFile es un array dentro de results
-    setNewFiles((prevFiles) => ({
-      ...prevFiles,
-      results: [...prevFiles.results, ...updatedResults],
-    })); // Acceder a prevFiles.results
-  };
+  // const handleNewFile = (newFile) => {
+  //   const updatedResults = Array.isArray(newFile) ? newFile.flat() : [newFile]; // Aplanar el array de resultados, si newFile es un array dentro de results
+  //   setNewFiles((prevFiles) => ({
+  //     ...prevFiles,
+  //     results: [...prevFiles.results, ...updatedResults],
+  //   })); // Acceder a prevFiles.results
+  // };
 
   const handleAnnulledForm = (clientId) => {
     setClientId(clientId);
@@ -66,6 +66,7 @@ const Files = ({ api }) => {
   };
 
   console.log('Debug Padre', newFiles);
+
   return (
     <>
       <AnimatePresence>
@@ -102,11 +103,13 @@ const Files = ({ api }) => {
             api={api}
             newFiles={Array.isArray(newFiles.despacho) ? newFiles.despacho : []}
             handleAnnulledForm={handleAnnulledForm}
+            category={0}
           />
           <FilesTable
             api={api}
-            newFiles={Array.isArray(newFiles.client) ? newFiles.client : []}
+            newFiles={Array.isArray(newFiles.clients) ? newFiles.clients : []}
             handleAnnulledForm={handleAnnulledForm}
+            category={1}
           />
         </div>
       </div>

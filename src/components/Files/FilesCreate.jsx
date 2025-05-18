@@ -111,17 +111,39 @@ function FilesCreate({
     fetchUsers(api);
   }, [api]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e) => { //Manejor de subida de textos
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e) => { //Manejo de subida de archivos, y manejo de errores y limites
     const { name, files } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: files[0] }));
+    const file = files[0];
+    const maxSizeMB = 2;
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+    if (file) {
+      const isPdf = file.type === "application/pdf";
+
+      if (!isPdf) {
+        setErrorMessage(`Solo se permiten archivos en formato PDF, revisa tu archivo ${DiccLabels[name]}`);//Rechazar si no es pdf
+        setFormData((prev) => ({ ...prev, [name]: null }));
+        setErrorExist(true);
+      } else if (file.size > maxSizeBytes) {
+        setErrorMessage(`El archivo ${DiccLabels[name]} supera el límite de ${maxSizeMB}MB`);//Rechazar si pesa mucho
+        setFormData((prev) => ({ ...prev, [name]: null }));
+        setErrorExist(true);
+      } else {
+        setErrorExist(false);
+        setErrorMessage((prev) => ({ ...prev, [name]: null }));
+        setFormData((prev) => ({ ...prev, [name]: file }));
+      }
+    }
+    // Limpia el input para permitir seleccionar el mismo archivo otra vez
+    e.target.value = null;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { //Manejo de Validaciones ANTES de insertar los datos al sistema
     e.preventDefault();
 
     const validation = validateFormData(formData);
@@ -161,7 +183,7 @@ function FilesCreate({
   };
 
 
-  const onSubmit = async () => {
+  const onSubmit = async () => { //Manejo de Insertar Datos y Archivos al sistema
     setLoadingMessage("Enviando información...");
     setLoading(true);
     const data = new FormData();
@@ -227,7 +249,7 @@ function FilesCreate({
                 name={key}
                 file={value}
                 onChange={handleFileChange}
-                label={DiccLabels[key].label}
+                label={DiccLabels[key]}
               />
             ) :
               key === "category" ? ( // Renderizar el nuevo campo "Category"

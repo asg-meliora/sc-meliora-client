@@ -36,7 +36,7 @@ function FileDetail({ api }) {
   const [successMessage, setSuccessMessage] = useState("");
 
   const getUsers = useCallback(async () => {
-    const response = await fetch(`${api}/users/byregnact`, {
+    const response = await fetch(`${api}/users/byregnact`, { //Mostrar usuarios disponibles para asignar
       method: "GET",
       headers: { "x-access-token": Cookies.get("token") },
     });
@@ -44,7 +44,7 @@ function FileDetail({ api }) {
     return await response.json();
   }, [api]);
 
-  const getClients = useCallback(async () => {
+  const getClients = useCallback(async () => { //Mostrar Datos del Cliente
     const response = await fetch(`${api}/clients/byclientanduser/${id}`, {
       method: "GET",
       headers: {
@@ -56,7 +56,7 @@ function FileDetail({ api }) {
     return await response.json();
   }, [api, id]);
 
-  const getFileDetail = useCallback(async () => {
+  const getFileDetail = useCallback(async () => { //Mostrar Archivos del Cliente
     const response = await fetch(`${api}/docs/byid/${id}`, {
       method: "GET",
       headers: {
@@ -82,6 +82,7 @@ function FileDetail({ api }) {
 
         setuserAssigns(usersData);
         setNewData(clientsData);
+        console.log(clientsData);
         setFileUrl(fileData);
       } catch (err) {
         setError(err.message);
@@ -129,14 +130,20 @@ function FileDetail({ api }) {
       if (!response.ok) throw new Error("Error al actualizar los datos");
 
       const result = await response.json();
+      console.log("Updated", result);
       // setNewFiles({ results: result });
       setSuccess(true);
       setSuccessMessage("Datos actualizados exitosamente");
     } catch (err) {
       setError(err.message);
     } finally {
-      setIsEditing(false); // Finaliza la edición
+      const updatedClientData = await getClients();
+      console.log("Datos refrescados:", updatedClientData);
+      setNewData(updatedClientData)
+      //window.location.reload();
+      setIsEditing(false);
     }
+
   };
 
   //Función para Actulizar el archivo
@@ -198,7 +205,7 @@ function FileDetail({ api }) {
           {/* Detalles del expediente */}
           <div className="w-full mb-6">
             <FilesTableDetail
-              data={newData}
+              data={newData.results}
               onSave={handleSaveChanges}
               userAssigns={userAssigns.results}
               setLoading={setLoading}
