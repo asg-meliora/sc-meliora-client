@@ -138,9 +138,8 @@ function FileDetail({ api }) {
       setError(err.message);
     } finally {
       const updatedClientData = await getClients();
-      console.log("Datos refrescados:", updatedClientData);
-      setNewData(updatedClientData)
-      //window.location.reload();
+      //console.log("Datos refrescados:", updatedClientData);
+      setNewData(updatedClientData);
       setIsEditing(false);
     }
 

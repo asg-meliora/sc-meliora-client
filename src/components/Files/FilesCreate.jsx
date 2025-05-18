@@ -20,6 +20,7 @@ const DiccLabels = {
   phone: "Teléfono",
   email: "Correo Electrónico",
   bank_account: "No. Cuenta Bancaria",
+  comision: "Comisión (%)",
   fileCSF: "CSF",
   fileCDB: "Comprabante de Domicilio",
   fileCDD: "Carátula Bancaria",
@@ -86,6 +87,7 @@ function FilesCreate({
     phone: "",
     email: "",
     bank_account: "",
+    comision: "",
     category: "",
     userAssign: "",
     fileCSF: null,
@@ -129,23 +131,22 @@ function FilesCreate({
         setErrorMessage(`Solo se permiten archivos en formato PDF, revisa tu archivo ${DiccLabels[name]}`);//Rechazar si no es pdf
         setFormData((prev) => ({ ...prev, [name]: null }));
         setErrorExist(true);
+        e.target.value = null; // Limpia el input para permitir seleccionar el mismo archivo otra vez
       } else if (file.size > maxSizeBytes) {
         setErrorMessage(`El archivo ${DiccLabels[name]} supera el límite de ${maxSizeMB}MB`);//Rechazar si pesa mucho
         setFormData((prev) => ({ ...prev, [name]: null }));
         setErrorExist(true);
+        e.target.value = null; // Limpia el input para permitir seleccionar el mismo archivo otra vez
       } else {
         setErrorExist(false);
         setErrorMessage((prev) => ({ ...prev, [name]: null }));
         setFormData((prev) => ({ ...prev, [name]: file }));
       }
     }
-    // Limpia el input para permitir seleccionar el mismo archivo otra vez
-    e.target.value = null;
   };
 
   const handleSubmit = async (e) => { //Manejo de Validaciones ANTES de insertar los datos al sistema
     e.preventDefault();
-
     const validation = validateFormData(formData);
     if (!validation.valid) {
       setErrorMessage(validation.error);
@@ -190,10 +191,10 @@ function FilesCreate({
     Object.entries(formData).forEach(([key, value]) => {
       if (value) data.append(key, value);
     });
-    // console.log("Contenido de FormData:");
-    // for (let pair of data.entries()) {
-    //   console.log(`${pair[0]}:`, pair[1]);
-    // }
+    console.log("Contenido de FormData:");
+    for (let pair of data.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
     try {
       const response = await fetch(`${api}/clients/complete`, {
         method: "POST",

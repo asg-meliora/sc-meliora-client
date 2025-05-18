@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "../../styles";
 
-// const FormattedDate = (dateString) => {
-//   const date = new Date(dateString);
-//   const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(
-//     date.getMonth() + 1
-//   )
-//     .toString()
-//     .padStart(2, "0")}/${date.getFullYear()}`;
+const FormattedDate = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`;
+  return formattedDate;
+};
 
-//   return formattedDate;
-// };
 const DiccHead = {
   name_rs: { label: "Razón Social" },
   rfc: { label: "RFC" },
@@ -22,8 +18,8 @@ const DiccHead = {
   email: { label: "Correo Electrónico" },
   bank_account: { label: "No. Cuenta Bancaria" },
   user_name: { label: "Usuario Asignado" },
-  category: { label: "Categoría" },
   comision: { label: "Comisión (%)" },
+  category: { label: "Categoría" },
 };
 const addressKeys = {
   street: "Calle",
@@ -32,6 +28,10 @@ const addressKeys = {
   neighborhood: "Colonia",
   municipality: "Municipio",
   state: "Estado",
+};
+const categoryLabels = {
+  ClientesEmisor: "Despacho",
+  ClientesReceptor: "Cliente",
 };
 
 export default function FileTableDetail({ data, onSave, userAssigns, isEditing, setIsEditing, }) {
@@ -122,11 +122,11 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
     const updatedForm = {
       ...formData,
       ...campoEspecial, // <-- Aquí se añaden los campos de dirección separados
-      address: null     // Opcional: eliminar el campo original si no lo quieres enviar
+      address: null,     // Opcional: eliminar el campo original si no lo quieres enviar
+      created_at: null 
     };
-    console.log("Datos Enviados", updatedForm);
-    // onSave(updatedForm);
-    alert("Formulario enviado. Revisa la consola.");
+    console.log("Datos Enviados", updatedForm); //Quitarlo
+    onSave(updatedForm);
     setIsEditing(false);// Desactivar modo edición después de guardar
   };
 
@@ -160,8 +160,8 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                     className={`${styles.d_table_data} ${isEditing ? "" : ""} ${index === leftKeys.length - 1 ? "" : "border-b-6"
                       }`}
                   >
-                    {isEditing ? (
-                      key === "address" ? (
+                    {isEditing ? ( // Si esta editando
+                      key === "address" ? ( //Si esta en address, agrega los subcampos correspondientes (son 6 subcampos)
                         <div>
                           {Object.keys(address).map((key) => (
                             <fieldset key={key} className="inline-block border border-[#ccc] px-3 py-2 rounded-lg">
@@ -179,14 +179,15 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                         <input
                           type="text"
                           name={key}
-                          value={formData[key] ?? ""}
+                          value={key === "created_at" ? FormattedDate(data[key]) : formData[key] ?? "—"} // En editable, se formatea fecha 
                           onChange={handleChange}
                           required
+                          disabled={key === "created_at"} // Se desactiva el edidable solo si es "created_at"
                           className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105 transition-all px-3 py-2 focus:outline-none`}
                         />
                       )
                     ) : (
-                      <span>{data[key] ?? "—"}</span>
+                      <span>{key === "created_at" ? FormattedDate(data[key]) : data[key] ?? "—"}</span>
                     )}
                   </td>
                 </tr>
@@ -212,8 +213,8 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
                     className={`${styles.d_table_data} ${index === rightKeys.length - 1 ? "" : "border-b-6"}`}
                   >
-                    {isEditing ? (
-                      key === "user_name" ? (
+                    {isEditing ? (  //Si esta editando
+                      key === "user_name" ? ( //Si esta en UserName, les permite elegir otro usuario
                         <select
                           name="user_name"
                           value={formData.user_name ?? ""}
@@ -234,14 +235,15 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                         <input
                           type="text"
                           name={key}
-                          value={formData[key] ?? ""}
+                          value={key === "category" ? categoryLabels[formData["category"]] : formData[key] ?? ""} // En editable, se formatea category
                           onChange={handleChange}
                           required
+                          disabled={key === "category"} // Se desactiva el edidable solo si es "category"
                           className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105  transition-all  px-3 py-2 focus:outline-none`}
                         />
                       )
                     ) : (
-                      <span>{data[key] ?? "—"}</span>
+                      <span>{categoryLabels[data[key]] ?? data[key] ?? "—"}</span>
                     )}
                   </td>
                 </tr>
@@ -249,29 +251,6 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
             </tbody>
           </table>
         </div>
-
-        {/* Campo8 especial */}
-        {/* <div style={{ marginBottom: "8px" }}>
-          <label style={{ fontWeight: "bold", marginRight: "8px" }}>campo8:</label>
-          {isEditing ? (
-            <fieldset style={{ display: "inline-block", padding: "10px", border: "1px solid #ccc" }}>
-              <legend>Subcampos de campo8</legend>
-              {Object.keys(address).map((key) => (
-                <div key={key} style={{ marginBottom: "6px" }}>
-                  <label style={{ marginRight: "6px" }}>{key}:</label>
-                  <input
-                    type="text"
-                    name={key}
-                    value={campoEspecial[key] ?? ""}
-                    onChange={handleEspecialChange}
-                  />
-                </div>
-              ))}
-            </fieldset>
-          ) : (
-            <span>{data.address ?? "—"}</span>
-          )}
-        </div> */}
       </div >
 
       {/* Botones de acción */}
