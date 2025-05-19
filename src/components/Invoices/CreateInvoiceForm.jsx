@@ -157,8 +157,11 @@ const CreateInvoiceForm = ({
     const { name, value } = e.target;
 
     if (digitFields.includes(name)) {
-      const numericValue = value.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      const numericValue = value.replace(/[^0-9.]/g, "");
+      const dotCount = (numericValue.match(/\./g) || []).length;
+      if (dotCount <= 1) {
+        setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      }
     } else setFormData((prev) => ({ ...prev, [name]: value }));
     if (name === "invoice_client_sender") {
       setUsers({ results: [] }); // Limpia antes de la petición
@@ -202,13 +205,30 @@ const CreateInvoiceForm = ({
   };
 
   const handleKeyDown = (e) => {
-    if (digitFields.includes(e.target.name)) {
-      if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
-        e.preventDefault();
-      }
-    }
+    const allowedKeys = [
+      "Backspace",
+      "Delete",
+      "ArrowLeft",
+      "ArrowRight",
+      "Tab",
+    ];
 
-  }
+    if (digitFields.includes(e.target.name)) {
+      const { key, target } = e;
+      const hasDot = target.value.includes(".");
+      const isNumber = /[0-9]/.test(key);
+      const isDot = key === ".";
+
+      if (isNumber || allowedKeys.includes(key)) {
+        return;
+      }
+
+      if (isDot && !hasDot) {
+        return;
+      }
+      e.preventDefault(); // Bloquea cualquier otra tecla
+    }
+  };
 
   return (
     <>
@@ -232,7 +252,11 @@ const CreateInvoiceForm = ({
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className={`${styles.form} overflow-y-auto max-h-[calc(100vh-120px)]`} noValidate>
+        <form
+          onSubmit={handleSubmit}
+          className={`${styles.form} overflow-y-auto max-h-[calc(100vh-120px)]`}
+          noValidate
+        >
           <div className="flex flex-col md:grid md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto py-2 px-6 w-full max-w-5xl">
             {/* Invoice Type Select */}
             <select
@@ -277,6 +301,7 @@ const CreateInvoiceForm = ({
                   onChange={handleChange}
                   onKeyDown={(e) => handleKeyDown(e)}
                   required
+                  inputMode="decimal"
                   className={`${styles.input_form} pr-16`}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
@@ -302,6 +327,7 @@ const CreateInvoiceForm = ({
                   onChange={handleChange}
                   onKeyDown={(e) => handleKeyDown(e)}
                   required
+                  inputMode="decimal"
                   className={`${styles.input_form} pr-16`}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
@@ -472,7 +498,10 @@ const CreateInvoiceForm = ({
           </div>
 
           {/* Add Invoice Button */}
-          <button type="submit" className={`${styles.send_button} mt-[-5px] mb-2`}>
+          <button
+            type="submit"
+            className={`${styles.send_button} mt-[-5px] mb-2`}
+          >
             Agregar Factura
           </button>
         </form>
