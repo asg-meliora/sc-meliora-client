@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "../../styles";
 import Cookies from "js-cookie";
-import {
-  validateAmount,
-  validateConcept,
-  validateCommission,
-} from "../../validations";
+
+import { validateInvoiceFormData } from "../../validations";
+
 import { SuccessTexts } from "../../constants/Texts";
 
 const CreateInvoiceForm = ({
@@ -110,36 +108,11 @@ const CreateInvoiceForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMessage(null);
-    if (!formData.invoice_type) {
-      setErrorMessage("El tipo de factura es obligatorio.");
-      return;
-    }
-    if (!validateConcept(formData.invoice_concept)) {
-      setErrorMessage(
-        "El concepto de la factura debe tener al menos 5 caracteres y no contener caracteres especiales."
-      );
-      return;
-    }
-    if (!formData.invoice_payment_type) {
-      setErrorMessage("El tipo de pago es obligatorio.");
-      return;
-    }
-    if (!validateAmount(formData.invoice_total)) {
-      setErrorMessage("El total de la factura no es válido.");
-      return;
-    }
-    if (!validateCommission(formData.invoice_comision_percentage)) {
-      setErrorMessage(
-        "El porcentaje de comisión no es válido. Debe estar entre 0 y 100."
-      );
-    }
+    const validation = validateInvoiceFormData(formData);
+    console.log("Validacion", validation);
 
-    if (!formData.invoice_client_sender) {
-      setErrorMessage("El cliente emisor es obligatorio.");
-      return;
-    }
-    if (!formData.invoice_client_receiver) {
-      setErrorMessage("El cliente receptor es obligatorio.");
+    if (!validation.valid) {
+      setErrorMessage(validation.error);
       return;
     }
     setErrorMessage(null);
@@ -182,17 +155,7 @@ const CreateInvoiceForm = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // setFormData((prev) => ({
-    //   ...prev,
-    //   [name]: value,
-    //   // Si seleccionas en uno, y el otro tenía ese valor, lo limpia
-    //   // ...(name === "invoice_client_sender" && prev.invoice_client_receiver === value
-    //   //   .? { invoice_client_receiver: "" }
-    //   //   : {}),
-    //   // ...(name === "invoice_client_receiver" && prev.invoice_client_sender === value
-    //   //   .? { invoice_client_sender: "" }
-    //   //   : {}),
-    // }));
+
     if (digitFields.includes(name)) {
       const numericValue = value.replace(/\D/g, "");
       setFormData((prev) => ({ ...prev, [name]: numericValue }));
@@ -237,6 +200,15 @@ const CreateInvoiceForm = ({
       return; // no seguir con el resto de handleChange para este campo
     }
   };
+
+  const handleKeyDown = (e) => {
+    if (digitFields.includes(e.target.name)) {
+      if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
+        e.preventDefault();
+      }
+    }
+
+  }
 
   return (
     <>
@@ -303,11 +275,7 @@ const CreateInvoiceForm = ({
                   placeholder="Total"
                   value={formData.invoice_total || ""}
                   onChange={handleChange}
-                  onKeyDown={(e) => {
-                    if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
-                      e.preventDefault();
-                    }
-                  }}
+                  onKeyDown={(e) => handleKeyDown(e)}
                   required
                   className={`${styles.input_form} pr-16`}
                 />
@@ -332,11 +300,7 @@ const CreateInvoiceForm = ({
                   placeholder="Comisión %"
                   value={formData.invoice_comision_percentage || ""}
                   onChange={handleChange}
-                  onKeyDown={(e) => {
-                    if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
-                      e.preventDefault();
-                    }
-                  }}
+                  onKeyDown={(e) => handleKeyDown(e)}
                   required
                   className={`${styles.input_form} pr-16`}
                 />
@@ -404,13 +368,13 @@ const CreateInvoiceForm = ({
               }`}
             >
               <option value="" hidden disabled>
-                Motivo de Pago
+                Forma de Pago
               </option>
-              <option value="Ingreso">Ingreso</option>
-              <option value="Egreso">Egreso</option>
-              <option value="Traslado">Traslado</option>
-              <option value="Nómina">Nómina</option>
-              <option value="Pago">Pago</option>
+              <option value="tranferencia">Tranferencia electrónica</option>
+              <option value="cheque">Cueque nominativo</option>
+              <option value="efectivo">Efectivo</option>
+              {/* <option value="Nómina">Nómina</option>
+              <option value="Pago">Pago</option> */}
             </select>
 
             {/* Today date */}

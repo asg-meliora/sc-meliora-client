@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import styles from "../../styles";
 
-import { validateFormData } from "../../validations";
+import { validateFileFormData } from "../../validations";
 import { constructFromSymbol } from "date-fns/constants";
 import { SuccessTexts } from "../../constants/Texts";
 
@@ -129,16 +129,14 @@ function FilesCreate({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const validation = validateFormData(formData);
+    const validation = validateFileFormData(formData);
     console.log("Validacion", validation);
 
     if (!validation.valid) {
       setErrorMessage(validation.error);
-      setErrorExist(true);
       return;
     }
 
-    setErrorExist(false);
     setErrorMessage(null);
     onSubmit(formData);
   };

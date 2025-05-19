@@ -3,7 +3,12 @@ import styles from "../../styles";
 
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
-import { validateEmail, validatePassword } from "../../validations";
+import {
+  validateUserName,
+  validateEmail,
+  validatePassword,
+} from "../../validations";
+import { PiNutLight } from "react-icons/pi";
 
 const UserForm = ({
   initialData = null,
@@ -23,13 +28,15 @@ const UserForm = ({
     }
   );
 
-  
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(formData.password_hash || "");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [confirmPassword, setConfirmPassword] = useState(
+    formData.password_hash || ""
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [showConfPassword, setShowConfPassword] = useState(false);
-  const [passwordsMatch, setPasswordsMatch] = useState(initialData ? true : false);
+  const [passwordsMatch, setPasswordsMatch] = useState(
+    initialData ? true : false
+  );
 
   /**
    * Handles the change of input fields, updating formData and checking password match
@@ -64,7 +71,6 @@ const UserForm = ({
       setShowConfPassword(!showConfPassword);
   };
 
-  
   /**
    * Handles form submition, validating input fields, then sends data to submit
    * @async
@@ -75,41 +81,26 @@ const UserForm = ({
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+
+    const usernameValidation = validateUserName(formData.user_name);
+    const emailValidation = validateEmail(formData.email);
+    const passwordValidation = validatePassword(formData.password_hash);
+    // console.log("User \n", usernameValidation.valid, usernameValidation.error);
+    
     // user_name validation
-    if (
-      (!initialData &&
-        (formData.user_name.length < 3 || formData.user_name.length > 20)) ||
-      !formData.user_name.length > 20
-    ) {
-      setErrorMessage(
-        "Por favor, introduce un nombre válido. (Mínimo 3 y máximo 20 caracteres)."
-      );
+    if (!initialData && !usernameValidation.valid) {
+      setErrorMessage(usernameValidation.error);
       return;
     }
     // Email validation
-    // > Empty email
-    if (!initialData && !formData.email) {
-      setErrorMessage(
-        "Por favor, introduce tu dirección de correo electrónico."
-      );
-      return;
-    }
-    // > Invalid email format
-    else if (!initialData && !validateEmail(formData.email)) {
-      setErrorMessage("Por favor, introduce un correo electrónico válido.");
+    if (!initialData && !emailValidation.valid) {
+      setErrorMessage(emailValidation.error);
       return;
     }
     // Password validation
-    // > Empty password
-    if (!initialData && !formData.password_hash && !initialData) {
-      setErrorMessage("Por favor, introduce la contraseña.");
-      return;
-    }
-    // > Invalid password format
-    else if (!initialData && !validatePassword(formData.password_hash)) {
-      setErrorMessage(
-        "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo."
-      );
+    if (!initialData && !passwordValidation.valid) {
+      setErrorMessage(passwordValidation.error);
       return;
     }
     // > Invalid password confirmation
@@ -118,18 +109,22 @@ const UserForm = ({
       return;
     }
 
-    setErrorMessage("");
+    setErrorMessage(null);
 
     try {
       await onSubmit(formData);
       toggleForm(false);
     } catch (error) {
-      setErrorMessage(error.message || "Hubo un error en el servidor. Inténtalo de nuevo.")
+      setErrorMessage(
+        error.message || "Hubo un error en el servidor. Inténtalo de nuevo."
+      );
     }
   };
 
   return (
-    <div className={`${styles.form_layout} relative w-[80vw] lg:w-full max-w-5xl max-h-[95vh]`}>
+    <div
+      className={`${styles.form_layout} relative w-[80vw] lg:w-full max-w-5xl max-h-[95vh]`}
+    >
       {/* Close Form Button */}
       <button
         onClick={() => toggleForm(false)}
@@ -143,11 +138,7 @@ const UserForm = ({
         {initialData ? "Editar Usuario" : "Agregar Nuevo Usuario"}
       </h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className={styles.form}
-        noValidate
-      >
+      <form onSubmit={handleSubmit} className={styles.form} noValidate>
         {/* Error Message */}
         {(errorMessage || serverErrorMessage) && (
           <div className={styles.error_message}>
@@ -257,11 +248,7 @@ const UserForm = ({
         </select>
 
         {/* Add User Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className={styles.send_button}
-        >
+        <button type="submit" disabled={loading} className={styles.send_button}>
           {initialData ? "Guardar Cambios" : "Agregar Usuario"}
         </button>
       </form>
