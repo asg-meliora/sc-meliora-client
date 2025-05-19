@@ -8,32 +8,38 @@ import {
 } from "../../validations";
 import { SuccessTexts } from "../../constants/Texts";
 
-const CreateInvoiceForm = ({
-  api,
-  setCreateShowForm,
-  onAddInvoice,
-  setSuccess,
-  setSuccessMessage,
-  setErrorGeneral,
-  setLoading,
-  setLoadingMessage,
-}) => {
+const InvoiceFormKeys = { //Solo para placeholders
+  invoice_type: "Tipo de Factura",
+  invoice_concept: "Concepto de Factura",
+  invoice_payment_type: "Método de Pago",
+  invoice_total: "Total",
+  invoice_subtotal: "Subtotal",
+  invoice_iva: "IVA",
+  invoice_comision_percentage: "Comisión Receptor (%)",
+  invoice_client_sender: "Razón Social (Emisor)", // <--- Nuevo campo
+  invoice_user_assigned: "Usuario asignado del emisor",
+  invoice_client_receiver: "Razón Social (Receptor)", // <--- Nuevo campo
+  invoice_rfc: "RFC (Receptor)",
+};
+
+function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, setSuccessMessage, setErrorGeneral, setLoading, setLoadingMessage }) {
+  const [users, setUsers] = useState({ results: [] });
+  const [client_sender, setClient_sender] = useState([]);
+  const [client_receiver, setClient_receiver] = useState([]);
+  const [RFC, setRFC] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({ //Solo campos necesarios que se enviarán al back
     invoice_type: "",
     invoice_concept: "",
+    invoice_payment_type: "",
     invoice_total: "",
+    invoice_comision_percentage: "",
     invoice_subtotal: "",
     invoice_iva: "",
-    invoice_comision_percentage: "",
-    invoice_payment_type: "",
     invoice_client_sender: "", // <--- Nuevo campo
     invoice_client_receiver: "", // <--- Nuevo campo
   });
-
-  const [users, setUsers] = useState({ results: [] });
-  const [clients, setClients] = useState({ results: [] });
-  const [RFC, setRFC] = useState(null);
+  const todayDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
   /**
    * Function that fetches the list of users from the server and updates the user board state
@@ -42,33 +48,30 @@ const CreateInvoiceForm = ({
    * @returns {Promise<void>} Promise that resolves when users are fetched correctly & its state changes
    * @throws {Error} Throws error if the request fails
    */
-  const fetchUsers = useCallback(
-    async (client_id) => {
-      const token = Cookies.get("token");
-      if (!token) {
-        console.error("Token no encontrado. Por favor, inicia sesión.");
-        setErrorGeneral("Token no encontrado. Por favor, inicia sesión.");
-        return;
-      }
-      try {
-        const response = await fetch(`${api}/usersclients/byid/${client_id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token,
-          },
-        });
+  const fetchUsers = useCallback(async (client_id) => {
+    const token = Cookies.get("token");
+    if (!token) {
+      console.error("Token no encontrado. Por favor, inicia sesión.");
+      setErrorGeneral("Token no encontrado. Por favor, inicia sesión.");
+      return;
+    }
+    try {
+      const response = await fetch(`${api}/usersclients/byid/${client_id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": token,
+        },
+      });
 
-        if (!response.ok) throw new Error("Error al obtener usuarios");
-        const data = await response.json();
-        setUsers(data.results[0]);
-      } catch (error) {
-        console.log("Error al obtener usuaros:", error);
-        setErrorGeneral("Error al obtener usuarios");
-      }
-    },
-    [api, setErrorGeneral]
-  );
+      if (!response.ok) throw new Error("Error al obtener usuarios");
+      const data = await response.json();
+      setUsers(data.results[0]);
+    } catch (error) {
+      console.log("Error al obtener usuaros:", error);
+      setErrorGeneral("Error al obtener usuarios");
+    }
+  }, [api, setErrorGeneral]);
 
   /**
    * Function that fetches the list of clients from the server and updates the clients board state
@@ -84,9 +87,8 @@ const CreateInvoiceForm = ({
       setErrorGeneral("Token no encontrado. Por favor, inicia sesión.");
       return;
     }
-
     try {
-      const response = await fetch(`${api}/clients/active`, {
+      const response = await fetch(`${api}/clients/activencategory`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +97,8 @@ const CreateInvoiceForm = ({
       });
       if (!response.ok) throw new Error("Error al obtener clientes");
       const data = await response.json();
-      setClients(data);
+      setClient_sender(data.despacho);
+      setClient_receiver(data.clients);
     } catch (error) {
       console.log("Error al obtener expedientes:", error);
       setErrorGeneral("Error al obtener clientes");
@@ -147,30 +150,31 @@ const CreateInvoiceForm = ({
   };
 
   const onSubmit = async () => {
-    setLoadingMessage("Enviando información...");
-    setLoading(true);
-    // Aquí puedes hacer la lógica para enviar los datos al servidor
-    try {
-      const response = await fetch(`${api}/invoices`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": Cookies.get("token"),
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) throw new Error("Error al crear la factura");
-      const data = await response.json();
-      onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
-      setSuccessMessage(SuccessTexts.invoiceCreate);
-      setSuccess(true);
-    } catch (error) {
-      setErrorMessage("Error al crear la factura");
-      console.error("Error al crear la factura:", error);
-    } finally {
-      setCreateShowForm(false);
-      setLoading(false);
-    }
+    // setLoadingMessage("Enviando información...");
+    // setLoading(true);
+    // // Aquí puedes hacer la lógica para enviar los datos al servidor
+    // try {
+    //   const response = await fetch(`${api}/invoices`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       "x-access-token": Cookies.get("token"),
+    //     },
+    //     body: JSON.stringify(formData),
+    //   });
+    //   if (!response.ok) throw new Error("Error al crear la factura");
+    //   const data = await response.json();
+    //   onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
+    //   setSuccessMessage(SuccessTexts.invoiceCreate);
+    //   setSuccess(true);
+    // } catch (error) {
+    //   setErrorMessage("Error al crear la factura");
+    //   console.error("Error al crear la factura:", error);
+    // } finally {
+    //   setCreateShowForm(false);
+    //   setLoading(false);
+    // }
+    console.log(formData);
   };
 
   const digitFields = [
@@ -182,33 +186,30 @@ const CreateInvoiceForm = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // setFormData((prev) => ({
-    //   ...prev,
-    //   [name]: value,
-    //   // Si seleccionas en uno, y el otro tenía ese valor, lo limpia
-    //   // ...(name === "invoice_client_sender" && prev.invoice_client_receiver === value
-    //   //   .? { invoice_client_receiver: "" }
-    //   //   : {}),
-    //   // ...(name === "invoice_client_receiver" && prev.invoice_client_sender === value
-    //   //   .? { invoice_client_sender: "" }
-    //   //   : {}),
-    // }));
-    if (digitFields.includes(name)) {
-      const numericValue = value.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
-    } else setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({...prev, [name]: value, }))
+    // if (digitFields.includes(name)) {
+    //   const numericValue = value.replace(/\D/g, "");
+    //   setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    // } else setFormData((prev) => ({ ...prev, [name]: value }));
     if (name === "invoice_client_sender") {
       setUsers({ results: [] }); // Limpia antes de la petición
       fetchUsers(value);
     }
     if (name === "invoice_client_receiver") {
-      const clienteSeleccionado = clients.results.find(
-        // Obtenemos el cliente seleccionado y le sacamos el RFC
+      const selectedClient = client_receiver.find(
+        // Obtenemos el cliente seleccionado y le sacamos el RFC y la comision
         (c) => String(c.client_id) === String(value)
       );
       // Extraer el RFC, si existe
-      const rfc = clienteSeleccionado?.rfc || "";
-      setRFC(rfc);
+      const rfc = selectedClient?.rfc || "";
+      const comision = selectedClient?.comision || 0;
+      setRFC(rfc); // Se asigna el valor solo para mostrarlo
+      setFormData((prev) => ({ // Se asigna el valor en el formdata para enviarlo
+        ...prev,
+        [name]: value,
+        invoice_comision_percentage: comision.toString(),
+      }));
+      return;
     }
     if (name === "invoice_total") {
       // Si no hay valor, limpia
@@ -221,7 +222,6 @@ const CreateInvoiceForm = ({
         }));
         return;
       }
-
       const total = parseFloat(value);
       if (isNaN(total)) return;
 
@@ -238,6 +238,7 @@ const CreateInvoiceForm = ({
     }
   };
 
+  //El posicionamiento de los componentes del formData es manual, debido a su naturaleza (a veces enviar, a veces solo mostrar, etc.)
   return (
     <>
       <div
@@ -262,255 +263,231 @@ const CreateInvoiceForm = ({
 
         <form onSubmit={handleSubmit} className={`${styles.form} overflow-y-auto max-h-[calc(100vh-120px)]`} noValidate>
           <div className="flex flex-col md:grid md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto py-2 px-6 w-full max-w-5xl">
-            {/* Invoice Type Select */}
-            <select
-              name="invoice_type"
-              value={formData.invoice_type || ""}
-              onChange={handleChange}
-              required
-              className={`${styles.select_form} ${
-                formData.invoice_type
-                  ? "text-black font-normal"
-                  : "italic text-gray-500"
-              }`}
-            >
-              <option value="" hidden disabled>
-                Tipo de Factura
-              </option>
-              <option value="PUE">PUE</option>
-              <option value="PPD">PPD</option>
-            </select>
-            {/* Invoice Concept */}
-            <input
-              type="text"
-              name="invoice_concept"
-              placeholder="Concepto de Factura"
-              value={formData.invoice_concept || ""}
-              onChange={handleChange}
-              required
-              className={styles.input_form}
-            />
 
-            {/* Invoice Total */}
-            <div className="relative mt-[-10px]">
-              <label htmlFor="invoice_total" className="font-inter italic">
-                Total
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="invoice_total"
-                  placeholder="Total"
-                  value={formData.invoice_total || ""}
-                  onChange={handleChange}
-                  onKeyDown={(e) => {
-                    if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
-                      e.preventDefault();
-                    }
-                  }}
-                  required
-                  className={`${styles.input_form} pr-16`}
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                  $MXN
-                </span>
-              </div>
-            </div>
-
-            {/* Invoice Comision */}
-            <div className="relative mt-[-10px]">
-              <label
-                htmlFor="invoice_comision_percentage"
-                className="font-inter italic"
+            {/* 1. Tipo de factura */}
+             <select
+                name="invoice_type"
+                value={formData.invoice_type || ""}
+                onChange={handleChange}
+                required
+                className={`${styles.select_form} ${formData.invoice_type ? "text-black font-normal" : "italic text-gray-500"}`}
               >
-                Comisión %
-              </label>
-              <div className="relative">
+                {/* PlaceHolder */}
+                <option value="" hidden disabled>
+                  {InvoiceFormKeys.invoice_type}
+                </option>
+                <option value="PUE">PUE</option>
+                <option value="PPD">PPD</option>
+              </select> 
+
+            {/* 2. Concepto de Factura */}
+              <div>
                 <input
                   type="text"
-                  name="invoice_comision_percentage"
-                  placeholder="Comisión %"
-                  value={formData.invoice_comision_percentage || ""}
-                  onChange={handleChange}
-                  onKeyDown={(e) => {
-                    if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
-                      e.preventDefault();
-                    }
-                  }}
-                  required
-                  className={`${styles.input_form} pr-16`}
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                  %
-                </span>
-              </div>
-            </div>
-
-            {/* Invoice Iva */}
-            <div className="relative mt-[-10px]">
-              <label htmlFor="invoice_iva" className="font-inter italic">
-                IVA
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="invoice_iva"
-                  placeholder="IVA"
-                  value={formData.invoice_iva || ""}
+                  name="invoice_concept"
+                  value={formData.invoice_concept || ""}
+                  placeholder={InvoiceFormKeys.invoice_concept}
                   onChange={handleChange}
                   required
-                  disabled
-                  className={`${styles.input_form} pr-16`}
+                  className={styles.input_form}
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                  $MXN
-                </span>
               </div>
-            </div>
 
-            {/* Invoice Subtotal */}
-            <div className="relative mt-[-10px]">
-              <label htmlFor="invoice_subtotal" className="font-inter italic">
-                Subtotal
-              </label>
+            {/* 3. Método de Pago */}
+              <select
+                name="invoice_payment_type"
+                value={formData.invoice_payment_type || ""}
+                onChange={handleChange}
+                required
+                className={`${styles.select_form} ${formData.invoice_payment_type ? "text-black font-normal" : "italic text-gray-500"}`}
+              >
+                {/* PlaceHolder */}
+                <option value="" hidden disabled>
+                  {InvoiceFormKeys.invoice_payment_type}
+                </option>
+                <option value="Ingreso">Ingreso</option>
+                <option value="Egreso">Egreso</option>
+                <option value="Traslado">Traslado</option>
+                <option value="Nómina">Nómina</option>
+                <option value="Pago">Pago</option>
+              </select>
+              
+            {/* 4. Campo de fecha no editable */}
+              <input
+                type="date"
+                value={todayDate}
+                readOnly
+                disabled
+                className={`${styles.input_form} text-gray-700`}
+              />
 
-              <div className="relative">
-                <input
-                  type="text"
-                  name="invoice_subtotal"
-                  placeholder="Subtotal"
-                  value={formData.invoice_subtotal || ""}
-                  onChange={handleChange}
-                  disabled
-                  required
-                  className={`${styles.input_form} pr-16`}
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                  $MXN
-                </span>
+            {/* 5. Invoice Total */}
+              <div className="relative mt-[-10px]">
+                {/* PlaceHolder */}
+                <label htmlFor="invoice_total" className="font-inter italic">
+                  {InvoiceFormKeys.invoice_total}
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="invoice_total"
+                    value={formData.invoice_total || ""}
+                    placeholder={InvoiceFormKeys.invoice_total}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Acepta solo números con hasta 2 decimales
+                      if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
+                        handleChange(e);
+                      }
+                    }}
+                    required
+                    className={`${styles.input_form} pr-16`}
+                    
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                    $MXN
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Invoice Payment Type */}
-            <select
-              name="invoice_payment_type"
-              value={formData.invoice_payment_type || ""}
-              onChange={handleChange}
-              required
-              className={`${styles.select_form} ${
-                formData.invoice_payment_type
-                  ? "text-black font-normal"
-                  : "italic text-gray-500"
-              }`}
-            >
-              <option value="" hidden disabled>
-                Motivo de Pago
-              </option>
-              <option value="Ingreso">Ingreso</option>
-              <option value="Egreso">Egreso</option>
-              <option value="Traslado">Traslado</option>
-              <option value="Nómina">Nómina</option>
-              <option value="Pago">Pago</option>
-            </select>
+            {/* 6. Invoice Comision (Receptor) */}
+              <div className="relative mt-[-10px]">
+                {/* PlaceHolder */}
+                <label htmlFor="invoice_comision_percentage" className="font-inter italic">
+                  {InvoiceFormKeys.invoice_comision_percentage}
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="invoice_comision_percentage"
+                    placeholder={InvoiceFormKeys.invoice_comision_percentage}
+                    value={formData.invoice_comision_percentage || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Acepta solo números con hasta 2 decimales
+                      if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
+                        handleChange(e);
+                      }
+                    }}
+                    disabled
+                    required
+                    className={`${styles.input_form} pr-16`}
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                    %
+                  </span>
+                </div>
+              </div>
 
-            {/* Today date */}
-            <input
-              type="text"
-              name="invoice_concept"
-              value="12/05/2025"
-              onChange={handleChange}
-              disabled
-              className={styles.input_form}
-            />
+            {/* 7. Invoice Subtotal */}
+              <div className="relative mt-[-10px]">
+                {/* PlaceHolder */}
+                <label htmlFor="invoice_subtotal" className="font-inter italic">
+                  {InvoiceFormKeys.invoice_subtotal}
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="invoice_subtotal"
+                    placeholder={InvoiceFormKeys.invoice_subtotal}
+                    value={formData.invoice_subtotal || ""}
+                    onChange={handleChange}
+                    disabled
+                    required
+                    className={`${styles.input_form} pr-16`}
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                    %
+                  </span>
+                </div>
+              </div>
 
-            {/* Select de Razón Social Primario */}
-            <select
-              name="invoice_client_sender"
-              value={formData.invoice_client_sender || ""}
-              onChange={handleChange}
-              required
-              className={`${styles.select_form} ${
-                formData.invoice_client_sender
-                  ? "text-black font-normal"
-                  : "italic text-gray-500"
-              }`}
-            >
-              <option value="" hidden disabled>
-                Razón Social (Emisor)
-              </option>
-              {clients.results
-                .filter(
-                  (client) =>
-                    String(client.client_id) !==
-                    String(formData.invoice_client_receiver)
-                )
-                .map((client) => (
+            {/* 8. Invoice IVA */}
+              <div className="relative mt-[-10px]">
+                {/* PlaceHolder */}
+                <label htmlFor="invoice_iva" className="font-inter italic">
+                  {InvoiceFormKeys.invoice_iva}
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="invoice_iva"
+                    placeholder={InvoiceFormKeys.invoice_iva}
+                    value={formData.invoice_iva || ""}
+                    onChange={handleChange}
+                    disabled
+                    required
+                    className={`${styles.input_form} pr-16`}
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                    %
+                  </span>
+                </div>
+              </div>
+
+            {/* 9. Razon Social (Emisor) */}
+             <select
+                name="invoice_client_sender"
+                value={formData.invoice_client_sender || ""}
+                onChange={handleChange}
+                required
+                className={`${styles.select_form} ${formData.invoice_client_sender ? "text-black font-normal" : "italic text-gray-500"}`}
+              >
+                {/* PlaceHolder */}
+                <option value="" hidden disabled>
+                  {InvoiceFormKeys.invoice_client_sender}
+                </option>
+                {client_sender.map((client) => (
                   <option key={client.client_id} value={client.client_id}>
                     {client.name_rs}
                   </option>
                 ))}
-            </select>
+              </select>
 
-            {/* Usuario asignado */}
-            <div className={`${styles.input_form} pr-16`}>
-              {users.user_name ? (
-                <span className="text-gray-800">{users.user_name}</span>
-              ) : (
-                <span className="text-gray-400 italic">
-                  Usuario asignado del emisor
-                </span>
-              )}
-            </div>
+            {/* 10. Invoice Comision (Receptor) */}
+             <div className={`${styles.input_form} pr-16`}>
+                {users.user_name ? (
+                  <span className="text-gray-800">{users.user_name}</span>
+                ) : (
+                  <span className="text-gray-400 italic">
+                    {InvoiceFormKeys.invoice_user_assigned}
+                  </span>
+                )}
+             </div>
 
-            {/* Select de Razón Social Secundario */}
-            <select
-              name="invoice_client_receiver"
-              value={formData.invoice_client_receiver || ""}
-              onChange={handleChange}
-              required
-              className={`${styles.select_form} ${
-                formData.invoice_client_receiver
-                  ? "text-black font-normal"
-                  : "italic text-gray-500"
-              }`}
-            >
-              <option value="" hidden disabled>
-                Razón Social (Receptor)
-              </option>
-              {clients.results
-                .filter(
-                  (client) =>
-                    String(client.client_id) !==
-                    String(formData.invoice_client_sender)
-                )
-                .map((client) => (
+            {/* 11. Razon Social (Receptor) */}
+             <select
+                name="invoice_client_receiver"
+                value={formData.invoice_client_receiver || ""}
+                onChange={handleChange}
+                required
+                className={`${styles.select_form} ${formData.invoice_client_receiver ? "text-black font-normal" : "italic text-gray-500"}`}
+              >
+                {/* PlaceHolder */}
+                <option value="" hidden disabled>
+                  {InvoiceFormKeys.invoice_client_receiver}
+                </option>
+                {client_receiver.map((client) => (
                   <option key={client.client_id} value={client.client_id}>
                     {client.name_rs}
                   </option>
                 ))}
-            </select>
-            {/* RFC asignado */}
-            <div className={`${styles.input_form} pr-16`}>
-              {RFC ? (
-                <span className="text-gray-800">{RFC}</span>
-              ) : (
-                <span className="text-gray-400 italic">RFC del Receptor</span>
-              )}
-            </div>
-            {/* CSF asignado */}
-            {/* <div className={`${styles.input_form} pr-16`}>
-              {RFC ? (
-                <span className="text-gray-800">CSF-{RFC}.PDF</span>
-              ) : (
-                <span className="text-gray-400 italic">CSF del Receptor</span>
-              )}
-            </div> */}
+              </select> 
+
+            {/* 12. RFC asignado */}
+             <div className={`${styles.input_form} pr-16`}>
+               {RFC ? (
+                 <span className="text-gray-800">{RFC}</span>
+               ) : (
+                 <span className="text-gray-400 italic">RFC del Receptor</span>
+               )}
+             </div>
+
+            {/* Add Invoice Button */}
+              <button type="submit" className={`${styles.send_button} mt-[-5px] mb-2 `}>
+                Agregar Factura
+              </button>
           </div>
-
-          {/* Add Invoice Button */}
-          <button type="submit" className={`${styles.send_button} mt-[-5px] mb-2`}>
-            Agregar Factura
-          </button>
         </form>
       </div>
     </>
