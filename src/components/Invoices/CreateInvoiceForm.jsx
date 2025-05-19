@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 import { validateInvoiceFormData } from "../../validations";
 
 import { SuccessTexts } from "../../constants/Texts";
+import ErrorFormText from "../ErrorFormText";
+import { AnimatePresence } from "framer-motion";
 
 const CreateInvoiceForm = ({
   api,
@@ -247,9 +249,15 @@ const CreateInvoiceForm = ({
         <h2 className={styles.form_heading}>Agregar Nueva Factura</h2>
         <div className={errorMessage ? "mb-[-5px]" : ""}>
           {/* Error Message */}
-          {errorMessage && (
-            <div className={styles.error_message}>{errorMessage}</div>
+          <AnimatePresence mode="wait">
+          {(errorMessage) && (
+            <ErrorFormText
+              key="form-error-message"
+              message={errorMessage}
+              onClose={() => setErrorMessage(null)}
+            />
           )}
+        </AnimatePresence>
         </div>
 
         <form

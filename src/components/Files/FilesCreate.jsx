@@ -5,6 +5,8 @@ import styles from "../../styles";
 import { validateFileFormData } from "../../validations";
 import { constructFromSymbol } from "date-fns/constants";
 import { SuccessTexts } from "../../constants/Texts";
+import { AnimatePresence } from "framer-motion";
+import ErrorFormText from "../ErrorFormText";
 
 //Diccionario para los labels del formulario
 const DiccLabels = {
@@ -188,9 +190,15 @@ function FilesCreate({
       {/* Form Title */}
       <h2 className={`${styles.form_heading}`}>Agregar Nuevo Expediente</h2>
       <div className={errorMessage ? "mb-[-5px]" : ""}>
-        {errorMessage && (
-          <div className={styles.error_message}>{errorMessage}</div>
-        )}
+        <AnimatePresence mode="wait">
+          {(errorMessage) && (
+            <ErrorFormText
+              key="form-error-message"
+              message={errorMessage}
+              onClose={() => setErrorMessage(null)}
+            />
+          )}
+        </AnimatePresence>
       </div>
       <form
         onSubmit={handleSubmit}

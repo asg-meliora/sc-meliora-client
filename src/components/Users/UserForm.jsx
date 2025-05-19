@@ -9,6 +9,8 @@ import {
   validatePassword,
 } from "../../validations";
 import { PiNutLight } from "react-icons/pi";
+import ErrorFormText from "../ErrorFormText";
+import { AnimatePresence } from "framer-motion";
 
 const UserForm = ({
   initialData = null,
@@ -81,13 +83,12 @@ const UserForm = ({
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
 
     const usernameValidation = validateUserName(formData.user_name);
     const emailValidation = validateEmail(formData.email);
     const passwordValidation = validatePassword(formData.password_hash);
     // console.log("User \n", usernameValidation.valid, usernameValidation.error);
-    
+
     // user_name validation
     if (!initialData && !usernameValidation.valid) {
       setErrorMessage(usernameValidation.error);
@@ -140,11 +141,15 @@ const UserForm = ({
 
       <form onSubmit={handleSubmit} className={styles.form} noValidate>
         {/* Error Message */}
-        {(errorMessage || serverErrorMessage) && (
-          <div className={styles.error_message}>
-            {errorMessage ? errorMessage : serverErrorMessage}
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {(errorMessage || serverErrorMessage) && (
+            <ErrorFormText
+              key="form-error-message"
+              message={errorMessage || serverErrorMessage}
+              onClose={() => setErrorMessage(null)}
+            />
+          )}
+        </AnimatePresence>
 
         <input
           type="text"
