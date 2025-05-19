@@ -106,11 +106,10 @@ function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, s
   }, [api, setErrorGeneral]);
 
   useEffect(() => {
-    //fetchUsers();
     fetchClients();
-  }, [/*fetchUsers,*/ fetchClients]);
+  }, [fetchClients]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => { //TODO VALIDACIONES SIMPLIFICADAS
     e.preventDefault();
     setErrorMessage(null);
     if (!formData.invoice_type) {
@@ -150,31 +149,30 @@ function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, s
   };
 
   const onSubmit = async () => {
-    // setLoadingMessage("Enviando información...");
-    // setLoading(true);
-    // // Aquí puedes hacer la lógica para enviar los datos al servidor
-    // try {
-    //   const response = await fetch(`${api}/invoices`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       "x-access-token": Cookies.get("token"),
-    //     },
-    //     body: JSON.stringify(formData),
-    //   });
-    //   if (!response.ok) throw new Error("Error al crear la factura");
-    //   const data = await response.json();
-    //   onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
-    //   setSuccessMessage(SuccessTexts.invoiceCreate);
-    //   setSuccess(true);
-    // } catch (error) {
-    //   setErrorMessage("Error al crear la factura");
-    //   console.error("Error al crear la factura:", error);
-    // } finally {
-    //   setCreateShowForm(false);
-    //   setLoading(false);
-    // }
-    console.log(formData);
+    setLoadingMessage("Enviando información...");
+    setLoading(true);
+    // Aquí puedes hacer la lógica para enviar los datos al servidor
+    try {
+      const response = await fetch(`${api}/invoices`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": Cookies.get("token"),
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) throw new Error("Error al crear la factura");
+      const data = await response.json();
+      onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
+      setSuccessMessage(SuccessTexts.invoiceCreate);
+      setSuccess(true);
+    } catch (error) {
+      setErrorMessage("Error al crear la factura");
+      console.error("Error al crear la factura:", error);
+    } finally {
+      setCreateShowForm(false);
+      setLoading(false);
+    }
   };
 
   const digitFields = [
@@ -186,7 +184,7 @@ function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, s
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({...prev, [name]: value, }))
+    setFormData((prev) => ({ ...prev, [name]: value, }))
     // if (digitFields.includes(name)) {
     //   const numericValue = value.replace(/\D/g, "");
     //   setFormData((prev) => ({ ...prev, [name]: numericValue }));
@@ -265,228 +263,227 @@ function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, s
           <div className="flex flex-col md:grid md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto py-2 px-6 w-full max-w-5xl">
 
             {/* 1. Tipo de factura */}
-             <select
-                name="invoice_type"
-                value={formData.invoice_type || ""}
-                onChange={handleChange}
-                required
-                className={`${styles.select_form} ${formData.invoice_type ? "text-black font-normal" : "italic text-gray-500"}`}
-              >
-                {/* PlaceHolder */}
-                <option value="" hidden disabled>
-                  {InvoiceFormKeys.invoice_type}
-                </option>
-                <option value="PUE">PUE</option>
-                <option value="PPD">PPD</option>
-              </select> 
+            <select
+              name="invoice_type"
+              value={formData.invoice_type || ""}
+              onChange={handleChange}
+              required
+              className={`${styles.select_form} ${formData.invoice_type ? "text-black font-normal" : "italic text-gray-500"}`}
+            >
+              {/* PlaceHolder */}
+              <option value="" hidden disabled>
+                {InvoiceFormKeys.invoice_type}
+              </option>
+              <option value="PUE">PUE</option>
+              <option value="PPD">PPD</option>
+            </select>
 
             {/* 2. Concepto de Factura */}
-              <div>
-                <input
-                  type="text"
-                  name="invoice_concept"
-                  value={formData.invoice_concept || ""}
-                  placeholder={InvoiceFormKeys.invoice_concept}
-                  onChange={handleChange}
-                  required
-                  className={styles.input_form}
-                />
-              </div>
+            <div>
+              <input
+                type="text"
+                name="invoice_concept"
+                value={formData.invoice_concept || ""}
+                placeholder={InvoiceFormKeys.invoice_concept}
+                onChange={handleChange}
+                required
+                className={styles.input_form}
+              />
+            </div>
 
             {/* 3. Método de Pago */}
-              <select
-                name="invoice_payment_type"
-                value={formData.invoice_payment_type || ""}
-                onChange={handleChange}
-                required
-                className={`${styles.select_form} ${formData.invoice_payment_type ? "text-black font-normal" : "italic text-gray-500"}`}
-              >
-                {/* PlaceHolder */}
-                <option value="" hidden disabled>
-                  {InvoiceFormKeys.invoice_payment_type}
-                </option>
-                <option value="Ingreso">Ingreso</option>
-                <option value="Egreso">Egreso</option>
-                <option value="Traslado">Traslado</option>
-                <option value="Nómina">Nómina</option>
-                <option value="Pago">Pago</option>
-              </select>
-              
+            <select
+              name="invoice_payment_type"
+              value={formData.invoice_payment_type || ""}
+              onChange={handleChange}
+              required
+              className={`${styles.select_form} ${formData.invoice_payment_type ? "text-black font-normal" : "italic text-gray-500"}`}
+            >
+              {/* PlaceHolder */}
+              <option value="" hidden disabled>
+                {InvoiceFormKeys.invoice_payment_type}
+              </option>
+              <option value="Ingreso">Efectivo</option>
+              <option value="Egreso">Transferencia</option>
+              <option value="Traslado">Tarjeta de Débito</option>
+              <option value="Nómina">Tarjeta de Crédito</option>
+              <option value="Pago">Otro</option>
+            </select>
+
             {/* 4. Campo de fecha no editable */}
-              <input
-                type="date"
-                value={todayDate}
-                readOnly
-                disabled
-                className={`${styles.input_form} text-gray-700`}
-              />
+            <input
+              type="date"
+              value={todayDate}
+              readOnly
+              disabled
+              className={`${styles.input_form} text-gray-700`}
+            />
 
             {/* 5. Invoice Total */}
-              <div className="relative mt-[-10px]">
-                {/* PlaceHolder */}
-                <label htmlFor="invoice_total" className="font-inter italic">
-                  {InvoiceFormKeys.invoice_total}
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="invoice_total"
-                    value={formData.invoice_total || ""}
-                    placeholder={InvoiceFormKeys.invoice_total}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Acepta solo números con hasta 2 decimales
-                      if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
-                        handleChange(e);
-                      }
-                    }}
-                    required
-                    className={`${styles.input_form} pr-16`}
-                    
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                    $MXN
-                  </span>
-                </div>
+            <div className="relative mt-[-10px]">
+              {/* PlaceHolder */}
+              <label htmlFor="invoice_total" className="font-inter italic">
+                {InvoiceFormKeys.invoice_total}
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="invoice_total"
+                  value={formData.invoice_total || ""}
+                  placeholder={InvoiceFormKeys.invoice_total}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Acepta solo números con hasta 2 decimales
+                    if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
+                      handleChange(e);
+                    }
+                  }}
+                  required
+                  className={`${styles.input_form} pr-16`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                  $MXN
+                </span>
               </div>
+            </div>
 
             {/* 6. Invoice Comision (Receptor) */}
-              <div className="relative mt-[-10px]">
-                {/* PlaceHolder */}
-                <label htmlFor="invoice_comision_percentage" className="font-inter italic">
-                  {InvoiceFormKeys.invoice_comision_percentage}
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="invoice_comision_percentage"
-                    placeholder={InvoiceFormKeys.invoice_comision_percentage}
-                    value={formData.invoice_comision_percentage || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Acepta solo números con hasta 2 decimales
-                      if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
-                        handleChange(e);
-                      }
-                    }}
-                    disabled
-                    required
-                    className={`${styles.input_form} pr-16`}
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                    %
-                  </span>
-                </div>
+            <div className="relative mt-[-10px]">
+              {/* PlaceHolder */}
+              <label htmlFor="invoice_comision_percentage" className="font-inter italic">
+                {InvoiceFormKeys.invoice_comision_percentage}
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="invoice_comision_percentage"
+                  placeholder={InvoiceFormKeys.invoice_comision_percentage}
+                  value={formData.invoice_comision_percentage || ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Acepta solo números con hasta 2 decimales
+                    if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
+                      handleChange(e);
+                    }
+                  }}
+                  disabled
+                  required
+                  className={`${styles.input_form} pr-16`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                  %
+                </span>
               </div>
+            </div>
 
             {/* 7. Invoice Subtotal */}
-              <div className="relative mt-[-10px]">
-                {/* PlaceHolder */}
-                <label htmlFor="invoice_subtotal" className="font-inter italic">
-                  {InvoiceFormKeys.invoice_subtotal}
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="invoice_subtotal"
-                    placeholder={InvoiceFormKeys.invoice_subtotal}
-                    value={formData.invoice_subtotal || ""}
-                    onChange={handleChange}
-                    disabled
-                    required
-                    className={`${styles.input_form} pr-16`}
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                    %
-                  </span>
-                </div>
+            <div className="relative mt-[-10px]">
+              {/* PlaceHolder */}
+              <label htmlFor="invoice_subtotal" className="font-inter italic">
+                {InvoiceFormKeys.invoice_subtotal}
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="invoice_subtotal"
+                  placeholder={InvoiceFormKeys.invoice_subtotal}
+                  value={formData.invoice_subtotal || ""}
+                  onChange={handleChange}
+                  disabled
+                  required
+                  className={`${styles.input_form} pr-16`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                  %
+                </span>
               </div>
+            </div>
 
             {/* 8. Invoice IVA */}
-              <div className="relative mt-[-10px]">
-                {/* PlaceHolder */}
-                <label htmlFor="invoice_iva" className="font-inter italic">
-                  {InvoiceFormKeys.invoice_iva}
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="invoice_iva"
-                    placeholder={InvoiceFormKeys.invoice_iva}
-                    value={formData.invoice_iva || ""}
-                    onChange={handleChange}
-                    disabled
-                    required
-                    className={`${styles.input_form} pr-16`}
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                    %
-                  </span>
-                </div>
+            <div className="relative mt-[-10px]">
+              {/* PlaceHolder */}
+              <label htmlFor="invoice_iva" className="font-inter italic">
+                {InvoiceFormKeys.invoice_iva}
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="invoice_iva"
+                  placeholder={InvoiceFormKeys.invoice_iva}
+                  value={formData.invoice_iva || ""}
+                  onChange={handleChange}
+                  disabled
+                  required
+                  className={`${styles.input_form} pr-16`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                  %
+                </span>
               </div>
+            </div>
 
             {/* 9. Razon Social (Emisor) */}
-             <select
-                name="invoice_client_sender"
-                value={formData.invoice_client_sender || ""}
-                onChange={handleChange}
-                required
-                className={`${styles.select_form} ${formData.invoice_client_sender ? "text-black font-normal" : "italic text-gray-500"}`}
-              >
-                {/* PlaceHolder */}
-                <option value="" hidden disabled>
-                  {InvoiceFormKeys.invoice_client_sender}
+            <select
+              name="invoice_client_sender"
+              value={formData.invoice_client_sender || ""}
+              onChange={handleChange}
+              required
+              className={`${styles.select_form} ${formData.invoice_client_sender ? "text-black font-normal" : "italic text-gray-500"}`}
+            >
+              {/* PlaceHolder */}
+              <option value="" hidden disabled>
+                {InvoiceFormKeys.invoice_client_sender}
+              </option>
+              {client_sender.map((client) => (
+                <option key={client.client_id} value={client.client_id}>
+                  {client.name_rs}
                 </option>
-                {client_sender.map((client) => (
-                  <option key={client.client_id} value={client.client_id}>
-                    {client.name_rs}
-                  </option>
-                ))}
-              </select>
+              ))}
+            </select>
 
             {/* 10. Invoice Comision (Receptor) */}
-             <div className={`${styles.input_form} pr-16`}>
-                {users.user_name ? (
-                  <span className="text-gray-800">{users.user_name}</span>
-                ) : (
-                  <span className="text-gray-400 italic">
-                    {InvoiceFormKeys.invoice_user_assigned}
-                  </span>
-                )}
-             </div>
+            <div className={`${styles.input_form} pr-16`}>
+              {users.user_name ? (
+                <span className="text-gray-800">{users.user_name}</span>
+              ) : (
+                <span className="text-gray-400 italic">
+                  {InvoiceFormKeys.invoice_user_assigned}
+                </span>
+              )}
+            </div>
 
             {/* 11. Razon Social (Receptor) */}
-             <select
-                name="invoice_client_receiver"
-                value={formData.invoice_client_receiver || ""}
-                onChange={handleChange}
-                required
-                className={`${styles.select_form} ${formData.invoice_client_receiver ? "text-black font-normal" : "italic text-gray-500"}`}
-              >
-                {/* PlaceHolder */}
-                <option value="" hidden disabled>
-                  {InvoiceFormKeys.invoice_client_receiver}
+            <select
+              name="invoice_client_receiver"
+              value={formData.invoice_client_receiver || ""}
+              onChange={handleChange}
+              required
+              className={`${styles.select_form} ${formData.invoice_client_receiver ? "text-black font-normal" : "italic text-gray-500"}`}
+            >
+              {/* PlaceHolder */}
+              <option value="" hidden disabled>
+                {InvoiceFormKeys.invoice_client_receiver}
+              </option>
+              {client_receiver.map((client) => (
+                <option key={client.client_id} value={client.client_id}>
+                  {client.name_rs}
                 </option>
-                {client_receiver.map((client) => (
-                  <option key={client.client_id} value={client.client_id}>
-                    {client.name_rs}
-                  </option>
-                ))}
-              </select> 
+              ))}
+            </select>
 
             {/* 12. RFC asignado */}
-             <div className={`${styles.input_form} pr-16`}>
-               {RFC ? (
-                 <span className="text-gray-800">{RFC}</span>
-               ) : (
-                 <span className="text-gray-400 italic">RFC del Receptor</span>
-               )}
-             </div>
+            <div className={`${styles.input_form} pr-16`}>
+              {RFC ? (
+                <span className="text-gray-800">{RFC}</span>
+              ) : (
+                <span className="text-gray-400 italic">RFC del Receptor</span>
+              )}
+            </div>
 
             {/* Add Invoice Button */}
-              <button type="submit" className={`${styles.send_button} mt-[-5px] mb-2 `}>
-                Agregar Factura
-              </button>
+            <button type="submit" className={`${styles.send_button} mt-[-5px] mb-2 `}>
+              Agregar Factura
+            </button>
           </div>
         </form>
       </div>
