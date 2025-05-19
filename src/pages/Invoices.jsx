@@ -92,17 +92,6 @@ const Invoices = ({ api }) => {
     setCancelShowForm(true);
   };
 
-  // Función para manejar la adición de una nueva factura
-  const handleNewInvoice = async (newInvoiceId) => {
-    try {
-      const newInvoice = await getNewPipeline(newInvoiceId);
-      if (!newInvoice) return;
-      setDataBoard((prevInvoices) => [newInvoice, ...prevInvoices]);
-    } catch (error) {
-      console.error("Error adding new invoice:", error);
-    }
-  };
-
   // if (loading) {
   //   return <LoadingScreen message="Cargando..." />; // Pantalla de carga
   // }
@@ -164,9 +153,12 @@ const Invoices = ({ api }) => {
           <CreateInvoiceForm
             api={api}
             setCreateShowForm={setCreateShowForm}
-            onAddInvoice={handleNewInvoice}
+            getPipelines={getPipelines}
             setSuccessMessage={setSuccessMessage}
             setSuccess={setSuccess}
+            setLoading={setLoading} //Campos No Definidos
+            //setLoadingMessage={setLoadingMessage}
+            setErrorGeneral={setError}
           />
         </div>
       )}

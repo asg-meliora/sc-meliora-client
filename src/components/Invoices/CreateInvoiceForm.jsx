@@ -22,7 +22,7 @@ const InvoiceFormKeys = { //Solo para placeholders
   invoice_rfc: "RFC (Receptor)",
 };
 
-function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, setSuccessMessage, setErrorGeneral, setLoading, setLoadingMessage }) {
+function CreateInvoiceForm({ api, setCreateShowForm, getPipelines, setSuccess, setSuccessMessage, setLoading, setLoadingMessage, setErrorGeneral,  }) {
   const [users, setUsers] = useState({ results: [] });
   const [client_sender, setClient_sender] = useState([]);
   const [client_receiver, setClient_receiver] = useState([]);
@@ -149,7 +149,7 @@ function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, s
   };
 
   const onSubmit = async () => {
-    setLoadingMessage("Enviando información...");
+    //setLoadingMessage("Enviando información..."); //TODO Esto no funciona
     setLoading(true);
     // Aquí puedes hacer la lógica para enviar los datos al servidor
     try {
@@ -163,7 +163,7 @@ function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, s
       });
       if (!response.ok) throw new Error("Error al crear la factura");
       const data = await response.json();
-      onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
+      getPipelines();
       setSuccessMessage(SuccessTexts.invoiceCreate);
       setSuccess(true);
     } catch (error) {
@@ -175,12 +175,12 @@ function CreateInvoiceForm({ api, setCreateShowForm, onAddInvoice, setSuccess, s
     }
   };
 
-  const digitFields = [
-    "invoice_total",
-    "invoice_subtotal",
-    "invoice_iva",
-    "invoice_comision_percentage",
-  ];
+  // const digitFields = [
+  //   "invoice_total",
+  //   "invoice_subtotal",
+  //   "invoice_iva",
+  //   "invoice_comision_percentage",
+  // ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
