@@ -31,6 +31,9 @@ function InvoicesDetailsTable({
   const [clientReceiverId, setClientReceiverId] = useState(null);
   const [dataClientSender, setDataClientSender] = useState({});
   const [dataClientReceiver, setDataClientReceiver] = useState({});
+  const [fileUrl, setFileUrl] = useState({ urls: [] }); //Estado para manejar las descargas de los archivos
+  const [idFiles, setIdFiles] = useState(null); //Estado para manejar las descargas de los archivos
+
 
   const [uploadedDocs, setUploadedDocs] = useState({});
 
@@ -90,11 +93,24 @@ function InvoicesDetailsTable({
       if (!res.ok) throw new Error("Error en la petición del cliente receptor");
       const data = await res.json();
       setDataClientReceiver(data.results);
+      setIdFiles(data.results.client_id);
     } catch (error) {
       setError("Error al obtener el cliente receptor");
       console.error("Error al obtener el cliente receptor:", error);
     }
   }, [api, clientReceiverId, setError]);
+
+  const getFileDetailReceiver = useCallback(async () => { //Mostrar Archivos del Cliente
+    const response = await fetch(`${api}/docs/byid/${idFiles}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": Cookies.get("token"),
+      },
+    });
+    if (!response.ok) throw new Error("Error al obtener el Documento");
+    return await response.json();
+  }, [api, idFiles]);
 
   const fetchUploadedDocs = useCallback(async () => {
     try {
@@ -119,6 +135,11 @@ function InvoicesDetailsTable({
       await getClientSenderData();
       await getClientReceiverData();
       await fetchUploadedDocs();
+      await getFileDetailReceiver();
+      const [fileData] = await Promise.all([
+        getFileDetailReceiver(),
+      ]);
+      setFileUrl(fileData);
       setLoading(false);
     };
 
@@ -128,10 +149,12 @@ function InvoicesDetailsTable({
     getClientSenderData,
     getClientReceiverData,
     fetchUploadedDocs,
+    getFileDetailReceiver,
     invoiceId,
     setLoading,
   ]);
 
+  console.log(fileUrl)
   const DiccHead = {
     name_rs: "Razón Social",
     rfc: "RFC",
@@ -155,6 +178,14 @@ function InvoicesDetailsTable({
     bank_account: "No. Cuenta Bancaria",
     // created_at: "Fecha de creación",
     // user_name: "Usuario Asignado",
+    fileCSF: "CSF",
+    fileCDD: "Comprobante de domicilio",
+    fileCDB: "Carátula Bancaria",
+  };
+  const DiccDocuments = {
+    fileCSF: "CSF",
+    fileCDD: "Comprobante de domicilio",
+    fileCDB: "Carátula Bancaria",
   };
   const Dicc3Head = {
     pipeline_id: "ID",
@@ -312,28 +343,61 @@ function InvoicesDetailsTable({
           {/* Tabla Izquierda Inferior */}
           <div className="w-full  overflow-x-auto my-4">
             <h2 className={`${styles.d_table_heading}`}>Datos Receptor</h2>
-            <table className={`${styles.d_table}`} /*table-fixed*/>
+            <table className={`${styles.d_table}`}>
               <tbody>
-                {rightKeys.map((key) => (
-                  <tr key={key} className="align-center">
-                    <th
-                      style={{
-                        boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)",
-                      }}
-                      className={`${styles.d_table_header} border-b-6`}
-                    >
-                      {Dicc2Head[key]}
-                    </th>
-                    <td
-                      style={{
-                        boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)",
-                      }}
-                      className={`${styles.d_table_data} border-b-6`}
-                    >
-                      {dataClientReceiver[key] ?? "—"}
-                    </td>
-                  </tr>
-                ))}
+                {rightKeys.map((key) => {
+                  // Mapeo clave -> índice en fileUrl.urls
+                  const fileIndexMap = {
+                    fileCSF: 0,
+                    fileCDB: 1,
+                    fileCDD: 2,
+                  };
+
+                  // Buscar si la key coincide con alguna clave del mapa
+                  const matchedKey = Object.keys(fileIndexMap).find((k) =>
+                    key.startsWith(k)
+                  );
+
+                  // Índice del archivo si aplica
+                  const fileIndex = matchedKey ? fileIndexMap[matchedKey] : null;
+                  const fileUrlValid =
+                    fileIndex !== null &&
+                    fileUrl.urls &&
+                    fileUrl.urls[fileIndex] &&
+                    fileUrl.urls[fileIndex].signedUrl;
+
+                  return (
+                    <tr key={key} className="align-center">
+                      <th
+                        style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
+                        className={`${styles.d_table_header} border-b-6`}
+                      >
+                        {Dicc2Head[key]}
+                      </th>
+                      <td
+                        style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
+                        className={`${styles.d_table_data} border-b-6`}
+                      >
+                        {fileIndex !== null ? (
+                          <div className={styles.d_files_buttons_container}>
+                            <a
+                              href={fileUrlValid ? fileUrl.urls[fileIndex].signedUrl : "#"}
+                              onClick={(e) => {
+                                if (!fileUrlValid) e.preventDefault();
+                              }}
+                              className={`cursor-pointer downloadButton text-white px-3 py-1 rounded font-medium font-inter w-full shadow-md shadow-blue-700/60 hover:scale-110 hover:font-semibold transition-all ${!fileUrlValid ? "opacity-50 cursor-not-allowed" : ""
+                                }`}
+                            >
+                              Descargar
+                            </a>
+                          </div>
+                        ) : (
+                          <span>{dataClientReceiver[key] ?? "—"}</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -360,10 +424,10 @@ function InvoicesDetailsTable({
                     {dataInvoice[key] == null
                       ? "—"
                       : key === "created_at"
-                      ? FormattedDate(dataInvoice[key])
-                      : key === "comision_percentage" 
-                      ? dataInvoice[key].slice(0,4)
-                      : dataInvoice[key]}
+                        ? FormattedDate(dataInvoice[key])
+                        : key === "comision_percentage"
+                          ? dataInvoice[key].slice(0, 4)
+                          : dataInvoice[key]}
                   </td>
                 </tr>
               ))}
@@ -405,9 +469,8 @@ function InvoicesDetailsTable({
                   </h3>
                   <p className={styles.d_files_info_date}>
                     {userId >= 0
-                      ? `(Subir Archivo ${
-                          item.endsWith("XML") ? ".xml" : ".pdf"
-                        })`
+                      ? `(Subir Archivo ${item.endsWith("XML") ? ".xml" : ".pdf"
+                      })`
                       : "(Archivo Faltante)"}
                   </p>
                 </header>
@@ -476,9 +539,8 @@ function InvoicesDetailsTable({
                   </h3>
                   <p className={styles.d_files_info_date}>
                     {userId >= 0
-                      ? `(Subir Archivo ${
-                          item.endsWith("XML") ? ".xml" : ".pdf"
-                        })`
+                      ? `(Subir Archivo ${item.endsWith("XML") ? ".xml" : ".pdf"
+                      })`
                       : "(Archivo Faltante)"}
                   </p>
                 </header>
