@@ -5,6 +5,7 @@ import LoadingScreen from "../LoadingScreen";
 import styles from "../../styles";
 import { AnimatePresence } from "framer-motion";
 import { formatDate, set } from "date-fns";
+import { SuccessTexts } from "../../constants/Texts";
 
 const FormattedDate = (dateString) => {
   const date = new Date(dateString);
@@ -215,12 +216,11 @@ function InvoicesDetailsTable({
       if (!res.ok) throw new Error("Error al subir archivo");
 
       const result = await res.json();
-      setSuccessMessage("Archivo subido correctamente");
+      setSuccessMessage(SuccessTexts.fileUpload);
       setSuccess(true);
-      // Opcional: refrescar datos
     } catch (err) {
       console.error(err);
-      alert(`Error al subir archivo ${docType}`);
+      setError(`Error al subir archivo ${docType}`);
     } finally {
       setLoading(false);
       window.location.reload();
@@ -240,7 +240,7 @@ function InvoicesDetailsTable({
       if (!res.ok) throw new Error("Error al subir archivo");
 
       const result = await res.json();
-      setSuccessMessage("Proceso terminado correctamente");
+      setSuccessMessage(SuccessTexts.process);
       setSuccess(true);
       // Opcional: refrescar datos
     } catch (err) {

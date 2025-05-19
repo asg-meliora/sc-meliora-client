@@ -15,6 +15,7 @@ import AnnulledInvoiceForm from "../components/Invoices/AnnulledInvoiceModal";
 import Navbar from "../components/Navbar";
 import SuccessToast from "../components/SuccessToast";
 import ErrorToast from "../components/ErrorToast";
+import { MdMenu } from "react-icons/md";
 
 const Invoices = ({ api }) => {
   const [dataBoard, setDataBoard] = useState({ results: [] });
@@ -24,9 +25,8 @@ const Invoices = ({ api }) => {
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(false); // Estado de carga
   const [success, setSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(
-    "Operacion realizada exitosamente"
-  );
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [showSidemenu, setShowSideMenu] = useState(false);
 
   // Muestra todas los datos de las facturas
   const getPipelines = useCallback(async () => {
@@ -109,20 +109,32 @@ const Invoices = ({ api }) => {
 
   return (
     <>
-      <AnimatePresence>{loading && <LoadingScreen message={"Cargando facturas..."} />}</AnimatePresence>
+      <AnimatePresence>
+        {loading && <LoadingScreen message={"Cargando facturas..."} />}
+      </AnimatePresence>
 
       <div className={styles.blank_page}>
         <Navbar />
-
+        {showSidemenu && <SideMenu setFullSideBar={setShowSideMenu} />}
         <div className={styles.page_container}>
           <div className={styles.header_container}>
+            <div className="inline pt-5.5 sm:hidden text-white">
+              <div>
+                <button
+                  onClick={() => setShowSideMenu(true)}
+                  className="mt-auto mb-6 p-2 text-3xl rounded-lg hover:cursor-pointer hover:scale-115 transform transition-all"
+                >
+                  <MdMenu />
+                </button>
+              </div>
+            </div>
             <h2 className={styles.heading_page}>Facturas</h2>
             <div className={styles.button_header_container}>
               <button
                 onClick={handleOpenCreateForm}
                 className={styles.button_header}
               >
-                <FaPlus /> Agregar Factura
+                <FaPlus /> <span className="hidden sm:inline-block">Agregar Factura</span>
               </button>
             </div>
           </div>

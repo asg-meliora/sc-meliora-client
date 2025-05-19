@@ -129,7 +129,7 @@ const UserForm = ({
   };
 
   return (
-    <div className={styles.form_layout}>
+    <div className={`${styles.form_layout} relative w-[80vw] lg:w-full max-w-5xl max-h-[95vh]`}>
       {/* Close Form Button */}
       <button
         onClick={() => toggleForm(false)}

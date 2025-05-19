@@ -9,6 +9,9 @@ import { AnimatePresence } from "framer-motion";
 
 import styles from "../styles";
 import Navbar from "../components/Navbar";
+import { SuccessTexts } from "../constants/Texts";
+import { MdMenu } from "react-icons/md";
+import SideMenu from "../components/SideMenu";
 
 const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
@@ -18,6 +21,7 @@ const Users = ({ api }) => {
   const [dataBoard, setUsersBoard] = useState({ results: [] });
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [showSidemenu, setShowSideMenu] = useState(false);
 
   const url = editingUser ? `${api}/users/update` : `${api}/accesslog`;
 
@@ -115,9 +119,7 @@ const Users = ({ api }) => {
     } finally {
       setLoading(false);
       setSuccessMessage(
-        editingUser
-          ? "El usuario se modificó correctamente"
-          : "El usuario se creó correctamente"
+        editingUser ? SuccessTexts.userModify : SuccessTexts.userCreate
       );
       setSuccess(true);
     }
@@ -140,9 +142,19 @@ const Users = ({ api }) => {
       </AnimatePresence>
       <div className={styles.blank_page}>
         <Navbar />
-
+        {showSidemenu && <SideMenu setFullSideBar={setShowSideMenu} />}
         <div className={styles.page_container}>
           <div className={styles.header_container}>
+            <div className="inline pt-5.5 sm:hidden text-white">
+              <div>
+                <button
+                  onClick={() => setShowSideMenu(true)}
+                  className="mt-auto mb-6 p-2 text-3xl rounded-lg hover:cursor-pointer hover:scale-115 transform transition-all"
+                >
+                  <MdMenu />
+                </button>
+              </div>
+            </div>
             <h2 className={styles.heading_page}>Usuarios</h2>
             <div className={styles.button_header_container}>
               <button
@@ -150,7 +162,7 @@ const Users = ({ api }) => {
                 //button_header
                 className={styles.button_header}
               >
-                <FaPlus /> Agregar Usuario
+                <FaPlus /> <span className="hidden sm:inline-block">Agregar Usuario</span>
               </button>
             </div>
           </div>

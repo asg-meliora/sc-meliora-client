@@ -1,12 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "../../styles";
 import Cookies from "js-cookie";
-import { validateAmount, validateConcept, validateCommission } from "../../validations";
+import {
+  validateAmount,
+  validateConcept,
+  validateCommission,
+} from "../../validations";
+import { SuccessTexts } from "../../constants/Texts";
 
 const CreateInvoiceForm = ({
   api,
   setCreateShowForm,
-  serverErrorMessage = null,
   onAddInvoice,
   setSuccess,
   setSuccessMessage,
@@ -126,9 +130,10 @@ const CreateInvoiceForm = ({
     }
     if (!validateCommission(formData.invoice_comision_percentage)) {
       setErrorMessage(
-        "El porcentaje de comisión no es válido. Debe estar entre 0 y 100.")
+        "El porcentaje de comisión no es válido. Debe estar entre 0 y 100."
+      );
     }
-    
+
     if (!formData.invoice_client_sender) {
       setErrorMessage("El cliente emisor es obligatorio.");
       return;
@@ -138,7 +143,7 @@ const CreateInvoiceForm = ({
       return;
     }
     setErrorMessage(null);
-  onSubmit(formData);
+    onSubmit(formData);
   };
 
   const onSubmit = async () => {
@@ -157,7 +162,7 @@ const CreateInvoiceForm = ({
       if (!response.ok) throw new Error("Error al crear la factura");
       const data = await response.json();
       onAddInvoice(data.results.insertId); // Aquí puedes manejar la respuesta del servidor
-      setSuccessMessage("Factura creada correctamente");
+      setSuccessMessage(SuccessTexts.invoiceCreate);
       setSuccess(true);
     } catch (error) {
       setErrorMessage("Error al crear la factura");
@@ -168,19 +173,30 @@ const CreateInvoiceForm = ({
     }
   };
 
+  const digitFields = [
+    "invoice_total",
+    "invoice_subtotal",
+    "invoice_iva",
+    "invoice_comision_percentage",
+  ];
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-      // Si seleccionas en uno, y el otro tenía ese valor, lo limpia
-      // ...(name === "invoice_client_sender" && prev.invoice_client_receiver === value
-      //   .? { invoice_client_receiver: "" }
-      //   : {}),
-      // ...(name === "invoice_client_receiver" && prev.invoice_client_sender === value
-      //   .? { invoice_client_sender: "" }
-      //   : {}),
-    }));
+    // setFormData((prev) => ({
+    //   ...prev,
+    //   [name]: value,
+    //   // Si seleccionas en uno, y el otro tenía ese valor, lo limpia
+    //   // ...(name === "invoice_client_sender" && prev.invoice_client_receiver === value
+    //   //   .? { invoice_client_receiver: "" }
+    //   //   : {}),
+    //   // ...(name === "invoice_client_receiver" && prev.invoice_client_sender === value
+    //   //   .? { invoice_client_sender: "" }
+    //   //   : {}),
+    // }));
+    if (digitFields.includes(name)) {
+      const numericValue = value.replace(/\D/g, "");
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    } else setFormData((prev) => ({ ...prev, [name]: value }));
     if (name === "invoice_client_sender") {
       setUsers({ results: [] }); // Limpia antes de la petición
       fetchUsers(value);
@@ -224,7 +240,9 @@ const CreateInvoiceForm = ({
 
   return (
     <>
-      <div className={`${styles.form_layout} relative w-full max-w-5xl`}>
+      <div
+        className={`${styles.form_layout} relative w-[80vw] lg:w-full max-w-5xl max-h-[95vh] flex flex-col`}
+      >
         {/* Close Form Button */}
         <button
           onClick={() => setCreateShowForm(false)}
@@ -235,18 +253,15 @@ const CreateInvoiceForm = ({
 
         {/* Form Title */}
         <h2 className={styles.form_heading}>Agregar Nueva Factura</h2>
+        <div className={errorMessage ? "mb-[-5px]" : ""}>
+          {/* Error Message */}
+          {errorMessage && (
+            <div className={styles.error_message}>{errorMessage}</div>
+          )}
+        </div>
 
-        <form onSubmit={handleSubmit} className={styles.form} noValidate>
-          <div className="mb-[-40px]">
-            {/* Error Message */}
-            {(errorMessage || serverErrorMessage) && (
-              <div className={styles.error_message}>
-                {errorMessage ? errorMessage : serverErrorMessage}
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto p-6 w-full max-w-5xl">
+        <form onSubmit={handleSubmit} className={`${styles.form} overflow-y-auto max-h-[calc(100vh-120px)]`} noValidate>
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto py-2 px-6 w-full max-w-5xl">
             {/* Invoice Type Select */}
             <select
               name="invoice_type"
@@ -275,6 +290,107 @@ const CreateInvoiceForm = ({
               required
               className={styles.input_form}
             />
+
+            {/* Invoice Total */}
+            <div className="relative mt-[-10px]">
+              <label htmlFor="invoice_total" className="font-inter italic">
+                Total
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="invoice_total"
+                  placeholder="Total"
+                  value={formData.invoice_total || ""}
+                  onChange={handleChange}
+                  onKeyDown={(e) => {
+                    if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
+                      e.preventDefault();
+                    }
+                  }}
+                  required
+                  className={`${styles.input_form} pr-16`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                  $MXN
+                </span>
+              </div>
+            </div>
+
+            {/* Invoice Comision */}
+            <div className="relative mt-[-10px]">
+              <label
+                htmlFor="invoice_comision_percentage"
+                className="font-inter italic"
+              >
+                Comisión %
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="invoice_comision_percentage"
+                  placeholder="Comisión %"
+                  value={formData.invoice_comision_percentage || ""}
+                  onChange={handleChange}
+                  onKeyDown={(e) => {
+                    if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
+                      e.preventDefault();
+                    }
+                  }}
+                  required
+                  className={`${styles.input_form} pr-16`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                  %
+                </span>
+              </div>
+            </div>
+
+            {/* Invoice Iva */}
+            <div className="relative mt-[-10px]">
+              <label htmlFor="invoice_iva" className="font-inter italic">
+                IVA
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="invoice_iva"
+                  placeholder="IVA"
+                  value={formData.invoice_iva || ""}
+                  onChange={handleChange}
+                  required
+                  disabled
+                  className={`${styles.input_form} pr-16`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                  $MXN
+                </span>
+              </div>
+            </div>
+
+            {/* Invoice Subtotal */}
+            <div className="relative mt-[-10px]">
+              <label htmlFor="invoice_subtotal" className="font-inter italic">
+                Subtotal
+              </label>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  name="invoice_subtotal"
+                  placeholder="Subtotal"
+                  value={formData.invoice_subtotal || ""}
+                  onChange={handleChange}
+                  disabled
+                  required
+                  className={`${styles.input_form} pr-16`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
+                  $MXN
+                </span>
+              </div>
+            </div>
+
             {/* Invoice Payment Type */}
             <select
               name="invoice_payment_type"
@@ -288,7 +404,7 @@ const CreateInvoiceForm = ({
               }`}
             >
               <option value="" hidden disabled>
-                Tipo de Pago
+                Motivo de Pago
               </option>
               <option value="Ingreso">Ingreso</option>
               <option value="Egreso">Egreso</option>
@@ -296,64 +412,6 @@ const CreateInvoiceForm = ({
               <option value="Nómina">Nómina</option>
               <option value="Pago">Pago</option>
             </select>
-
-            {/* Invoice Total */}
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                name="invoice_total"
-                placeholder="Total"
-                step={0.01}
-                min={0}
-                value={formData.invoice_total || ""}
-                onChange={handleChange}
-                required
-                className={`${styles.input_form} pr-16`}
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                $MXN
-              </span>
-            </div>
-
-            {/* Invoice Comision */}
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                name="invoice_comision_percentage"
-                placeholder="Comision %"
-                step={0.01}
-                min={0}
-                value={formData.invoice_comision_percentage || ""}
-                onChange={handleChange}
-                required
-                className={`${styles.input_form} pr-16`}
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                %
-              </span>
-            </div>
-
-            {/* Invoice Iva */}
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                name="invoice_iva"
-                placeholder="Iva"
-                step={0.01}
-                min={0}
-                value={formData.invoice_iva || ""}
-                onChange={handleChange}
-                required
-                disabled
-                className={`${styles.input_form} pr-16`}
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                $MXN
-              </span>
-            </div>
 
             {/* Today date */}
             <input
@@ -364,26 +422,6 @@ const CreateInvoiceForm = ({
               disabled
               className={styles.input_form}
             />
-
-            {/* Invoice Subtotal */}
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                name="invoice_subtotal"
-                placeholder="Subtotal"
-                step={0.01}
-                min={0}
-                value={formData.invoice_subtotal || ""}
-                onChange={handleChange}
-                disabled
-                required
-                className={`${styles.input_form} pr-16`}
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                $MXN
-              </span>
-            </div>
 
             {/* Select de Razón Social Primario */}
             <select
@@ -460,17 +498,17 @@ const CreateInvoiceForm = ({
               )}
             </div>
             {/* CSF asignado */}
-            <div className={`${styles.input_form} pr-16`}>
+            {/* <div className={`${styles.input_form} pr-16`}>
               {RFC ? (
                 <span className="text-gray-800">CSF-{RFC}.PDF</span>
               ) : (
                 <span className="text-gray-400 italic">CSF del Receptor</span>
               )}
-            </div>
+            </div> */}
           </div>
 
           {/* Add Invoice Button */}
-          <button type="submit" className={`${styles.send_button} mt-[-20px]`}>
+          <button type="submit" className={`${styles.send_button} mt-[-5px] mb-2`}>
             Agregar Factura
           </button>
         </form>

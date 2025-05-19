@@ -7,6 +7,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import HistoricalTable from '../components/Historical/HistoricalTable';
 import Navbar from '../components/Navbar';
 import CancelInvoiceForm from '../components/Historical/CancelInvoiceForm';
+import { MdMenu } from 'react-icons/md';
 
 const Historical = ({ api }) => {
   const [dataBoard, setDataBoard] = useState([]); // Estado para almacenar los datos de la tabla
@@ -15,6 +16,7 @@ const Historical = ({ api }) => {
   const [showCancelForm, setCancelShowForm] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showSidemenu, setShowSideMenu] = useState(false);
 
   const getHistorical = useCallback(async () => {
     setLoading(true); // Carga inicial
@@ -89,10 +91,21 @@ const Historical = ({ api }) => {
     <>
       <div className={styles.blank_page}>
         <Navbar />
-
+        {showSidemenu && <SideMenu setFullSideBar={setShowSideMenu} />}
         <div className={styles.page_container}>
           <div className={styles.header_container}>
-            <h2 className={styles.heading_page}>Histórico</h2>
+            <div className="inline pt-5.5 sm:hidden text-white">
+              <div>
+                <button
+                  onClick={() => setShowSideMenu(true)}
+                  className="mt-auto mb-6 p-2 text-3xl rounded-lg hover:cursor-pointer hover:scale-115 transform transition-all"
+                >
+                  <MdMenu />
+                </button>
+              </div>
+            </div>
+            <h2 className={`${styles.heading_page}`}>Histórico</h2>
+            <div></div>
           </div>
           {/* Tabla Historical */}
           <HistoricalTable dataBoard={dataBoard} api={api} handleAnnulledForm={handleAnnulledForm} getSearch={fetchSearch} />

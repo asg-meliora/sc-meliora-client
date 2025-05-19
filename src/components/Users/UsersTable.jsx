@@ -49,12 +49,12 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
         <table className={`${styles.table} rounded-2xl`}>
           <thead className={styles.table_header}>
             <tr>
-              <th className={styles.table_header_cell}>Nombre</th>
-              <th className={styles.table_header_cell}>Tipo</th>
-              <th className={styles.table_header_cell}>Email</th>
-              <th className={styles.table_header_cell}>Estado</th>
-              <th className={styles.table_header_cell}>Creación</th>
-              <th className={styles.table_header_cell}>Acciones</th>
+              <th className={`${styles.table_header_cell}`}>Nombre</th>
+              <th className={`${styles.table_header_cell}`}>Tipo</th>
+              <th className={`${styles.table_header_cell} hidden md:table-cell`}>Email</th>
+              <th className={`${styles.table_header_cell} hidden sm:table-cell`}>Estado</th>
+              <th className={`${styles.table_header_cell} hidden lg:table-cell`}>Creación</th>
+              <th className={`${styles.table_header_cell}`}>Acciones</th>
             </tr>
           </thead>
           <tbody className={styles.table_body}>
@@ -65,14 +65,14 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
                 } hover:bg-[#313131] hover:text-white transition-all`}
               >
-                <td className="p-4 text-center font-semibold">{user.user_name}</td>
+                <td className="p-4 text-center font-semibold break-all">{user.user_name}</td>
                 <td className="p-4 text-center ">
                   <span className={`px-3 py-1 items-center text-xs font-bold rounded-full text-white shadow-md ${getUserTypeColor(user.role_id)}`}>
                     {formatUserType(user.role_id)}
                   </span>
                 </td>
-                <td className="p-4 text-center">{user.email}</td>
-                <td className="p-4 text-center">
+                <td className="p-4 text-center hidden md:table-cell">{user.email}</td>
+                <td className="p-4 text-center hidden sm:table-cell">
                   <span
                     className={`px-3 py-1 text-xs font-bold rounded-full text-white shadow-md ${
                       user.is_active === 1
@@ -83,7 +83,7 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
                     {user.is_active === 1 ? "Activo" : "Inactivo"}
                   </span>
                 </td>
-                <td className="p-4 text-center">{formatDate(user.created_at)}</td>
+                <td className="p-4 text-center hidden lg:table-cell">{formatDate(user.created_at)}</td>
                 <td className="p-4 text-center">
                   <button
                     onClick={() => handleOpenUserForm(user)}

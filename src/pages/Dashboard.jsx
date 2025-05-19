@@ -1,5 +1,6 @@
 
 import Navbar from "../components/Navbar";
+import SideMenu from "../components/SideMenu";
 
 const Dashboard = () => {
 
@@ -7,6 +8,7 @@ const Dashboard = () => {
     <>
       <div className="flex">
         <Navbar />
+        <SideMenu />
         Dashboard
       </div>
     </>

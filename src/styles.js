@@ -46,9 +46,9 @@ const styles = {
   // > Form
   form_container: "fixed top-0 right-0 w-full h-full flex justify-center items-center",
   form_modal_bg: "fixed w-full h-full bg-black opacity-50",
-  form_layout: "max-w-[800px] mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black p-6 rounded-lg shadow-xl relative w-96",
+  form_layout: "max-w-[800px] max-h-[calc(92svh)] mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black px-6 py-3 rounded-lg shadow-xl relative w-96",
   close_form_button: "absolute top-2 right-2 text-gray-400 hover:text-gray-700 hover:font-extrabold text-xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all",
-  form_heading: "text-2xl font-bold mb-4 mx-3 text-blackN font-raleway",
+  form_heading: "text-lg sm:text-2xl font-bold mb-4 mx-3 text-blackN font-raleway",
   form: "flex flex-col gap-4 mx-2",
   error_message: "mb-4 text-red-500 text-sm text-center animate-fade-in",
   input_form: "w-full p-2 text-[16px] rounded-md bg-linear-0 from-[#ffffff] via-[#eeeeee] to-[#ffffff] border border-gray-300 shadow-md shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-blue-400 focus:scale-105 focus:mt-0.5 transition-all",

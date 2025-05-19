@@ -1,8 +1,6 @@
-import React from "react";
-import "./FilesTable.css";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles";
-import { SlOptionsVertical } from "react-icons/sl";
+import { FaEdit } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 function FilesTable({ newFiles, handleAnnulledForm, category }) {
