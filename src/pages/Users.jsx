@@ -153,8 +153,8 @@ const Users = ({ api }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${api}/users/${userId}`, {
-        method: "DELETE",
+      const response = await fetch(`${api}/users/notavailable/${userId}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "x-access-token": token,
