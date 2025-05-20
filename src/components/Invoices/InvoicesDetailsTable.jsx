@@ -379,7 +379,7 @@ function InvoicesDetailsTable({
                         className={`${styles.d_table_data} border-b-6`}
                       >
                         {fileIndex !== null ? (
-                          <div className={styles.d_files_buttons_container}>
+                          <div className="w-full flex flex-col sm:flex-row items-center text-center justify-center">
                             <a
                               href={fileUrlValid ? fileUrl.urls[fileIndex].signedUrl : "#"}
                               onClick={(e) => {
