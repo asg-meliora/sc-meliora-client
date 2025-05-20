@@ -130,7 +130,7 @@ function FileDetail({ api }) {
       if (!response.ok) throw new Error("Error al actualizar los datos");
 
       const result = await response.json();
-      console.log("Updated", result);
+      console.log("Updated", result); //Quitarlo
       // setNewFiles({ results: result });
       setSuccess(true);
       setSuccessMessage("Datos actualizados exitosamente");
@@ -138,11 +138,9 @@ function FileDetail({ api }) {
       setError(err.message);
     } finally {
       const updatedClientData = await getClients();
-      //console.log("Datos refrescados:", updatedClientData);
       setNewData(updatedClientData);
       setIsEditing(false);
     }
-
   };
 
   //Función para Actulizar el archivo
