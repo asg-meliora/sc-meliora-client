@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 function FilesTable({ newFiles, handleAnnulledForm }) {
@@ -94,16 +94,16 @@ function FilesTable({ newFiles, handleAnnulledForm }) {
                     <button
                                           onClick={() => navigate(`/files/details/${item.client_id}`)}
 
-                      className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
+                      className="text-[#9e824f] hover:text-[#eeb13f] pr-1.5 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
                     >
                       {/* <SlOptionsVertical size={18} /> */}
                       <FaEdit size={18} />
                     </button>
                     <button
                       onClick={() => handleAnnulledForm(item.client_id)}
-                      className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
+                      className="text-[#9e824f] hover:text-[#eeb13f] pl-1.5 hover:cursor-pointer transition-all transform hover:scale-150"
                     >
-                      <MdOutlineCancel size={18} />
+                      <FaRegTrashAlt size={18} />
                     </button>
                   </td>
                 </tr>

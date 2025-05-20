@@ -3,6 +3,7 @@ export const SuccessTexts = {
   // > Users
   userCreate: "Usuario creado exitosamente",
   userModify: "Usuario modificado exitosamente",
+  userDelete: "Usuario eliminado exitosamente",
   // > File
   // Files
   fileCreation: "Expediente creado exitosamente",

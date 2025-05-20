@@ -5,7 +5,7 @@ import styles from "../../styles";
 
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 
-const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
+const UsersTable = ({ handleOpenUserForm, dataBoard, handleOpenUserDelete }) => {
   /**
    * Function that returns the user type in a readable format
    * @function formatUserType
@@ -30,7 +30,7 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
       4: "bg-[#aba391] shadow-amber-100/30 shadow-lg",
     };
     return colors[type] || "bg-gray-500";
-  }
+  };
 
   /**
    * Function that formats the date string from server to dd/MM/yyyy format
@@ -51,9 +51,21 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
             <tr>
               <th className={`${styles.table_header_cell}`}>Nombre</th>
               <th className={`${styles.table_header_cell}`}>Tipo</th>
-              <th className={`${styles.table_header_cell} hidden md:table-cell`}>Email</th>
-              <th className={`${styles.table_header_cell} hidden sm:table-cell`}>Estado</th>
-              <th className={`${styles.table_header_cell} hidden lg:table-cell`}>Creación</th>
+              <th
+                className={`${styles.table_header_cell} hidden md:table-cell`}
+              >
+                Email
+              </th>
+              <th
+                className={`${styles.table_header_cell} hidden sm:table-cell`}
+              >
+                Estado
+              </th>
+              <th
+                className={`${styles.table_header_cell} hidden lg:table-cell`}
+              >
+                Creación
+              </th>
               <th className={`${styles.table_header_cell}`}>Acciones</th>
             </tr>
           </thead>
@@ -65,13 +77,21 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
                 } hover:bg-[#313131] hover:text-white transition-all`}
               >
-                <td className="p-4 text-center font-semibold break-all">{user.user_name}</td>
+                <td className="p-4 text-center font-semibold break-all">
+                  {user.user_name}
+                </td>
                 <td className="p-4 text-center ">
-                  <span className={`px-3 py-1 items-center text-xs font-bold rounded-full text-white shadow-md ${getUserTypeColor(user.role_id)}`}>
+                  <span
+                    className={`px-3 py-1 items-center text-xs font-bold rounded-full text-white shadow-md ${getUserTypeColor(
+                      user.role_id
+                    )}`}
+                  >
                     {formatUserType(user.role_id)}
                   </span>
                 </td>
-                <td className="p-4 text-center hidden md:table-cell">{user.email}</td>
+                <td className="p-4 text-center hidden md:table-cell">
+                  {user.email}
+                </td>
                 <td className="p-4 text-center hidden sm:table-cell">
                   <span
                     className={`px-3 py-1 text-xs font-bold rounded-full text-white shadow-md ${
@@ -83,20 +103,23 @@ const UsersTable = ({ handleOpenUserForm, dataBoard }) => {
                     {user.is_active === 1 ? "Activo" : "Inactivo"}
                   </span>
                 </td>
-                <td className="p-4 text-center hidden lg:table-cell">{formatDate(user.created_at)}</td>
+                <td className="p-4 text-center hidden lg:table-cell">
+                  {formatDate(user.created_at)}
+                </td>
                 <td className="p-4 text-center">
                   <button
                     onClick={() => handleOpenUserForm(user)}
-                    className="text-[#9e824f]  hover:text-[#eeb13f] hover:cursor-pointer transition-all transform hover:scale-120"
+                    className="text-[#9e824f]  hover:text-[#eeb13f] pr-1.5 hover:cursor-pointer transition-all transform hover:scale-120"
                   >
                     <FaEdit size={18} />
                   </button>
-                  {/* <button
-                    onClick={() => handleOpenUserForm(user)}
-                    className="text-amber-400 ml-1 hover:text-amber-800 hover:cursor-pointer transition-all transform hover:scale-120"
+                  <button
+                    onClick={() => {handleOpenUserDelete(user.user_id)}}
+                    className="text-[#9e824f] hover:text-[#eeb13f] pl-1.5 scale-100 hover:cursor-pointer transition-all transform hover:scale-150"
                   >
                     <FaRegTrashAlt size={18} />
-                  </button> */}
+                  </button>
+                  
                 </td>
               </tr>
             ))}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, use } from "react";
 import UserForm from "../components/Users/UserForm";
 import UsersTable from "../components/Users/UsersTable";
 import { FaPlus } from "react-icons/fa";
@@ -12,6 +12,7 @@ import Navbar from "../components/Navbar";
 import { SuccessTexts } from "../constants/Texts";
 import { MdMenu } from "react-icons/md";
 import SideMenu from "../components/SideMenu";
+import ConfirmUserDeletion from "../components/Users/ConfirmUserDeletion"
 
 const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
@@ -22,6 +23,9 @@ const Users = ({ api }) => {
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showSidemenu, setShowSideMenu] = useState(false);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   const url = editingUser ? `${api}/users/update` : `${api}/accesslog`;
 
@@ -47,6 +51,7 @@ const Users = ({ api }) => {
     const token = Cookies.get("token");
     if (!token) {
       console.error("Token no encontrado. Por favor, inicia sesión.");
+      setError("Token no encontrado. Por favor, inicia sesión.");
       return;
     }
 
@@ -62,7 +67,7 @@ const Users = ({ api }) => {
       const data = await response.json();
       setUsersBoard(data);
     } catch (error) {
-      // TODO: Set error message to show fail in fetching or other way
+      setError(error.message);
       console.log("Error al obtener usuarios:", error);
     } finally {
       setLoading(false);
@@ -88,6 +93,7 @@ const Users = ({ api }) => {
     const token = Cookies.get("token");
     if (!token) {
       console.error("Token no encontrado. Por favor, inicia sesión.");
+      setError("Token no encontrado. Por favor, inicia sesión.");
       return Promise.reject(
         new Error("Token no encontrado. Por favor, inicia sesión")
       );
@@ -113,15 +119,16 @@ const Users = ({ api }) => {
       await response.json();
       await fetchUsers();
       setShowForm(false);
-    } catch (error) {
-      console.error("Error al enviar el formulario:", error);
-      return Promise.reject(error);
-    } finally {
-      setLoading(false);
       setSuccessMessage(
         editingUser ? SuccessTexts.userModify : SuccessTexts.userCreate
       );
       setSuccess(true);
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      setError(error.message);
+      return Promise.reject(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -133,6 +140,45 @@ const Users = ({ api }) => {
   const closeForm = () => {
     setShowForm(false);
     setEditingUser(null);
+  };
+
+  const handleUserDeletion = async () => {
+    const token = Cookies.get("token");
+    if (!token) {
+      console.error("Token no encontrado. Por favor, inicia sesión.");
+      setError("Token no encontrado. Por favor, inicia sesión.");
+      return;
+    }
+    setLoadingMessage("Eliminando usuario...");
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${api}/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": token,
+        },
+      });
+
+      if (!response.ok) throw new Error("Error al eliminar el usuario");
+
+      await response.json();
+      await fetchUsers();
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error al eliminar el usuario:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+      setSuccessMessage(SuccessTexts.userDelete);
+      setSuccess(true);
+    }
+  };
+
+  const handleOpenUserDelete = (userId) => {
+    setUserId(userId);
+    setShowModal(true);
   };
 
   return (
@@ -162,7 +208,8 @@ const Users = ({ api }) => {
                 //button_header
                 className={styles.button_header}
               >
-                <FaPlus /> <span className="hidden sm:inline-block">Agregar Usuario</span>
+                <FaPlus />{" "}
+                <span className="hidden sm:inline-block">Agregar Usuario</span>
               </button>
             </div>
           </div>
@@ -170,6 +217,7 @@ const Users = ({ api }) => {
             api={api}
             dataBoard={dataBoard}
             handleOpenUserForm={handleOpenUserForm}
+            handleOpenUserDelete={handleOpenUserDelete}
           />
         </div>
       </div>
@@ -186,12 +234,28 @@ const Users = ({ api }) => {
           />
         </div>
       )}
+      {showModal && (
+        <div className={styles.form_container}>
+          <div className={styles.form_modal_bg}></div>
+          <ConfirmUserDeletion
+            setShowModal={setShowModal}
+            handleUserDeletion={handleUserDeletion}
+          />
+        </div>
+      )}
       <div className="fixed bottom-4 right-4 z-50">
         <AnimatePresence>
           {success && (
             <SuccessToast
               message={successMessage}
               onClose={() => setSuccess(false)}
+              variant="x"
+            />
+          )}
+          {error && (
+            <SuccessToast
+              message={error}
+              onClose={() => setError(null)}
               variant="x"
             />
           )}
