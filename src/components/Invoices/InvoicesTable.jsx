@@ -102,15 +102,34 @@ const InvoicesTable = ({
              </button> */}
         </div>
 
+        {/* const columns = [
+      "ID",
+      "Tipo",
+      "Asignado",
+      "Concepto",
+      "Ciclo de Vida",
+      "Subtotal",
+      "Razón Social (Receptor)",
+      "Acciones",
+    ]; */}
+
         {/* Tabla Header */}
         <table className={styles.table}>
           <thead className={styles.table_header}>
             <tr>
-              {columns.map((title) => (
+              {/* {columns.map((title) => (
                 <th key={title} className={styles.table_header_cell}>
                   {title}
                 </th>
-              ))}
+              ))} */}
+              <th className={`${styles.table_header_cell}`}>ID</th>
+              <th className={`${styles.table_header_cell}`}>Tipo</th>
+              <th className={`${styles.table_header_cell} hidden sm:table-cell`}>Asignado</th>
+              <th className={`${styles.table_header_cell} hidden sm:table-cell`}>Concepto</th>
+              <th className={`${styles.table_header_cell}`}>Ciclo de Vida</th>
+              <th className={`${styles.table_header_cell} hidden md:table-cell`}>Subtotal</th>
+              <th className={`${styles.table_header_cell} hidden lg:table-cell`}>Razón Social (Receptor)</th>
+              <th className={`${styles.table_header_cell}`}>Acciones</th>
             </tr>
           </thead>
 
@@ -132,17 +151,17 @@ const InvoicesTable = ({
                     {invoice.pipeline_id}
                   </td>
                   <td className="p-4 text-center">{invoice.type_pipeline}</td>
-                  <td className="p-4 text-center">
+                  <td className="p-4 text-center hidden sm:table-cell">
                     {invoice.assigned_user_sender}
                   </td>
-                  <td className="p-4 text-center">{invoice.concept}</td>
+                  <td className="p-4 text-center hidden sm:table-cell">{invoice.concept}</td>
                   <td className="p-4 text-center">
                     {dateToDays(invoice.created_at)}
                   </td>
-                  <td className="p-4 text-center">
+                  <td className="p-4 text-center hidden md:table-cell">
                     {formatCurrency(invoice.subtotal)}
                   </td>
-                  <td className="p-4 text-center">
+                  <td className="p-4 text-center hidden lg:table-cell">
                     {invoice.receiver_name_rs}
                   </td>
                   {/*Botón de cancelar, Si el estado de la factura es "Iniciado" y el rol es admin, */}

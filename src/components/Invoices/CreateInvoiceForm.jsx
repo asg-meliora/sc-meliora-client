@@ -8,9 +8,9 @@ import ErrorFormText from "../ErrorFormText";
 import { AnimatePresence } from "framer-motion";
 
 const InvoiceFormKeys = { //Solo para placeholders
-  invoice_type: "Tipo de Factura",
+  invoice_type: "Método de Pago",
   invoice_concept: "Concepto de Factura",
-  invoice_payment_type: "Método de Pago",
+  invoice_payment_type: "Forma de Pago",
   invoice_total: "Total",
   invoice_subtotal: "Subtotal",
   invoice_iva: "IVA",
@@ -123,7 +123,7 @@ function CreateInvoiceForm({ api, setCreateShowForm, getPipelines, setSuccess, s
   };
 
   const onSubmit = async () => {
-    //setLoadingMessage("Enviando información..."); //TODO Esto no funciona
+    setLoadingMessage("Enviando información..."); //TODO Esto no funciona
     setLoading(true);
     // Aquí puedes hacer la lógica para enviar los datos al servidor
     try {
@@ -200,11 +200,11 @@ function CreateInvoiceForm({ api, setCreateShowForm, getPipelines, setSuccess, s
         invoice_subtotal: subtotal.toFixed(2),
         invoice_iva: iva.toFixed(2),
       }));
-      return; // no seguir con el resto de handleChange para este campo
+      return;
     }
   };
 
-  //El posicionamiento de los componentes del formData es manual, debido a su naturaleza (a veces enviar, a veces solo mostrar, etc.)
+  
   return (
     <>
       <div
@@ -280,11 +280,11 @@ function CreateInvoiceForm({ api, setCreateShowForm, getPipelines, setSuccess, s
               <option value="" hidden disabled>
                 {InvoiceFormKeys.invoice_payment_type}
               </option>
-              <option value="Ingreso">Efectivo</option>
-              <option value="Egreso">Transferencia</option>
-              <option value="Traslado">Tarjeta de Débito</option>
-              <option value="Nómina">Tarjeta de Crédito</option>
-              <option value="Pago">Otro</option>
+              <option value="efectivo">Efectivo</option>
+              <option value="transferencia">Transferencia electrónica</option>
+              <option value="debito">Tarjeta de Débito</option>
+              <option value="credito">Tarjeta de Crédito</option>
+              <option value="cheque">Cheque Nominativo</option>
             </select>
 
             {/* 4. Campo de fecha no editable */}
@@ -457,13 +457,13 @@ function CreateInvoiceForm({ api, setCreateShowForm, getPipelines, setSuccess, s
               )}
             </div>
             {/* CSF asignado */}
-            <div className={`${styles.input_form} pr-16`}>
+            {/* <div className={`${styles.input_form} pr-16`}>
               {RFC ? (
                 <span className="text-gray-800">CSF-{RFC}.PDF</span>
               ) : (
                 <span className="text-gray-400 italic">CSF del Receptor</span>
               )}
-            </div>
+            </div> */}
           </div>
 
           {/* Add Invoice Button */}
