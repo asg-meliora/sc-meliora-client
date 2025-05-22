@@ -77,19 +77,20 @@ function FilesCreate({
 
   const [formData, setFormData] = useState({
     name_rs: "",
-    rfc: "",
-    curp: "",
     street: "", //Nuevos campos de Dirección
+    rfc: "",
     ext_number: "",
+    curp: "",
     int_number: "",
-    neighborhood: "",
-    municipality: "",
-    state: "",
-    zip_code: "",
-    phone: "",
-    email: "",
     bank_account: "",
+    neighborhood: "",
     comision: "",
+    municipality: "",
+    phone: "",
+    state: "",
+    email: "",
+
+    zip_code: "",
     category: "",
     userAssign: "",
     fileCSF: null,

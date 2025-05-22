@@ -161,7 +161,7 @@ const InvoicesTable = ({
                   <td className="p-4 text-center hidden md:table-cell">
                     {formatCurrency(invoice.subtotal)}
                   </td>
-                  <td className="p-4 text-center hidden lg:table-cell">
+                  <td className="p-4 text-center hidden lg:table-cell max-w-[300px] break-all">
                     {invoice.receiver_name_rs}
                   </td>
                   {/*Botón de cancelar, Si el estado de la factura es "Iniciado" y el rol es admin, */}

@@ -22,7 +22,7 @@ function FilesTable({ newFiles, handleAnnulledForm, category }) {
       <div className={styles.table_layout}>
         <div className={styles.table_container}>
           <div className="flex flex-row items-start justify-start  gap-5 px-4 py-3 bg-[#313131] border-[#313131] rounded-t-lg text-white">
-            {category === 0 ? <span>Despacho</span> : <span>Clientes</span>}
+            {category === 0 ? <h2 className="text-lg font-semibold">Despacho</h2> : <h2 className="text-lg font-semibold">Clientes</h2>}
           </div>
 
           <table className={`${styles.table}` /*rounded-2xl*/}>
@@ -77,14 +77,14 @@ function FilesTable({ newFiles, handleAnnulledForm, category }) {
                       index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
                     } hover:bg-[#313131] hover:text-white transition-all`}
                   >
-                    <td className="p-3 text-center font-semibold">
+                    <td className="p-3 text-center font-semibold max-w-[300px]">
                       {item.name_rs}
                     </td>
                     <td className="px-2 text-center">{item.rfc}</td>
                     <td className="px-1 text-center hidden lg:table-cell">
                       {item.phone}
                     </td>
-                    <td className="px-3 text-center hidden md:table-cell text-[12px] lg:text-sm">
+                    <td className="px-3 text-center hidden md:table-cell text-[12px] lg:text-sm max-w-[300px] break-all">
                       {item.email}
                     </td>
                     <td className=" text-center md-text-[12px] lg:text-sm hidden sm:table-cell">
