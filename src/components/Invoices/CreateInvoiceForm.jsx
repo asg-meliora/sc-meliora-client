@@ -77,33 +77,30 @@ function CreateInvoiceForm({
    * @returns {Promise<void>} Promise that resolves when users are fetched correctly & its state changes
    * @throws {Error} Throws error if the request fails
    */
-  const fetchUsers = useCallback(
-    async (client_id) => {
-      const token = Cookies.get("token");
-      if (!token) {
-        console.error("Token no encontrado. Por favor, inicia sesión.");
-        setErrorGeneral("Token no encontrado. Por favor, inicia sesión.");
-        return;
-      }
-      try {
-        const response = await fetch(`${api}/usersclients/byid/${client_id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-access-token": token,
-          },
-        });
+  const fetchUsers = useCallback(async (client_id) => {
+    const token = Cookies.get("token");
+    if (!token) {
+      console.error("Token no encontrado. Por favor, inicia sesión.");
+      setErrorGeneral("Token no encontrado. Por favor, inicia sesión.");
+      return;
+    }
+    try {
+      const response = await fetch(`${api}/usersclients/byid/${client_id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": token,
+        },
+      });
 
-        if (!response.ok) throw new Error("Error al obtener usuarios");
-        const data = await response.json();
-        setUsers(data.results[0]);
-      } catch (error) {
-        console.log("Error al obtener usuaros:", error);
-        setErrorGeneral("Error al obtener usuarios");
-      }
-    },
-    [api, setErrorGeneral]
-  );
+      if (!response.ok) throw new Error("Error al obtener usuarios");
+      const data = await response.json();
+      setUsers(data.results[0]);
+    } catch (error) {
+      console.log("Error al obtener usuaros:", error);
+      setErrorGeneral("Error al obtener usuarios");
+    }
+  }, [api, setErrorGeneral]);
 
   /**
    * Function that fetches the list of clients from the server and updates the clients board state
@@ -188,6 +185,7 @@ function CreateInvoiceForm({
   //   "invoice_subtotal",
   //   "invoice_iva",
   //   "invoice_comision_percentage",
+  // ];voice_comision_percentage",
   // ];
 
   const handleChange = (e) => {
@@ -242,6 +240,7 @@ function CreateInvoiceForm({
     }
   };
 
+  //El posicionamiento de los componentes del formData es manual, debido a su naturaleza (a veces enviar, a veces solo mostrar, etc.)
   return (
     <>
       <div

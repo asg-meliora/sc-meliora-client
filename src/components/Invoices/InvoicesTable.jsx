@@ -9,7 +9,7 @@ const InvoicesTable = ({
   dataBoard,
   invoiceStatus,
   handleAnnulledForm,
-  adminStatus,
+  adminStatus = 0,
 }) => {
   const navigate = useNavigate();
 
