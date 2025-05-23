@@ -192,7 +192,7 @@ function FileDetail({ api }) {
               {newData.results.name_rs}
             </h2>
             {/* <h2 className={styles.heading_page}>Expediente No. {id}</h2> */}
-            {!isEditing && (
+            {!isEditing ? (
               <div className={styles.button_header_container}>
                 <button
                   className={styles.button_header}
@@ -202,7 +202,7 @@ function FileDetail({ api }) {
                   <span className="hidden sm:inline-block">Editar Datos</span>
                 </button>
               </div>
-            )}
+            ) : <div></div>}
           </div>
           {/* Detalles del expediente */}
           <div className="w-full mb-6">

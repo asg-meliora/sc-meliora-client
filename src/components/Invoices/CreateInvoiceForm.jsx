@@ -481,7 +481,7 @@ function CreateInvoiceForm({
                     className={`${styles.input_form} pr-16`}
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                    %
+                    $MXN
                   </span>
                 </div>
               </div>
@@ -502,7 +502,7 @@ function CreateInvoiceForm({
                     className={`${styles.input_form} pr-16`}
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
-                    %
+                    $MXN
                   </span>
                 </div>
               </div>

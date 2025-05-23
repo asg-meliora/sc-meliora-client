@@ -164,10 +164,11 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                       key === "address" ? ( //Si esta en address, agrega los subcampos correspondientes (son 6 subcampos)
                         <div>
                           {Object.keys(address).map((key) => (
-                            <fieldset key={key} className="inline-block border border-[#ccc] px-3 py-2 rounded-lg">
-                              <legend className="text-gray-700 font-bold font-raleway">{addressKeys[key]}</legend>
+                            <fieldset key={key} className="inline-block border border-[#ccc] py-2 rounded-lg sm:max-w-1/2 w-full break-words">
+                              <legend className="text-gray-700 font-bold font-raleway ml-2">{addressKeys[key]}</legend>
                               <input
                                 type="text"
+                                className="ml-2"
                                 name={key}
                                 value={campoEspecial[key] ?? ""}
                                 onChange={handleEspecialChange}

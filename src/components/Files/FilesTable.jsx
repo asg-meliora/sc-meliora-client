@@ -22,7 +22,7 @@ function FilesTable({ newFiles, handleAnnulledForm, category }) {
       <div className={styles.table_layout}>
         <div className={styles.table_container}>
           <div className="flex flex-row items-start justify-start  gap-5 px-4 py-3 bg-[#313131] border-[#313131] rounded-t-lg text-white">
-            {category === 0 ? <h2 className="text-lg font-semibold">Despacho</h2> : <h2 className="text-lg font-semibold">Clientes</h2>}
+            {category === 0 ? <h2 className="text-xl font-semibold">Despacho</h2> : <h2 className="text-xl font-semibold">Clientes</h2>}
           </div>
 
           <table className={`${styles.table}` /*rounded-2xl*/}>
