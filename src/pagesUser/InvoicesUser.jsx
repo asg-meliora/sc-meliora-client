@@ -10,8 +10,6 @@ import { AnimatePresence } from "framer-motion";
 import LoadingScreen from "../components/LoadingScreen";
 
 function InvoicesUser({ api }) {
-  
-    
   const { userId } = useParams();
   const [dataBoard, setDataBoard] = useState({ results: [] });
   const [error, setError] = useState(null); // Estado de error

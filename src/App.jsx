@@ -36,7 +36,7 @@ const router = createBrowserRouter(
     <Route path="/files/details/:id" element={<ProtectedRoute allowedRoles={[1]}> <FilesDetails api={apiLink}/> </ProtectedRoute>} />,
     <Route path="/historical" element={<ProtectedRoute allowedRoles={[1]}> <Historical api={apiLink}/> </ProtectedRoute>} />,
     <Route path="/invoices" element={<ProtectedRoute allowedRoles={[1]}> <Invoices api={apiLink}/> </ProtectedRoute>} />,
-    <Route path="/invoices/details/:id" element={<ProtectedRoute allowedRoles={[1]}> <InvoicesDetails api={apiLink}/> </ProtectedRoute>} />,
+    <Route path="/invoices/details/:invoiceId" element={<ProtectedRoute allowedRoles={[1]}> <InvoicesDetails api={apiLink}/> </ProtectedRoute>} />,
     <Route path="/dashboard" element={<ProtectedRoute allowedRoles={[1]}> <Dashboard api={apiLink}/> </ProtectedRoute>} />,
     <Route path="/users" element={<ProtectedRoute allowedRoles={[1]}> <Users api={apiLink}/> </ProtectedRoute>} />,
 

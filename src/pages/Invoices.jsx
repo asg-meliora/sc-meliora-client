@@ -40,10 +40,9 @@ const Invoices = ({ api }) => {
           "x-access-token": Cookies.get("token"),
         },
       });
-
       //Error handling
       if (!response.ok) throw new Error("Error en la petición");
-
+      //Data handling
       const data = await response.json();
       setDataBoard(data.results);
     } catch (err) {
@@ -52,34 +51,6 @@ const Invoices = ({ api }) => {
       setLoading(false); // Carga finalizada
     }
   }, [api]);
-
-  // Muestra la factura creada por el usuario
-  const getNewPipeline = useCallback(
-    async (pipelineId) => {
-      setLoading(true); // Carga inicial
-      try {
-        const response = await fetch(`${api}/invoices/byid/${pipelineId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-access-token": Cookies.get("token"),
-          },
-        });
-
-        //Error handling
-        if (!response.ok) throw new Error("Error en la petición");
-
-        //Asegúrate de que data.results sea un array antes de acceder a su primer elemento
-        const data = await response.json();
-        return Array.isArray(data.results) ? data.results[0] : data.results;
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false); // Carga finalizada
-      }
-    },
-    [api]
-  );
 
   useEffect(() => {
     getPipelines();

@@ -22,7 +22,7 @@ const InvoiceFormKeys = { //Solo para placeholders
   invoice_rfc: "RFC (Receptor)",
 };
 
-function CreateInvoiceForm({ api, setCreateShowForm, getPipelines, setSuccess, setSuccessMessage, setLoading, setLoadingMessage, setErrorGeneral,  }) {
+function CreateInvoiceForm({ api, setCreateShowForm, getPipelines, setSuccess, setSuccessMessage, setLoading, setLoadingMessage, setErrorGeneral, }) {
   const [users, setUsers] = useState({ results: [] });
   const [client_sender, setClient_sender] = useState([]);
   const [client_receiver, setClient_receiver] = useState([]);
