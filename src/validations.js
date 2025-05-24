@@ -270,8 +270,8 @@ const validateBankAccount = (accountNumber) => {
 const validateFiles = (formData) => {
   const missingFiles = [];
   if (!formData.fileCSF) missingFiles.push("Constancia de Situación Fiscal (CSF)");
-  if (!formData.fileCDB) missingFiles.push("Comprobante de Domicilio (CDB)");
-  if (!formData.fileCDD) missingFiles.push("Carátula Bancaria (CDD)");
+  if (!formData.fileCDB) missingFiles.push("Comprobante de Domicilio");
+  if (!formData.fileCDD) missingFiles.push("Carátula Bancaria");
 
   if (missingFiles.length > 0) {
     return {
@@ -411,17 +411,17 @@ export const validateFileFormData = (formData) => { //Funcion para devolver true
 
   result = validateStreet(formData.street); //Nuevos campos de Direccion
   if (!result.valid) return result;
-    result = validateExtNumber(formData.ext_number);
+  result = validateExtNumber(formData.ext_number);
   if (!result.valid) return result;
-    result = validateIntNumber(formData.int_number);
+  result = validateIntNumber(formData.int_number);
   if (!result.valid) return result;
-    result = validateNeighborhood(formData.neighborhood);
+  result = validateNeighborhood(formData.neighborhood);
   if (!result.valid) return result;
-    result = validateMunicipality(formData.municipality);
+  result = validateMunicipality(formData.municipality);
   if (!result.valid) return result;
-    result = validateState(formData.state);
+  result = validateState(formData.state);
   if (!result.valid) return result;
-    result = validateZipCode(formData.zip_code);
+  result = validateZipCode(formData.zip_code);
   if (!result.valid) return result;
 
   result = validatePhone(formData.phone);
@@ -434,6 +434,9 @@ export const validateFileFormData = (formData) => { //Funcion para devolver true
   if (!result.valid) return result;
 
   result = validateFiles(formData);
+  if (!result.valid) return result;
+
+  result = validateCommission(formData.comision);
   if (!result.valid) return result;
 
   if (!formData.userAssign) {

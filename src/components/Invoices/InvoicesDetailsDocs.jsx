@@ -16,7 +16,7 @@ function InvoicesDetailsDocs({ adminStatus = 0, uploadedDocs, handleDocInvoiceUp
     // Lista de los 4 tipos de documentos
     const documentTypes = ["PreXML", "PrePDF", "FacXML", "FacPDF"];
     const isAllDocsUploaded = uploadedDocs
-        ? documentTypes.every((docType) => uploadedDocs[docType])
+        ? documentTypes.every((docType) => uploadedDocs[docType]) // Verifica si todos los 4 archivos han sido subidos
         : false;
 
     const handleChange = (e, doctype) => {
@@ -85,10 +85,17 @@ function InvoicesDetailsDocs({ adminStatus = 0, uploadedDocs, handleDocInvoiceUp
                                         Archivo {DiccDocs[item]}
                                     </h3>
                                     <p className={styles.d_files_info_date}>
-                                        {adminStatus === 0
+                                        {/* {adminStatus === 0
                                             ? `(Subir Archivo ${item.endsWith("XML") ? ".xml" : ".pdf"
                                             })`
-                                            : "(Archivo Faltante)"}
+                                            : uploadedDocs.length > 0
+                                            ? "(Archivo Subido)"
+                                            : "(Archivo Faltante)"} */}
+                                        {uploadedDocs[item]
+                                            ? "(Archivo Subido)"
+                                            : adminStatus === 0
+                                                ? `(Subir Archivo ${item.endsWith("XML") ? ".xml" : ".pdf"})`
+                                                : "(Archivo Faltante)"}
                                     </p>
                                 </header>
                                 <hr className={styles.d_files_hr} />
@@ -144,9 +151,11 @@ function InvoicesDetailsDocs({ adminStatus = 0, uploadedDocs, handleDocInvoiceUp
                                         Archivo {DiccDocs[item]}
                                     </h3>
                                     <p className={styles.d_files_info_date}>
-                                        {adminStatus === 0
-                                            ? `(Subir Archivo ${item.endsWith("XML") ? ".xml" : ".pdf"})`
-                                            : "(Archivo Faltante)"}
+                                        {uploadedDocs[item]
+                                            ? "(Archivo Subido)"
+                                            : adminStatus === 0
+                                                ? `(Subir Archivo ${item.endsWith("XML") ? ".xml" : ".pdf"})`
+                                                : "(Archivo Faltante)"}
                                     </p>
                                 </header>
                                 <hr className={styles.d_files_hr} />

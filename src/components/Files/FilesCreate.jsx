@@ -127,7 +127,7 @@ function FilesCreate({
   const handleFileChange = (e) => { //Manejo de subida de archivos, y manejo de errores y limites
     const { name, files } = e.target;
     const file = files[0];
-    const maxSizeMB = 2;
+    const maxSizeMB = 2; //Limitado a 2MB
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
     if (file) {
@@ -142,7 +142,7 @@ function FilesCreate({
         setFormData((prev) => ({ ...prev, [name]: null }));
         e.target.value = null; // Limpia el input para permitir seleccionar el mismo archivo otra vez
       } else {
-        setErrorMessage((prev) => ({ ...prev, [name]: null }));
+        setErrorMessage(null);
         setFormData((prev) => ({ ...prev, [name]: file }));
       }
     }
@@ -194,10 +194,10 @@ function FilesCreate({
     Object.entries(formData).forEach(([key, value]) => {
       if (value) data.append(key, value);
     });
-    console.log("Contenido de FormData:");
-    for (let pair of data.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+    // console.log("Contenido de FormData:");
+    // for (let pair of data.entries()) {
+    //   console.log(`${pair[0]}:`, pair[1]);
+    // }
     try {
       const response = await fetch(`${api}/clients/complete`, {
         method: "POST",

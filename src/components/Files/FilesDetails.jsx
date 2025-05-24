@@ -103,7 +103,7 @@ function FileDetail({ api }) {
     CDB: "Caratula Bancaria",
   };
 
-  //Peticion para enviar los nuevos datos del edit
+  //Peticion para enviar los nuevos datos del edit //Todo VALIDACIONES EN FRONT ANTES DE ENVIAR AL BACK
   const handleSaveChanges = async (updatedData) => {
     try {
       const response = await fetch(

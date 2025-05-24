@@ -151,6 +151,7 @@ function InvoicesUserDetails({ api }) {
       setError(`Error al subir archivo ${docType}`);
     } finally {
       try {
+        await getInvoiceData(); //Se necesita para poder actulizar el status de la factura
         await getDocsData(); //Hasta que se refrequen los nuevos datos hace el finally
       }
       finally {

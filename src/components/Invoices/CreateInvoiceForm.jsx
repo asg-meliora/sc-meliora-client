@@ -150,11 +150,12 @@ function CreateInvoiceForm({
       return;
     }
     setErrorMessage(null);
+    console.log(formData);
     onSubmit(formData);
   };
 
   const onSubmit = async () => {
-    setLoadingMessage("Enviando información..."); //TODO Esto no funciona
+    //setLoadingMessage("Enviando información..."); //TODO Esto no funciona
     setLoading(true);
     // Aquí puedes hacer la lógica para enviar los datos al servidor
     try {
@@ -180,21 +181,11 @@ function CreateInvoiceForm({
     }
   };
 
-  // const digitFields = [
-  //   "invoice_total",
-  //   "invoice_subtotal",
-  //   "invoice_iva",
-  //   "invoice_comision_percentage",
-  // ];voice_comision_percentage",
-  // ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // if (digitFields.includes(name)) {
-    //   const numericValue = value.replace(/\D/g, "");
-    //   setFormData((prev) => ({ ...prev, [name]: numericValue }));
-    // } else setFormData((prev) => ({ ...prev, [name]: value }));
+
     if (name === "invoice_client_sender") {
       setUsers({ results: [] }); // Limpia antes de la petición
       fetchUsers(value);
@@ -326,11 +317,11 @@ function CreateInvoiceForm({
                 <option value="" hidden disabled>
                   {InvoiceFormKeys.invoice_payment_type}
                 </option>
-                <option value="credito">Tarjeta de Crédito</option>
-                <option value="debito">Tarjeta de Débito</option>
-                <option value="transferencia">Transferencia electrónica</option>
-                <option value="cheque">Cheque Nominativo</option>
-                <option value="efectivo">Efectivo</option>
+                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+                <option value="Transferencia electrónica">Transferencia electrónica</option>
+                <option value="Cheque Nominativo">Cheque Nominativo</option>
+                <option value="Efectivo">Efectivo</option>
               </select>
               {/* 5. Regimen Fiscal */}
               <select
@@ -343,7 +334,7 @@ function CreateInvoiceForm({
                     ? "text-black font-normal"
                     : "italic text-gray-500"
                 }`}
-              >=
+              >
                 <option value="" hidden disabled>
                   {InvoiceFormKeys.invoice_regimen}
                 </option>
