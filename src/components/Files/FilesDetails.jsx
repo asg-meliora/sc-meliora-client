@@ -213,6 +213,7 @@ function FileDetail({ api }) {
               setLoading={setLoading}
               isEditing={isEditing}
               setIsEditing={setIsEditing}
+              setError={setError}
             />
           </div>
 

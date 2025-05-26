@@ -397,7 +397,7 @@ export const validateUserFormData = (formData) => {
   return { valid: true };
 }
 
-export const validateFileFormData = (formData) => { //Funcion para devolver true o false para cada campo y saber que error fue
+export const validateFileFormData = (formData, put = false) => { //Funcion para devolver true o false para cada campo y saber que error fue
   let result;
 
   result = validateNameRS(formData.name_rs);
@@ -409,18 +409,47 @@ export const validateFileFormData = (formData) => { //Funcion para devolver true
   result = validateCURP(formData.curp);
   if (!result.valid) return result;
 
-  result = validateStreet(formData.street); //Nuevos campos de Direccion
-  if (!result.valid) return result;
-  result = validateExtNumber(formData.ext_number);
-  if (!result.valid) return result;
-  result = validateIntNumber(formData.int_number);
-  if (!result.valid) return result;
-  result = validateNeighborhood(formData.neighborhood);
-  if (!result.valid) return result;
-  result = validateMunicipality(formData.municipality);
-  if (!result.valid) return result;
-  result = validateState(formData.state);
-  if (!result.valid) return result;
+
+  if (put) {
+    const parts = formData.address.split(',').map(p => p.trim());
+
+    let address = {
+      street: parts[0] || "",
+      ext_number: parts[1]?.replace('#', '') || "",
+      int_number: parts[2]?.includes('#N/A') ? null : parts[2]?.replace('#', '') || null,
+      neighborhood: parts[3]?.replace('Col. ', '') || "",
+      municipality: parts[4] || "",
+      state: parts[5] || "",
+    }
+    result = validateStreet(address.street); //Nuevos campos de Direccion
+    if (!result.valid) return result;
+    result = validateExtNumber(address.ext_number);
+    if (!result.valid) return result;
+    result = validateIntNumber(address.int_number);
+    if (!result.valid) return result;
+    result = validateNeighborhood(address.neighborhood);
+    if (!result.valid) return result;
+    result = validateMunicipality(address.municipality);
+    if (!result.valid) return result;
+    result = validateState(address.state);
+    if (!result.valid) return result;
+  }
+  else {
+    result = validateStreet(formData.street); 
+    if (!result.valid) return result;
+    result = validateExtNumber(formData.ext_number);
+    if (!result.valid) return result;
+    result = validateIntNumber(formData.int_number);
+    if (!result.valid) return result;
+    result = validateNeighborhood(formData.neighborhood);
+    if (!result.valid) return result;
+    result = validateMunicipality(formData.municipality);
+    if (!result.valid) return result;
+    result = validateState(formData.state);
+    if (!result.valid) return result;
+  }
+
+  
   result = validateZipCode(formData.zip_code);
   if (!result.valid) return result;
 
@@ -433,14 +462,23 @@ export const validateFileFormData = (formData) => { //Funcion para devolver true
   result = validateBankAccount(formData.bank_account);
   if (!result.valid) return result;
 
-  result = validateFiles(formData);
-  if (!result.valid) return result;
+  if (!put) {
+    result = validateFiles(formData);
+    if (!result.valid) return result;
+  }
 
   result = validateCommission(formData.comision);
   if (!result.valid) return result;
 
-  if (!formData.userAssign) {
-    return { valid: false, error: "Favor de seleccionar un usuario asignado." };
+  if (put) {
+    if (!formData.user_name) {
+      return { valid: false, error: "Favor de seleccionar un usuario asignado." };
+    }
+  }
+  else{
+    if (!formData.userAssign) {
+      return { valid: false, error: "Favor de seleccionar un usuario asignado." };
+    }
   }
 
   return { valid: true };

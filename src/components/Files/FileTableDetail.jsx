@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "../../styles";
+import { validateFileFormData } from "../../validations";
 
 const FormattedDate = (dateString) => {
   const date = new Date(dateString);
-  const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${(
+    date.getMonth() + 1
+  )
+    .toString()
+    .padStart(2, "0")}/${date.getFullYear()}`;
   return formattedDate;
 };
 
@@ -34,7 +39,14 @@ const categoryLabels = {
   ClientesReceptor: "Cliente",
 };
 
-export default function FileTableDetail({ data, onSave, userAssigns, isEditing, setIsEditing, }) {
+export default function FileTableDetail({
+  data,
+  onSave,
+  userAssigns,
+  isEditing,
+  setIsEditing,
+  setError
+}) {
   const [formData, setFormData] = useState({}); // Estado para los campos simples
   const [campoEspecial, setCampoEspecial] = useState({}); // Estado para los campos de dirección
 
@@ -74,11 +86,13 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
 
   const leftTableRef = useRef(null);
   const rightTableRef = useRef(null);
-  useEffect(() => {   // Cada vez que cambia 'isEditing' o 'data', reseteamos el formulario
-    if (data) {       // Esto asegura que cuando entres o salgas del modo edición o cambie la data,
-      resetForm();    // los campos se inicialicen/restauren con los valores originales recibidos.
+  useEffect(() => {
+    // Cada vez que cambia 'isEditing' o 'data', reseteamos el formulario
+    if (data) {
+      // Esto asegura que cuando entres o salgas del modo edición o cambie la data,
+      resetForm(); // los campos se inicialicen/restauren con los valores originales recibidos.
     }
-    const leftRows = leftTableRef.current?.querySelectorAll("tr");//Para Responsive de ambas tablas
+    const leftRows = leftTableRef.current?.querySelectorAll("tr"); //Para Responsive de ambas tablas
     const rightRows = rightTableRef.current?.querySelectorAll("tr");
 
     if (!leftRows || !rightRows) return;
@@ -107,27 +121,36 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
   // Función para manejar el cambio de valor en un campo
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value, }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Función para manejar cambios en el campo especial
   const handleEspecialChange = (e) => {
     const { name, value } = e.target;
-    setCampoEspecial((prev) => ({ ...prev, [name]: value, }));
+    setCampoEspecial((prev) => ({ ...prev, [name]: value }));
   };
 
   // Función para guardar y preparar los datos modificados para enviarlos al backend
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Datos del Formulario", formData);
+    
+    const validation = validateFileFormData(formData, true);
+    if (!validation.valid) {
+      setError(validation.error);
+      return;
+    }
+    setError(null);
+
     const updatedForm = {
       ...formData,
       ...campoEspecial, // <-- Aquí se añaden los campos de dirección separados
-      address: null,     // Opcional: eliminar el campo original si no lo quieres enviar
-      created_at: null 
+      address: null, // Opcional: eliminar el campo original si no lo quieres enviar
+      created_at: null,
     };
     console.log("Datos Enviados", updatedForm); //Quitarlo
     onSave(updatedForm);
-    setIsEditing(false);// Desactivar modo edición después de guardar
+    setIsEditing(false); // Desactivar modo edición después de guardar
   };
 
   //Función para cancelar cambios
@@ -146,26 +169,33 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
           <h2 className={`${styles.d_table_heading}`}>Datos Generales</h2>
           <table ref={leftTableRef} className={`${styles.d_table}`}>
             <tbody>
-              {(leftKeys).map((key, index) => (
+              {leftKeys.map((key, index) => (
                 <tr key={key} className="align-center">
                   <th
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_header} ${index === leftKeys.length - 1 ? "" : "border-b-6"
-                      } w-1/3 sm:w-1/4`}
+                    className={`${styles.d_table_header} ${
+                      index === leftKeys.length - 1 ? "" : "border-b-6"
+                    } w-1/3 sm:w-1/4`}
                   >
                     {DiccHead[key].label}
                   </th>
                   <td
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_data} ${isEditing ? "" : ""} ${index === leftKeys.length - 1 ? "" : "border-b-6"
-                      }`}
+                    className={`${styles.d_table_data} ${isEditing ? "" : ""} ${
+                      index === leftKeys.length - 1 ? "" : "border-b-6"
+                    }`}
                   >
                     {isEditing ? ( // Si esta editando
                       key === "address" ? ( //Si esta en address, agrega los subcampos correspondientes (son 6 subcampos)
                         <div>
                           {Object.keys(address).map((key) => (
-                            <fieldset key={key} className="inline-block border border-[#ccc] py-2 rounded-lg sm:max-w-1/2 w-full break-words">
-                              <legend className="text-gray-700 font-bold font-raleway ml-2">{addressKeys[key]}</legend>
+                            <fieldset
+                              key={key}
+                              className="inline-block border border-[#ccc] py-2 rounded-lg sm:max-w-1/2 w-full break-words"
+                            >
+                              <legend className="text-gray-700 font-bold font-raleway ml-2">
+                                {addressKeys[key]}
+                              </legend>
                               <input
                                 type="text"
                                 className="ml-2"
@@ -180,7 +210,11 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                         <input
                           type="text"
                           name={key}
-                          value={key === "created_at" ? FormattedDate(data[key]) : formData[key] ?? "—"} // En editable, se formatea fecha 
+                          value={
+                            key === "created_at"
+                              ? FormattedDate(data[key])
+                              : formData[key] ?? "—"
+                          } // En editable, se formatea fecha
                           onChange={handleChange}
                           required
                           disabled={key === "created_at"} // Se desactiva el edidable solo si es "created_at"
@@ -188,7 +222,11 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                         />
                       )
                     ) : (
-                      <span>{key === "created_at" ? FormattedDate(data[key]) : data[key] ?? "—"}</span>
+                      <span>
+                        {key === "created_at"
+                          ? FormattedDate(data[key])
+                          : data[key] ?? "—"}
+                      </span>
                     )}
                   </td>
                 </tr>
@@ -206,15 +244,19 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                 <tr key={key} className="align-center">
                   <th
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_header} ${index === rightKeys.length - 1 ? "" : "border-b-6"} w-1/3`}
+                    className={`${styles.d_table_header} ${
+                      index === rightKeys.length - 1 ? "" : "border-b-6"
+                    } w-1/3`}
                   >
                     {DiccHead[key].label}:
                   </th>
                   <td
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_data} ${index === rightKeys.length - 1 ? "" : "border-b-6"}`}
+                    className={`${styles.d_table_data} ${
+                      index === rightKeys.length - 1 ? "" : "border-b-6"
+                    }`}
                   >
-                    {isEditing ? (  //Si esta editando
+                    {isEditing ? ( //Si esta editando
                       key === "user_name" ? ( //Si esta en UserName, les permite elegir otro usuario
                         <select
                           name="user_name"
@@ -226,17 +268,25 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                           <option key={key} value={data[key] || ""}>
                             {data[key] || ""}
                           </option>
-                          {userAssigns.filter(({ user_name }) => user_name !== data.user_name).map(({ user_id, user_name }) => (
-                            <option key={user_id} value={user_name}>
-                              {user_name}
-                            </option>
-                          ))}
+                          {userAssigns
+                            .filter(
+                              ({ user_name }) => user_name !== data.user_name
+                            )
+                            .map(({ user_id, user_name }) => (
+                              <option key={user_id} value={user_name}>
+                                {user_name}
+                              </option>
+                            ))}
                         </select>
                       ) : (
                         <input
                           type="text"
                           name={key}
-                          value={key === "category" ? categoryLabels[formData["category"]] : formData[key] ?? ""} // En editable, se formatea category
+                          value={
+                            key === "category"
+                              ? categoryLabels[formData["category"]]
+                              : formData[key] ?? ""
+                          } // En editable, se formatea category
                           onChange={handleChange}
                           required
                           disabled={key === "category"} // Se desactiva el edidable solo si es "category"
@@ -244,7 +294,9 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
                         />
                       )
                     ) : (
-                      <span>{categoryLabels[data[key]] ?? data[key] ?? "—"}</span>
+                      <span>
+                        {categoryLabels[data[key]] ?? data[key] ?? "—"}
+                      </span>
                     )}
                   </td>
                 </tr>
@@ -252,28 +304,26 @@ export default function FileTableDetail({ data, onSave, userAssigns, isEditing, 
             </tbody>
           </table>
         </div>
-      </div >
+      </div>
 
       {/* Botones de acción */}
-      {
-        isEditing && (
-          <div className="flex gap-4 my-[-10px] justify-center items-center">
-            <button
-              // type="submit"
-              onClick={handleSubmit}
-              className="px-5 py-2 rounded-xl confirmButton text-white font-medium font-inter shadow-md shadow-green-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
-            >
-              Guardar Cambios
-            </button>
-            <button
-              onClick={handleCancel}
-              className="px-5 py-2 rounded-xl logoutButton text-white font-medium font-inter shadow-md shadow-red-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
-            >
-              Cancelar
-            </button>
-          </div>
-        )
-      }
+      {isEditing && (
+        <div className="flex gap-4 my-[-10px] justify-center items-center">
+          <button
+            // type="submit"
+            onClick={handleSubmit}
+            className="px-5 py-2 rounded-xl confirmButton text-white font-medium font-inter shadow-md shadow-green-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
+          >
+            Guardar Cambios
+          </button>
+          <button
+            onClick={handleCancel}
+            className="px-5 py-2 rounded-xl logoutButton text-white font-medium font-inter shadow-md shadow-red-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
       {/* </form> */}
     </>
   );

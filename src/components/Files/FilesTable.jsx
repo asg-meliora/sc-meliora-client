@@ -77,7 +77,7 @@ function FilesTable({ newFiles, handleAnnulledForm, category }) {
                       index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
                     } hover:bg-[#313131] hover:text-white transition-all`}
                   >
-                    <td className="p-3 text-center font-semibold max-w-[300px]">
+                    <td className="p-3 text-center font-semibold max-w-[250px]">
                       {item.name_rs}
                     </td>
                     <td className="px-2 text-center">{item.rfc}</td>
