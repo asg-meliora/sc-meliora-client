@@ -17,8 +17,9 @@ const Historical = ({ api }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showSidemenu, setShowSideMenu] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const getHistorical = useCallback(async () => {
+  const getHistorical = useCallback(async () => { // Función para obtener el histórico de todas las facturas
     setLoading(true); // Carga inicial
     try {
       const response = await fetch(`${api}/historical/finalized?page=${currentPage}&limit=${5}`, {
@@ -42,10 +43,11 @@ const Historical = ({ api }) => {
     }
   }, [api, currentPage]);
 
-  const fetchSearch = useCallback(async (searchChar) => {
+  const fetchSearch = useCallback(async (searchChar) => { // Función para buscar en el historico de facturas
     setLoading(true); // Carga inicial
+    setSearchTerm(searchChar); // Guarda el termino de búsqueda para usarlo en el useEffect para efecto de paginación
     try {
-      const response = await fetch(`${api}/historical/search?q=${encodeURIComponent(searchChar)}&page=${currentPage}&limit=${10}`, {
+      const response = await fetch(`${api}/historical/search?q=${encodeURIComponent(searchChar)}&page=${currentPage}&limit=${5}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +59,7 @@ const Historical = ({ api }) => {
 
       const data = await response.json();
       setDataBoard(data.results);               //Datos
-      //setTotalPages(data.pagination.totalPages); //Total de Paginas
+      setTotalPages(data.pagination.totalPages); //Total de Paginas
     } catch (err) {
       console.log(err);
       //setError(err.message);
@@ -67,8 +69,13 @@ const Historical = ({ api }) => {
   }, [api, currentPage]);
 
   useEffect(() => {
-    getHistorical();
-  }, [getHistorical]);
+    if (searchTerm.trim() !== '') {
+      fetchSearch(searchTerm);
+    } else {
+      getHistorical();
+    }
+  }, [currentPage, fetchSearch, getHistorical, searchTerm]);
+
 
   const handleAnnulledForm = (invoiceId) => {
     setSelectedInvoiceId(invoiceId);
@@ -108,13 +115,14 @@ const Historical = ({ api }) => {
             <div></div>
           </div>
           {/* Tabla Historical */}
-          <HistoricalTable dataBoard={dataBoard} api={api} handleAnnulledForm={handleAnnulledForm} getSearch={fetchSearch} />
+          <HistoricalTable dataBoard={dataBoard} api={api} handleAnnulledForm={handleAnnulledForm} getSearch={fetchSearch} searchTerm={searchTerm} />
 
           {/* Paginación */}
           <div className="flex justify-center items-center space-x-4">
             <button className="rounded-lg bg-yellow-600 px-4 py-2 text-white font-semibold hover:bg-yellow-700 transition duration-200" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage <= 1}>
               Anterior
             </button>
+            {/*Manejo de Paginacion, y manejo de una condicional para mostrar 0, si no existen datos */}
             <span>
               Página {currentPage} de {totalPages}
             </span>

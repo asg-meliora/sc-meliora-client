@@ -35,12 +35,12 @@ const statusColor = {
   Anulado: "bg-[#014293] shadow-blue-500/70 shadow-lg",
 };
 
-const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch }) => {
+const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, searchTerm }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTermLocal, setSearchTermLocal] = useState(searchTerm ||'');
   const [filters, setFilters] = useState({
     type_pipeline: "",
     assigned_user_sender: "",
@@ -182,20 +182,20 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch }) => {
                 className="text-sm px-2 py-2 rounded-l-md border border-white text-white bg-[#1f1f1f] placeholder-gray-400 focus:outline-none"
                 type="text"
                 placeholder="Buscar..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchTermLocal}
+                onChange={(e) => setSearchTermLocal(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    console.log(searchTerm);
-                    getSearch(searchTerm);
+                    console.log(searchTermLocal);
+                    getSearch(searchTermLocal);
                   }
                 }}
               />
               <button
                 className="flex items-center gap-2 text-sm px-3 py-2 font-semibold text-white border border-white border-l-0 rounded-r-md hover:text-[#eeb13f] cursor-pointer"
                 onClick={() => {
-                  console.log(searchTerm);
-                  getSearch(searchTerm);
+                  console.log(searchTermLocal);
+                  getSearch(searchTermLocal);
                 }}
               >
                 Buscar
