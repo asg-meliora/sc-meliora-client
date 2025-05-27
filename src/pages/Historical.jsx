@@ -9,6 +9,9 @@ import Navbar from "../components/Navbar";
 import CancelInvoiceForm from "../components/Historical/CancelInvoiceForm";
 import { MdMenu } from "react-icons/md";
 import Pagination from "../components/Historical/Pagination";
+import { AnimatePresence } from "framer-motion";
+import ErrorToast from "../components/ErrorToast";
+import SuccessToast from "../components/SuccessToast";
 
 const Historical = ({ api }) => {
   const [dataBoard, setDataBoard] = useState([]); // Estado para almacenar los datos de la tabla
@@ -19,6 +22,8 @@ const Historical = ({ api }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showSidemenu, setShowSideMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null)
 
   const getHistorical = useCallback(async () => {
     // Función para obtener el histórico de todas las facturas
@@ -74,7 +79,7 @@ const Historical = ({ api }) => {
         setTotalPages(data.pagination.totalPages); //Total de Paginas
       } catch (err) {
         console.log(err);
-        //setError(err.message);
+        setError(err.message);
       } finally {
         setLoading(false); // Carga finalizada
       }
@@ -134,6 +139,8 @@ const Historical = ({ api }) => {
             handleAnnulledForm={handleAnnulledForm}
             getSearch={fetchSearch}
             searchTerm={searchTerm}
+            setError={setError}
+            setSuccess={setSuccess}
           />
 
           {/* Paginación */}
@@ -156,6 +163,29 @@ const Historical = ({ api }) => {
             />
           </div>
         )}
+      </div>
+      <div className="fixed bottom-4 right-4 z-50">
+        <AnimatePresence>
+          {error && (
+            <ErrorToast
+              message={error}
+              onClose={() => setError(null)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="fixed bottom-4 right-4 z-50">
+        <AnimatePresence>
+          {success && (
+            <SuccessToast
+              message={success}
+              onClose={() => setSuccess(null)}
+              variant="x"
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

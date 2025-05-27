@@ -36,7 +36,7 @@ const statusColor = {
   Anulado: "bg-[#014293] shadow-blue-500/70 shadow-lg",
 };
 
-const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, searchTerm }) => {
+const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, searchTerm, setError, setSuccess }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -69,7 +69,10 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, search
   ];
 
   const handleDownload = async () => {
-    if (selectedIds.length === 0) return alert("No hay elementos seleccionados.");
+    if (selectedIds.length === 0){
+      setError("No hay elementos seleccionados.");
+      return
+    }
 
     setLoading(true); // Carga inicial
     try {
@@ -91,10 +94,11 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, search
       a.download = `Facturas_${new Date().toISOString().split("T")[0]}.zip`;
       a.click();
       window.URL.revokeObjectURL(url);
+      setSuccess("Archivos descargados correctamente.");
     } catch (err) {
       //setError(err.message);
       console.error(err);
-      alert("Ocurrió un error al descargar los archivos.");
+      setError("Ocurrió un error al descargar los archivos.");
     } finally {
       setLoading(false); // Carga finalizada
       setSelectedIds([]);
