@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import SideMenu from '../components/SideMenu'
-import styles from '../styles';
-import Cookies from 'js-cookie';
+import React, { useCallback, useEffect, useState } from "react";
+import SideMenu from "../components/SideMenu";
+import styles from "../styles";
+import Cookies from "js-cookie";
 import LoadingScreen from "../components/LoadingScreen";
 
-import HistoricalTable from '../components/Historical/HistoricalTable';
-import Navbar from '../components/Navbar';
-import CancelInvoiceForm from '../components/Historical/CancelInvoiceForm';
-import { MdMenu } from 'react-icons/md';
+import HistoricalTable from "../components/Historical/HistoricalTable";
+import Navbar from "../components/Navbar";
+import CancelInvoiceForm from "../components/Historical/CancelInvoiceForm";
+import { MdMenu } from "react-icons/md";
+import Pagination from "../components/Historical/Pagination";
 
 const Historical = ({ api }) => {
   const [dataBoard, setDataBoard] = useState([]); // Estado para almacenar los datos de la tabla
@@ -17,23 +18,27 @@ const Historical = ({ api }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showSidemenu, setShowSideMenu] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const getHistorical = useCallback(async () => { // Función para obtener el histórico de todas las facturas
+  const getHistorical = useCallback(async () => {
+    // Función para obtener el histórico de todas las facturas
     setLoading(true); // Carga inicial
     try {
-      const response = await fetch(`${api}/historical/finalized?page=${currentPage}&limit=${5}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": Cookies.get("token"),
-        },
-      });
+      const response = await fetch(
+        `${api}/historical/finalized?page=${currentPage}&limit=${5}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": Cookies.get("token"),
+          },
+        }
+      );
       //Error handling
       if (!response.ok) throw new Error("Error en la petición");
 
       const data = await response.json();
-      setDataBoard(data.results);               //Datos
+      setDataBoard(data.results); //Datos
       setTotalPages(data.pagination.totalPages); //Total de Paginas
     } catch (err) {
       console.log(err);
@@ -43,39 +48,47 @@ const Historical = ({ api }) => {
     }
   }, [api, currentPage]);
 
-  const fetchSearch = useCallback(async (searchChar) => { // Función para buscar en el historico de facturas
-    setLoading(true); // Carga inicial
-    setSearchTerm(searchChar); // Guarda el termino de búsqueda para usarlo en el useEffect para efecto de paginación
-    try {
-      const response = await fetch(`${api}/historical/search?q=${encodeURIComponent(searchChar)}&page=${currentPage}&limit=${5}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": Cookies.get("token"),
-        },
-      });
-      //Error handling
-      if (!response.ok) throw new Error("Error en la petición");
+  const fetchSearch = useCallback(
+    async (searchChar) => {
+      // Función para buscar en el historico de facturas
+      setLoading(true); // Carga inicial
+      setSearchTerm(searchChar); // Guarda el termino de búsqueda para usarlo en el useEffect para efecto de paginación
+      try {
+        const response = await fetch(
+          `${api}/historical/search?q=${encodeURIComponent(
+            searchChar
+          )}&page=${currentPage}&limit=${5}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-access-token": Cookies.get("token"),
+            },
+          }
+        );
+        //Error handling
+        if (!response.ok) throw new Error("Error en la petición");
 
-      const data = await response.json();
-      setDataBoard(data.results);               //Datos
-      setTotalPages(data.pagination.totalPages); //Total de Paginas
-    } catch (err) {
-      console.log(err);
-      //setError(err.message);
-    } finally {
-      setLoading(false); // Carga finalizada
-    }
-  }, [api, currentPage]);
+        const data = await response.json();
+        setDataBoard(data.results); //Datos
+        setTotalPages(data.pagination.totalPages); //Total de Paginas
+      } catch (err) {
+        console.log(err);
+        //setError(err.message);
+      } finally {
+        setLoading(false); // Carga finalizada
+      }
+    },
+    [api, currentPage]
+  );
 
   useEffect(() => {
-    if (searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== "") {
       fetchSearch(searchTerm);
     } else {
       getHistorical();
     }
   }, [currentPage, fetchSearch, getHistorical, searchTerm]);
-
 
   const handleAnnulledForm = (invoiceId) => {
     setSelectedInvoiceId(invoiceId);
@@ -92,7 +105,7 @@ const Historical = ({ api }) => {
     return <LoadingScreen message="Cargando..." />; // Pantalla de carga
   }
 
-  console.log('Data', dataBoard)
+  console.log("Data", dataBoard);
 
   return (
     <>
@@ -115,32 +128,37 @@ const Historical = ({ api }) => {
             <div></div>
           </div>
           {/* Tabla Historical */}
-          <HistoricalTable dataBoard={dataBoard} api={api} handleAnnulledForm={handleAnnulledForm} getSearch={fetchSearch} searchTerm={searchTerm} />
+          <HistoricalTable
+            dataBoard={dataBoard}
+            api={api}
+            handleAnnulledForm={handleAnnulledForm}
+            getSearch={fetchSearch}
+            searchTerm={searchTerm}
+          />
 
           {/* Paginación */}
-          <div className="flex justify-center items-center space-x-4">
-            <button className="rounded-lg bg-yellow-600 px-4 py-2 text-white font-semibold hover:bg-yellow-700 transition duration-200" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage <= 1}>
-              Anterior
-            </button>
-            {/*Manejo de Paginacion, y manejo de una condicional para mostrar 0, si no existen datos */}
-            <span>
-              Página {currentPage} de {totalPages}
-            </span>
-            <button className="rounded-lg bg-yellow-600 px-4 py-2 text-white font-semibold hover:bg-yellow-700 transition duration-200" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>
-              Siguiente
-            </button>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
+          
         </div>
         {/* Cancel Form Modal */}
         {showCancelForm && (
           <div className={styles.form_container}>
             <div className={styles.form_modal_bg}></div>
-            <CancelInvoiceForm setCancelShowForm={setCancelShowForm} api={api} invoiceId={selectedInvoiceId} />
+            <CancelInvoiceForm
+              setCancelShowForm={setCancelShowForm}
+              api={api}
+              invoiceId={selectedInvoiceId}
+            />
           </div>
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Historical
+export default Historical;
