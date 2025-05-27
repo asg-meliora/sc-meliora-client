@@ -1,5 +1,3 @@
-import React from "react";
-
 const Pagination = ({
   currentPage,
   setCurrentPage,
@@ -47,7 +45,7 @@ const Pagination = ({
 
   return (
     <>
-      <div className="flex justify-end items-end space-x-4 text-[#37383b] text-lg font-inter mr-[2vw]">
+      <div className="flex justify-end items-end space-x-4 text-[#37383b] text-lg font-inter mt-[-1vh] mr-[2vw] mb-[2vh]">
         <button
           className="hover:cursor-pointer hover:scale-130 hover:font-semibold transition-all duration-100"
           onClick={() => handlePageChange(currentPage - 1)}
