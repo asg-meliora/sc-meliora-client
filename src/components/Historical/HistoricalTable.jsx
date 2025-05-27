@@ -186,7 +186,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, search
               <IoFilter className="w-4 h-4 fill-current" />
               Filtros
             </button> */}
-            <FilterDropdown />
+            {/* <FilterDropdown /> */}
             <div className="flex flex-row items-center shadow-lg">
               <input
                 className="text-sm px-2 py-2 rounded-l-md border-2 border-r-0 border-[#4e4e4e] text-white bg-[#1f1f1f] placeholder-gray-400 focus:outline-none"
@@ -256,7 +256,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, search
                       <select
                         value={filters[col.key] || ""}
                         onChange={(e) => setFilters((prev) => ({ ...prev, [col.key]: e.target.value }))}
-                        className="bg-[#313131] px-0.5 py-0.5 shadow-lg rounded-sm text-sm font-inter text-white w-4/5 mb-[1vh] hover:cursor-pointer"
+                        className="focus:bg-[#313131] px-0.5 py-0.5 rounded-sm text-sm font-inter text-white w-4/5 mb-[1vh] hover:cursor-pointer"
                       >
                         <option value="">Todos</option>
                         {[...new Set(
