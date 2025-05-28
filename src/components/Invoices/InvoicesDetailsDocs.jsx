@@ -198,3 +198,47 @@ function InvoicesDetailsDocs({ adminStatus = 0, uploadedDocs, handleDocInvoiceUp
 }
 
 export default InvoicesDetailsDocs
+
+// const reader = new FileReader();
+// reader.onload = function (event) {
+//     const xmlString = event.target.result;
+
+//     try {
+//         const parser = new DOMParser();
+//         const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+//         const comprobante = xmlDoc.documentElement;
+
+//         const getAttribute = (node, attr1, attr2) => {
+//             return node?.getAttribute(attr1) || node?.getAttribute(attr2) || "";
+//         };
+
+//         const version = getAttribute(comprobante, "Version", "version");
+//         const subtotal = getAttribute(comprobante, "SubTotal", "subTotal");
+//         const total = getAttribute(comprobante, "Total", "total");
+
+//         const emisor = xmlDoc.getElementsByTagName("cfdi:Emisor")[0] || xmlDoc.getElementsByTagName("Emisor")[0];
+//         const rfcEmisor = getAttribute(emisor, "Rfc", "rfc");
+
+//         // Buscar traslado de IVA si existe
+//         const impuestos = xmlDoc.getElementsByTagName("cfdi:Traslado") || xmlDoc.getElementsByTagName("Traslado");
+//         let iva = "";
+//         for (let i = 0; i < impuestos.length; i++) {
+//             const impuesto = getAttribute(impuestos[i], "Impuesto", "impuesto");
+//             if (impuesto === "002") {
+//                 iva = getAttribute(impuestos[i], "Importe", "importe");
+//                 break;
+//             }
+//         }
+
+//         console.log("📄 Versión:", version);
+//         console.log("📌 RFC Emisor:", rfcEmisor);
+//         console.log("💵 Subtotal:", subtotal);
+//         console.log("🧾 IVA (002):", iva);
+//         console.log("💰 Total:", total);
+//     } catch (error) {
+//         console.error("❌ Error al procesar el XML:", error);
+//     }
+// };
+
+// reader.readAsText(file);

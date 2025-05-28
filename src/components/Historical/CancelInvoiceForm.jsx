@@ -4,9 +4,7 @@ import Cookies from 'js-cookie';
 
 import LoadingScreen from "../LoadingScreen";
 
-
-const CancelInvoiceForm = ({ setCancelShowForm, serverErrorMessage = null, api, invoiceId }) => {
-  const [errorMessage, setErrorMessage] = useState("");
+const CancelInvoiceForm = ({ setCancelShowForm, setError, api, invoiceId, getHistorical, setSuccess }) => {
   const [formData, setFormData] = useState({ invoice_file: null });
   const [loading, setLoading] = useState(false); // Estado de carga
 
@@ -15,7 +13,7 @@ const CancelInvoiceForm = ({ setCancelShowForm, serverErrorMessage = null, api, 
 
     setLoading(true);
     if (!formData.invoice_file) {
-      setErrorMessage("Debes subir un archivo para cancelar la factura.");
+      setError("Debes subir un archivo para cancelar la factura.");
       return;
     }
     const sendFile = new FormData();
@@ -30,18 +28,14 @@ const CancelInvoiceForm = ({ setCancelShowForm, serverErrorMessage = null, api, 
         },
         body: sendFile,
       });
-
       if (!response.ok) throw new Error("Error al subir el archivo");
-      // manejar éxito...
-
+      setSuccess("Archivo de cancelación subido correctamente."); // Manejar éxito
     } catch (err) {
-      setErrorMessage(err.message);
-    }
-    finally {
+      setError(err.message);
+    } finally {
       setLoading(false);
-      alert('Exitosamente exitoso');
       setCancelShowForm(false);
-      window.location.reload()
+      getHistorical();
     }
   };
 
@@ -69,13 +63,6 @@ const CancelInvoiceForm = ({ setCancelShowForm, serverErrorMessage = null, api, 
         <h2 className={styles.form_heading}>Cancelar Factura</h2>
 
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
-
-          {/* Error Message */}
-          {(errorMessage || serverErrorMessage) && (
-            <div className={styles.error_message}>
-              {errorMessage ? errorMessage : serverErrorMessage}
-            </div>
-          )}
 
           {/* Cancelation File */}
           <div className="flex flex-col gap-2 py-1">

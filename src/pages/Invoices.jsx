@@ -142,6 +142,7 @@ const Invoices = ({ api }) => {
             setCancelShowForm={setCancelShowForm}
             api={api}
             invoiceId={selectedInvoiceId}
+            getPipelines={getPipelines}
             setSuccess={setSuccess}
             setSuccessMessage={setSuccessMessage}
             setError={setError}

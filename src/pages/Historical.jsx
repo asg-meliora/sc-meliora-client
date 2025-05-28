@@ -160,6 +160,9 @@ const Historical = ({ api }) => {
               setCancelShowForm={setCancelShowForm}
               api={api}
               invoiceId={selectedInvoiceId}
+              getHistorical={getHistorical}
+              setError={setError}
+              setSuccess={setSuccess}
             />
           </div>
         )}

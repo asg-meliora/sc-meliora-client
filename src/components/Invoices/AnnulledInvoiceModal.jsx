@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import styles from "../../styles";
 import { SuccessTexts } from "../../constants/Texts";
 
-function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuccess, setSuccessMessage, setError }) {
+function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuccess, setSuccessMessage, setError, getPipelines }) {
 
     const handleAnnulled = async (e) => {
         console.log("Anulled invoice", invoiceId);
@@ -27,7 +27,7 @@ function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuc
             setError(err.message);
         } finally {
             setCancelShowForm(false); // Cierra el modal después de la acción
-            window.location.reload() // TODO: recharge with USestate instead of reload
+            getPipelines();
         }
     };
 
