@@ -115,8 +115,9 @@ function FilesCreate({
     fetchUsers(api);
   }, [api]);
 
+  //Manejo de inputs de texto, pero tambien manejo de mayúsculas para ciertos campos para estandarizar
   const upperCaseFields = ["rfc", "curp", "bank_account"];
-  const handleInputChange = (e) => {
+  const handleInputChange = (e) => { 
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
