@@ -41,9 +41,23 @@ const CancelInvoiceForm = ({ setCancelShowForm, setError, api, invoiceId, getHis
 
   const handleChange = (e) => {
     const file = e.target.files[0];
+    const maxSizeMB = 2;
+    const maxSizeBytes = maxSizeMB * 1024 * 1024; //Limite de tamaño de archivo 2MB
+
     if (!file) return;
 
-    setFormData((prev) => ({ ...prev, invoice_file: file, }));
+    if (file) {
+      const isPdf = file.type === "application/pdf";
+      if (!isPdf) {
+        setError("Solo se permiten archivos en formato PDF"); //Rechazar si no es pdf
+        e.target.value = null; //Resetear cualquier archivo cargado local
+      } else if (file.size > maxSizeBytes) {
+        setError(`El archivo supera el límite de ${maxSizeMB}MB`); //Rechazar si pesa mucho
+        e.target.value = null; //Resetear cualquier archivo cargado local
+      } else {
+        setFormData((prev) => ({ ...prev, invoice_file: file, })); //Subir Archivo
+      }
+    }
   };
 
   if (loading) {
@@ -79,7 +93,7 @@ const CancelInvoiceForm = ({ setCancelShowForm, setError, api, invoiceId, getHis
             <input
               type="file"
               name="invoice_file"
-              accept=".pdf,.xml" // puedes personalizar según el tipo de archivo permitido
+              accept="application/pdf, .pdf" // puedes personalizar según el tipo de archivo permitido
               onChange={handleChange}
               className={styles.input_file}
             />
