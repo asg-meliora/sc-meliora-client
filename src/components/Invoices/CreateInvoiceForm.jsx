@@ -273,7 +273,7 @@ function CreateInvoiceForm({
                 value={todayDate}
                 readOnly
                 disabled
-                className={`${styles.input_form} text-gray-700`}
+                className={`bg-linear-0 from-[#ffffff] via-[#eeeeee] to-[#ffffff] ${styles.input_form} text-gray-700`}
               />
               {/* 2. Concepto de Factura */}
               <input
@@ -381,11 +381,11 @@ function CreateInvoiceForm({
               <div className="hidden md:inline py-18 "></div>
 
               {/* 7. Usuario asignado */}
-              <div className={`${styles.input_form} pr-16`}>
+              <div className={`${styles.input_preload_form} pr-16`}>
                 {users.user_name ? (
                   <span className="text-gray-800">{users.user_name}</span>
                 ) : (
-                  <span className="text-gray-400 italic">
+                  <span className="text-gray-500 italic">
                     {InvoiceFormKeys.invoice_user_assigned}
                   </span>
                 )}
@@ -435,19 +435,19 @@ function CreateInvoiceForm({
                 ))}
               </select>
               {/* 10. RFC asignado */}
-              <div className={`${styles.input_form} pr-16`}>
+              <div className={`${styles.input_preload_form} pr-16`}>
                 {RFC ? (
                   <span className="text-gray-800">{RFC}</span>
                 ) : (
-                  <span className="text-gray-400 italic">RFC del Receptor</span>
+                  <span className="text-gray-500 italic">RFC del Receptor</span>
                 )}
               </div>
               {/* 11. CSF del Receptor */}
-              <div className={`${styles.input_form} pr-16`}>
+              <div className={`${styles.input_preload_form} pr-16`}>
                 {RFC ? (
                   <span className="text-gray-800">CSF-{RFC}.PDF</span>
                 ) : (
-                  <span className="text-gray-400 italic">CSF del Receptor</span>
+                  <span className="text-gray-500 italic">CSF del Receptor</span>
                 )}
               </div>
 
@@ -468,7 +468,7 @@ function CreateInvoiceForm({
                     onChange={handleChange}
                     disabled
                     required
-                    className={`${styles.input_form} pr-16`}
+                    className={`${styles.input_preload_form} pr-16`}
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
                     $MXN
@@ -489,7 +489,7 @@ function CreateInvoiceForm({
                     onChange={handleChange}
                     disabled
                     required
-                    className={`${styles.input_form} pr-16`}
+                    className={`${styles.input_preload_form} pr-16`}
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
                     $MXN
@@ -543,7 +543,7 @@ function CreateInvoiceForm({
                   }}
                   disabled
                   required
-                  className={`${styles.input_form} pr-16`}
+                  className={`${styles.input_preload_form} pr-16`}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm pointer-events-none">
                   %
