@@ -118,7 +118,7 @@ function FileDetail({ api }) {
         }
       );
 
-      if (!response.ok) throw new Error("Error al actualizar los datos");
+      if (!response.ok) throw new Error("Error al actualizar los datos, verifique los campos");
 
       const result = await response.json();
       console.log("Updated", result); //Quitarlo

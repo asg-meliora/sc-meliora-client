@@ -25,6 +25,7 @@ const DiccHead = {
   user_name: { label: "Usuario Asignado" },
   comision: { label: "Comisión (%)" },
   category: { label: "Categoría" },
+  person_type: { label: "Tipo de Persona" },
 };
 const addressKeys = {
   street: "Calle",
@@ -57,7 +58,7 @@ export default function FileTableDetail({
   const rightKeys = keys.slice(half);
   const address = data.address_fields; //Manejo de address
 
-  // Función para resetear estados a los datos originales
+  // Función para resetear estados a los datos originales y para evitar que se pierdan al editar
   const resetForm = () => {
     setFormData({
       name_rs: data?.name_rs || "",
@@ -72,6 +73,7 @@ export default function FileTableDetail({
       user_name: data?.user_name || "",
       category: data?.category || "",
       comision: data?.comision || "",
+      person_type: data?.person_type || "",
     });
 
     setCampoEspecial({
@@ -134,7 +136,7 @@ export default function FileTableDetail({
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos del Formulario", formData);
-    
+
     const validation = validateFileFormData(formData, true);
     if (!validation.valid) {
       setError(validation.error);
@@ -148,6 +150,10 @@ export default function FileTableDetail({
       address: null, // Opcional: eliminar el campo original si no lo quieres enviar
       created_at: null,
     };
+    // Verificar si person_type es "Moral" para enviar curp como null
+    if (data.person_type === "Moral") {
+      updatedForm.curp = null;
+    }
     console.log("Datos Enviados", updatedForm); //Quitarlo
     onSave(updatedForm);
     setIsEditing(false); // Desactivar modo edición después de guardar
@@ -173,17 +179,15 @@ export default function FileTableDetail({
                 <tr key={key} className="align-center">
                   <th
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_header} ${
-                      index === leftKeys.length - 1 ? "" : "border-b-6"
-                    } w-1/3 sm:w-1/4`}
+                    className={`${styles.d_table_header} ${index === leftKeys.length - 1 ? "" : "border-b-6"
+                      } w-1/3 sm:w-1/4`}
                   >
                     {DiccHead[key].label}
                   </th>
                   <td
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_data} ${isEditing ? "" : ""} ${
-                      index === leftKeys.length - 1 ? "" : "border-b-6"
-                    }`}
+                    className={`${styles.d_table_data} ${isEditing ? "" : ""} ${index === leftKeys.length - 1 ? "" : "border-b-6"
+                      }`}
                   >
                     {isEditing ? ( // Si esta editando
                       key === "address" ? ( //Si esta en address, agrega los subcampos correspondientes (son 6 subcampos)
@@ -206,22 +210,28 @@ export default function FileTableDetail({
                             </fieldset>
                           ))}
                         </div>
-                      ) : (
+                      ) : ( // Permite editar los demás campos
                         <input
                           type="text"
                           name={key}
-                          value={
+                          value={ // En editable, se formatea fecha, además si curp es Moral, se muestra "—"
                             key === "created_at"
                               ? FormattedDate(data[key])
-                              : formData[key] ?? "—"
-                          } // En editable, se formatea fecha
+                              : (key === "curp" && data.person_type === "Moral")
+                                ? "—"
+                                : formData[key] ?? "—"
+                          }
                           onChange={handleChange}
                           required
-                          disabled={key === "created_at"} // Se desactiva el edidable solo si es "created_at"
-                          className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105 transition-all px-3 py-2 focus:outline-none`}
+                          disabled={key === "created_at" || (key === "curp" && data.person_type === "Moral")} // Se desactiva el edidable, si es "created_at" o "curp" es igual a "Moral"
+                          className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105 transition-all px-3 py-2 focus:outline-none 
+                            ${key === "created_at" || (key === "curp" && data.person_type === "Moral") // Si es "created_at" o "curp" es igual a "Moral", se desactiva el campo
+                              ? "cursor-not-allowed"
+                              : ""
+                            }`}
                         />
                       )
-                    ) : (
+                    ) : ( // Si no esta editando, muestra el valor original
                       <span>
                         {key === "created_at"
                           ? FormattedDate(data[key])
@@ -240,21 +250,19 @@ export default function FileTableDetail({
           <h2 className={`${styles.d_table_heading}`}>Información adicional</h2>
           <table ref={rightTableRef} className={`${styles.d_table}`}>
             <tbody>
-              {rightKeys.map((key, index) => (
+              {rightKeys.map((key, index) => ( // Recorre las keys de la segunda mitad
                 <tr key={key} className="align-center">
                   <th
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_header} ${
-                      index === rightKeys.length - 1 ? "" : "border-b-6"
-                    } w-1/3`}
+                    className={`${styles.d_table_header} ${index === rightKeys.length - 1 ? "" : "border-b-6"
+                      } w-1/3`}
                   >
                     {DiccHead[key].label}:
                   </th>
                   <td
                     style={{ boxShadow: "inset 0 3px 10px rgba(0, 0, 0, 0.2)" }}
-                    className={`${styles.d_table_data} ${
-                      index === rightKeys.length - 1 ? "" : "border-b-6"
-                    }`}
+                    className={`${styles.d_table_data} ${index === rightKeys.length - 1 ? "" : "border-b-6"
+                      }`}
                   >
                     {isEditing ? ( //Si esta editando
                       key === "user_name" ? ( //Si esta en UserName, les permite elegir otro usuario
@@ -278,7 +286,7 @@ export default function FileTableDetail({
                               </option>
                             ))}
                         </select>
-                      ) : (
+                      ) : ( // Si no es user_name, permite editar los demás campos
                         <input
                           type="text"
                           name={key}
@@ -289,11 +297,15 @@ export default function FileTableDetail({
                           } // En editable, se formatea category
                           onChange={handleChange}
                           required
-                          disabled={key === "category"} // Se desactiva el edidable solo si es "category"
-                          className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105  transition-all  px-3 py-2 focus:outline-none`}
+                          disabled={key === "category" || key === "person_type"} // Se desactiva el editable solo si es "category" o "person_type"
+                          className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105  transition-all  px-3 py-2 focus:outline-none
+                            ${key === "category" || key === "person_type" // Si es "category" o "person_type", se desactiva el campo
+                              ? "cursor-not-allowed"
+                              : ""
+                            }`}
                         />
                       )
-                    ) : (
+                    ) : ( // Si no esta editando
                       <span>
                         {categoryLabels[data[key]] ?? data[key] ?? "—"}
                       </span>

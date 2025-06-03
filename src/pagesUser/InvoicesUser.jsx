@@ -14,7 +14,7 @@ function InvoicesUser({ api }) {
   const [dataBoard, setDataBoard] = useState({ results: [] });
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(false);
-  
+  const [invoicesCancelled, setInvoicesCancelled] = useState([]);
 
   const getPipelines = useCallback(async () => {
     setLoading(true); // Carga inicial
@@ -33,6 +33,7 @@ function InvoicesUser({ api }) {
 
       const data = await response.json();
       setDataBoard(data.results);
+      setInvoicesCancelled(data.canceladas);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -61,6 +62,11 @@ function InvoicesUser({ api }) {
           <div className={styles.header_container}>
             <h2 className={styles.heading_page}>Facturas</h2>
           </div>
+          {invoicesCancelled.length > 0 && <InvoicesTable
+            dataBoard={dataBoard}
+            invoiceStatus={4}
+            adminStatus={0}
+          />}
           <InvoicesTable
             dataBoard={dataBoard}
             invoiceStatus={1}

@@ -60,9 +60,7 @@ const Historical = ({ api }) => {
       setSearchTerm(searchChar); // Guarda el termino de búsqueda para usarlo en el useEffect para efecto de paginación
       try {
         const response = await fetch(
-          `${api}/historical/search?q=${encodeURIComponent(
-            searchChar
-          )}&page=${currentPage}&limit=${5}`,
+          `${api}/historical/search?q=${encodeURIComponent(searchChar)}&page=${currentPage}&limit=${5}`,
           {
             method: "GET",
             headers: {
@@ -95,7 +93,7 @@ const Historical = ({ api }) => {
     }
   }, [currentPage, fetchSearch, getHistorical, searchTerm]);
 
-  const handleAnnulledForm = (invoiceId) => {
+  const handleCancelledForm = (invoiceId) => {
     setSelectedInvoiceId(invoiceId);
     setCancelShowForm(true);
   };
@@ -136,7 +134,7 @@ const Historical = ({ api }) => {
           <HistoricalTable
             dataBoard={dataBoard}
             api={api}
-            handleAnnulledForm={handleAnnulledForm}
+            handleCancelledForm={handleCancelledForm}
             getSearch={fetchSearch}
             searchTerm={searchTerm}
             setError={setError}
@@ -150,7 +148,7 @@ const Historical = ({ api }) => {
             totalPages={totalPages}
             handlePageChange={handlePageChange}
           />
-          
+
         </div>
         {/* Cancel Form Modal */}
         {showCancelForm && (

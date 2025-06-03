@@ -36,7 +36,7 @@ const statusColor = {
   Anulado: "bg-[#014293] shadow-blue-500/70 shadow-lg",
 };
 
-const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, searchTerm, setError, setSuccess }) => {
+const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searchTerm, setError, setSuccess }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -316,7 +316,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, search
                     <td className="p-4 text-center">
                       {item.status !== "Anulado" && item.status !== "Cancelada" && (
                         <button
-                          onClick={() => handleAnnulledForm(item.pipeline_id)}
+                          onClick={() => handleCancelledForm(item.pipeline_id)}
                           className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
                         >
                           <MdOutlineCancel size={18} />

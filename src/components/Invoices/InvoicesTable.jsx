@@ -15,12 +15,13 @@ const InvoicesTable = ({
 
   if (invoiceStatus === 1) localStorage.clear(); // TODO: CHANGE WITH REFACTORING
 
-  const statusMap = ["", "Iniciado", "En proceso", "Terminado"];
+  const statusMap = ["", "Iniciado", "En proceso", "Terminado", "Cancelando"];
   const statusColor = [
     "",
     "text-[#eeedeb]",
     "text-[#d2b72a]",
     "text-[#89e089]",
+    "text-[#feb1ff]",
   ];
 
   //Manejo empty data, checa si dataBoard es un array, si no lo es, lo convierte en un array vacio
@@ -32,6 +33,7 @@ const InvoicesTable = ({
   const filteredInvoices = invoices.filter(
     (invoice) => invoice.status === statusMap[invoiceStatus]
   );
+  console.log(invoices);
 
   const columns = [
     "ID",
@@ -181,7 +183,7 @@ const InvoicesTable = ({
                       </button>
                     </td>
                   )}
-                  {invoiceStatus !== 1 && adminStatus === 1 && (
+                  {invoiceStatus !== 1 && adminStatus === 1 && ( // Si el status de la factura no es "Iniciado" y el rol es admin, muestra el botón de editar
                     <td className="p-4 text-center">
                       <button
                         onClick={() => handleNavigate(invoice.pipeline_id)}
@@ -191,7 +193,7 @@ const InvoicesTable = ({
                       </button>
                     </td>
                   )}
-                  {adminStatus !== 1 && (
+                  {adminStatus !== 1 && ( //Si no es admin, muestra el boton de editar
                     <td className="p-4 text-center">
                       <button
                         onClick={() => handleNavigate(invoice.pipeline_id)}
