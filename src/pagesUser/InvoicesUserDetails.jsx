@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import InvoicesDetailsTable from "../components/Invoices/InvoicesDetailsTable";
 import InvoicesDetailsDocs from "../components/Invoices/InvoicesDetailsDocs";
+import CancelledInvoiceDoc from "../components/Invoices/CancelledInvoiceDoc";
 
 import styles from "../styles";
 import { AnimatePresence } from "framer-motion";
@@ -160,6 +161,42 @@ function InvoicesUserDetails({ api }) {
     }
   };
 
+  //Peticion POST para subir el archivo de la Factura Cancelada
+  const handleCancelledInvoiceDoc = async (file, docType) => {
+    setLoading(true);
+    if (!file) {
+      setError("Debes subir un archivo para cancelar la factura.");
+      return;
+    }
+    console.log(`Archivo ${docType}:`, file);
+    const sendFile = new FormData();
+    sendFile.append("document_type", "Cancelada");
+    sendFile.append("invoice_id", invoiceId);
+    sendFile.append("DocInvoice", file);
+    try {
+      const response = await fetch(`${api}/historical/canceled/${invoiceId}`, {
+        method: "POST",
+        headers: {
+          "x-access-token": Cookies.get("token"), // No pongas 'Content-Type' con FormData
+        },
+        body: sendFile,
+      });
+      if (!response.ok) throw new Error("Error al subir el archivo");
+      setSuccess("Archivo de cancelación subido correctamente."); // Manejar éxito
+      setSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setError(`Error al subir archivo ${docType}`);
+    } finally {
+      try {
+        await getInvoiceData(); //Se necesita para poder actulizar el status de la factura
+        await getDocsData(); //Hasta que se refrequen los nuevos datos hace el finally
+      }
+      finally {
+        setLoading(false);// Carga finalizada
+      }
+    }
+  };
 
   return (
     <>
@@ -184,6 +221,12 @@ function InvoicesUserDetails({ api }) {
             setError={setError}
             hasVisited={hasVisited}
           />
+          {(hasVisited === "Cancelando" || hasVisited === "Cancelada") &&
+            <CancelledInvoiceDoc
+              uploadedDocs={uploadedDocs}
+              handleCancelledInvoiceDoc={handleCancelledInvoiceDoc}
+              setError={setError}
+            />}
         </div>
       </div>
 

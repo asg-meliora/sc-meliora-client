@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import InvoicesDetailsTable from "../Invoices/InvoicesDetailsTable";
 import InvoicesDetailsDocs from "../Invoices/InvoicesDetailsDocs";
+import CancelledInvoiceDoc from "../Invoices/CancelledInvoiceDoc";
 
 import styles from "../../styles";
 import Navbar from "../../components/Navbar";
@@ -92,6 +93,12 @@ function InvoicesDetails({ api }) {
             hasVisited={hasVisited}
             adminStatus={1}
           />
+          {(hasVisited === "Cancelando" || hasVisited === "Cancelada") &&
+            <CancelledInvoiceDoc
+              uploadedDocs={uploadedDocs}
+              setError={setError}
+              adminStatus={1}
+            />}
         </div>
       </div>
     </>
