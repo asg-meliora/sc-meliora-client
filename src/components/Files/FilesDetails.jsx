@@ -155,6 +155,7 @@ function FileDetail({ api }) {
 
       // Refresca la lista de archivos
       const updatedDocs = await fetch(`${api}/docs/byid/${id}`, {
+        method: "GET",
         headers: {
           "x-access-token": Cookies.get("token"),
         },

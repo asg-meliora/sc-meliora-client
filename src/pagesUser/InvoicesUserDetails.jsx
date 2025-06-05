@@ -52,6 +52,7 @@ function InvoicesUserDetails({ api }) {
   const getDocsData = useCallback(async () => {
     try {
       const res = await fetch(`${api}/invoices/user/docs/${invoiceId}`, {
+        method: "GET",
         headers: {
           "x-access-token": Cookies.get("token"),
         },

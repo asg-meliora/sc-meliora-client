@@ -59,23 +59,19 @@ const Login = ({ api }) => {
       email: email,
       password_hash: password_hash,
     };
+    try {
+      const response = await fetch(`${api}/accesslogin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      //Error handling
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Error en la solicitud");
 
-    const response = await fetch(`${api}/accesslogin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
-
-    const data = await response.json();
-
-
-    if (data.error) {
-      setErrorMessage(data.error)
-    } else {
       const expireCookie = 1 / 24; // el token expira en 1 hora
-
       // Guardar el token y el role_id en las cookies
       Cookies.set("token", data.token, {
         expires: expireCookie,
@@ -96,8 +92,7 @@ const Login = ({ api }) => {
         expires: expireCookie,
         //secure: true,
         sameSite: "strict",
-      }); 
-  
+      });
       // Redirección según role_id
       if (data.role_id === 1) {
         navigate("/dashboard"); // Vista de administrador
@@ -108,6 +103,9 @@ const Login = ({ api }) => {
       else {
         navigate("*"); // Vista por defecto o común
       }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(`${error.message}`);
     }
   };
 
