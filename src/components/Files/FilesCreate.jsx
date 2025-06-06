@@ -23,9 +23,9 @@ const DiccLabels = {
   email: "Correo Electrónico",
   bank_account: "No. Cuenta Bancaria",
   comision: "Comisión (%)",
-  fileCSF: "CSF (No mayor a tres meses)",
-  fileCDB: "Comprabante de Domicilio (No mayor a tres meses)",
-  fileCDD: "Carátula Bancaria (No mayor a tres meses)",
+  fileCSF: "CSF",
+  fileCDB: "Comprabante de Domicilio",
+  fileCDD: "Carátula Bancaria",
 };
 
 const TextInput = ({ placeholder, name, value, onChange, type = "text", disabled = false }) => (
@@ -45,7 +45,7 @@ const FileInput = ({ name, onChange, file, label }) => (
   <div className="flex flex-col gap-2 col-span-2">
     <label htmlFor={name} className="text-base font-semibold text-gray-700">
       {" "}
-      Subir archivo {label}
+      Subir archivo {label} (No mayor a tres meses)
     </label>
     <input
       id={name}
@@ -206,14 +206,25 @@ function FilesCreate({
   const onSubmit = async () => { //Manejo de Insertar Datos y Archivos al sistema
     setLoadingMessage("Enviando información...");
     setLoading(true);
+
+    // Asegurar un orden específico para los archivos en FormData
     const data = new FormData();
+    data.append("fileCSF", formData.fileCSF); // Asegura el orden deseado
+    data.append("fileCDD", formData.fileCDD);
+    data.append("fileCDB", formData.fileCDB);
+    // Agregar otros campos de formData
     Object.entries(formData).forEach(([key, value]) => {
-      if (value) data.append(key, value);
+      if (key !== "fileCSF" && key !== "fileCDD" && key !== "fileCDB" && value) {
+        data.append(key, value);
+      }
     });
+    
+    //Console.log para debug
     console.log("Contenido de FormData:");
     for (let pair of data.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
     }
+
     try {
       const response = await fetch(`${api}/clients/complete`, {
         method: "POST",

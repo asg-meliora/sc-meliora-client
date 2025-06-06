@@ -87,6 +87,7 @@ function FileDetail({ api }) {
         setNewData(clientsData);
         console.log(clientsData);
         setFileUrl(fileData);
+        console.log(fileData);
       } catch (err) {
         setError(err.message);
       } finally {
