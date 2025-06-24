@@ -100,6 +100,12 @@ const Login = ({ api }) => {
       else if (data.role_id === 2) {
         navigate(`/user/invoices/${data.user_id}`); // Vista de usuario
       }
+      else if (data.role_id === 3) {
+        navigate(`/broker/${data.user_id}`); // Vista de Broker
+      }
+      else if (data.role_id === 4) {
+        navigate(`/lecture/${data.user_id}`); // Vista de Lectura
+      }
       else {
         navigate("*"); // Vista por defecto o común
       }

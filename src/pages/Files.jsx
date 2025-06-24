@@ -40,6 +40,7 @@ const Files = ({ api }) => {
 
       const data = await response.json();
       setNewFiles(data);
+      console.log(data);
     } catch (err) {
       setError(err.message);
     } finally {
