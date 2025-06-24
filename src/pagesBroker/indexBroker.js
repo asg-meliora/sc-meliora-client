@@ -1,5 +1,5 @@
-import Landing from "./Landing";
+import LandingBroker from "./LandingBroker";
 
 export {
-  Landing,
+  LandingBroker,
 }

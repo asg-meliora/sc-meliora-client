@@ -47,6 +47,14 @@ const SideMenu = ({ setFullSideBar }) => {
             icon: <FaFileInvoiceDollar />,
           },
         ];
+      case "3":
+        return [
+          {
+            name: "Facturas",
+            route: `/broker/${Cookies.get("user_id")}`,
+            icon: <FaFileInvoiceDollar />,
+          },
+        ];
       default:
         return [];
     }
@@ -111,11 +119,10 @@ const SideMenu = ({ setFullSideBar }) => {
         {menuItems.map((item, index) => (
           <button
             key={index}
-            className={`flex items-start gap-4 px-4 py-3 rounded-lg transition-all text-base font-lora ${
-              activeIndex === index
-                ? "bg-gold-gradient font-bold shadow-mid hover:cursor-pointer"
-                : "hover:cursor-pointer menuButton font-medium hover:scale-110 hover:font-bold transform transition-all"
-            }`}
+            className={`flex items-start gap-4 px-4 py-3 rounded-lg transition-all text-base font-lora ${activeIndex === index
+              ? "bg-gold-gradient font-bold shadow-mid hover:cursor-pointer"
+              : "hover:cursor-pointer menuButton font-medium hover:scale-110 hover:font-bold transform transition-all"
+              }`}
             onClick={() => handleMenuItemClick(index)}
           >
             <span className="text-xl">{item.icon}</span>

@@ -27,7 +27,7 @@ import {
 } from "./pagesUser/indexUser";
 
 import {
-  Landing,
+  LandingBroker,
 } from "./pagesBroker/indexBroker";
 import {
   LandingLecture,
@@ -53,7 +53,7 @@ const router = createBrowserRouter(
     <Route path="/user/invoices/:userId/details/:invoiceId" element={<ProtectedRoute allowedRoles={[2]}> <InvoicesUserDetails api={apiLink} /> </ProtectedRoute>} />,
 
     //Rutas de Broker
-    <Route path="/broker/:userId" element={<ProtectedRoute allowedRoles={[3]}> <Landing api={apiLink} /> </ProtectedRoute>} />,
+    <Route path="/broker/:userId" element={<ProtectedRoute allowedRoles={[3]}> <LandingBroker api={apiLink} /> </ProtectedRoute>} />,
 
     //Rutas de Lectura
     <Route path="/lecture/:userId" element={<ProtectedRoute allowedRoles={[4]}> <LandingLecture api={apiLink} /> </ProtectedRoute>} />,
