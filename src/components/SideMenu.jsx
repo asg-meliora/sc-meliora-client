@@ -51,7 +51,7 @@ const SideMenu = ({ setFullSideBar }) => {
         return [
           {
             name: "Facturas",
-            route: `/broker/${Cookies.get("user_id")}`,
+            route: `/broker/invoices/${Cookies.get("user_id")}`,
             icon: <FaFileInvoiceDollar />,
           },
         ];

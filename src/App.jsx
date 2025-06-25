@@ -9,7 +9,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import {
+import { //Rutas de Admin
   Dashboard,
   Files,
   Historical,
@@ -21,15 +21,16 @@ import {
   InvoicesDetails
 } from "./pages/index";
 
-import {
+import { //Rutas de Usuario
   InvoicesUser,
   InvoicesUserDetails
 } from "./pagesUser/indexUser";
 
-import {
+import { //Rutas de Broker
   LandingBroker,
+  InvoicesBrokerDetails
 } from "./pagesBroker/indexBroker";
-import {
+import {//Rutas de Lectura
   LandingLecture,
 } from "./pagesLecture/indexLecture";
 
@@ -53,8 +54,9 @@ const router = createBrowserRouter(
     <Route path="/user/invoices/:userId/details/:invoiceId" element={<ProtectedRoute allowedRoles={[2]}> <InvoicesUserDetails api={apiLink} /> </ProtectedRoute>} />,
 
     //Rutas de Broker
-    <Route path="/broker/:userId" element={<ProtectedRoute allowedRoles={[3]}> <LandingBroker api={apiLink} /> </ProtectedRoute>} />,
-
+    <Route path="/broker/invoices/:userId" element={<ProtectedRoute allowedRoles={[3]}> <LandingBroker api={apiLink} /> </ProtectedRoute>} />,
+    <Route path="/broker/invoices/:userId/details/:invoiceId" element={<ProtectedRoute allowedRoles={[3]}> <InvoicesBrokerDetails api={apiLink} /> </ProtectedRoute>} />,
+    
     //Rutas de Lectura
     <Route path="/lecture/:userId" element={<ProtectedRoute allowedRoles={[4]}> <LandingLecture api={apiLink} /> </ProtectedRoute>} />,
     
