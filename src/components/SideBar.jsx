@@ -47,6 +47,21 @@ const SideBar = ({ setFullSideBar }) => {
             icon: <FaFileInvoiceDollar />,
           },
         ];
+      case "4":
+        return [
+          {
+            name: "Dashboard",
+            route: `/lecture/${Cookies.get("user_id")}`,
+            icon: <MdOutlineDashboard />,
+          },
+          // { name: "Expedientes", route: "/files", icon: <FaRegFileAlt /> },
+          // { name: "Usuarios", route: "/users", icon: <FaUsers /> },
+          {
+            name: "Histórico",
+            route: `/lecture/historical/${Cookies.get("user_id")}`,
+            icon: <IoFileTrayFullOutline />,
+          },
+        ];
       default:
         return [];
     }

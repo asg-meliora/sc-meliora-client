@@ -32,6 +32,7 @@ import { //Rutas de Broker
 } from "./pagesBroker/indexBroker";
 import {//Rutas de Lectura
   LandingLecture,
+  HistoricalLecture
 } from "./pagesLecture/indexLecture";
 
 //const apiLink = "http://localhost:3001/api";
@@ -59,6 +60,7 @@ const router = createBrowserRouter(
     
     //Rutas de Lectura
     <Route path="/lecture/:userId" element={<ProtectedRoute allowedRoles={[4]}> <LandingLecture api={apiLink} /> </ProtectedRoute>} />,
+    <Route path="/lecture/historical/:userId" element={<ProtectedRoute allowedRoles={[4]}> <HistoricalLecture api={apiLink} /> </ProtectedRoute>} />,
     
     <Route path="*" element={<NotFound />} />,
   ])

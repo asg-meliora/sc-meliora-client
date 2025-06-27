@@ -63,19 +63,19 @@ function InvoicesDetailsDocs({ adminStatus = 0, uploadedDocs, handleDocInvoiceUp
                     const getAttribute = (node, attr1, attr2) =>
                         node?.getAttribute(attr1) || node?.getAttribute(attr2) || "";
 
-                    const subtotal = getAttribute(comprobante, "SubTotal", "subTotal");
+                    const subtotal = getAttribute(comprobante, "SubTotal", "subTotal"); //Extraer Subtotal
                     const conceptoNode = xmlDoc.getElementsByTagName("cfdi:Concepto")[0] || xmlDoc.getElementsByTagName("Concepto")[0];
-                    const concepto = getAttribute(conceptoNode, "Descripcion", "descripcion");
+                    const concepto = getAttribute(conceptoNode, "Descripcion", "descripcion"); //Extraer Concepto
 
                     const SenderNode = xmlDoc.getElementsByTagName("cfdi:Emisor")[0] || xmlDoc.getElementsByTagName("Emisor")[0];
-                    const sender = getAttribute(SenderNode, "Nombre", "nombre");
+                    const sender = getAttribute(SenderNode, "Nombre", "nombre"); //Extraer Nombre del Emisor
 
-                    const impuestos = xmlDoc.getElementsByTagName("cfdi:Traslado") || xmlDoc.getElementsByTagName("Traslado");
+                    const impuestos = xmlDoc.getElementsByTagName("cfdi:Traslado") || xmlDoc.getElementsByTagName("Traslado"); //Extraer impuestos
                     let iva = "";
                     for (let i = 0; i < impuestos.length; i++) {
                         const impuesto = getAttribute(impuestos[i], "Impuesto", "impuesto");
                         if (impuesto === "002") {
-                            iva = getAttribute(impuestos[i], "Importe", "importe");
+                            iva = getAttribute(impuestos[i], "Importe", "importe"); //Extraer IVA
                             break;
                         }
                     }

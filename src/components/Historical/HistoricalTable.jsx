@@ -41,8 +41,8 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
-  const [searchTermLocal, setSearchTermLocal] = useState(searchTerm ||'');
-  const [filters, setFilters] = useState({
+  const [searchTermLocal, setSearchTermLocal] = useState(searchTerm || '');
+  const [filters, setFilters] = useState({ //Filtros
     type_pipeline: "",
     assigned_user_sender: "",
     status: "",
@@ -54,6 +54,7 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
     receiver_name_rs: "",
   });
 
+  // Diccionario de columnas, Se usa para generar los encabezados de la tabla y los filtros
   const columns = [
     { label: "ID", key: "pipeline_id" },
     { label: "Tipo", key: "type_pipeline" },
@@ -227,6 +228,8 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
                     {checkAll ? "✓" : "−"}
                   </button>
                 </th>
+
+                {/* Generación de Encabezados con uso de diccionario y con ordenamiento */}
                 {columns.map((item) => (
                   <th
                     key={item.key}
