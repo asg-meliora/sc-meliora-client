@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from "../../styles";
-
+import ModalValidationXML from './ModalValidationXML';
 
 import { SiGoogledocs } from "react-icons/si";
 
@@ -11,7 +11,8 @@ const DiccDocs = {
     FacPDF: "Factura PDF",
 };
 
-function InvoicesDetailsDocs({ adminStatus = 0, uploadedDocs, handleDocInvoiceUpload, handleFinished, hasVisited, setError }) {
+function InvoicesDetailsDocs({ adminStatus = 0, uploadedDocs, handleDocInvoiceUpload, handleFinished, hasVisited, setError, invoice, name_rs_Sender = "Emma" }) {
+    const [xmlValidationResults, setXmlValidationResults] = useState(null); //Componente nuevo para validar el archivo XML
 
     // Lista de los 4 tipos de documentos
     const documentTypes = ["PreXML", "PrePDF", "FacXML", "FacPDF"];
@@ -48,11 +49,102 @@ function InvoicesDetailsDocs({ adminStatus = 0, uploadedDocs, handleDocInvoiceUp
             e.target.value = ""; // Limpiar si falla la validación
             return false;
         }
+
+        // Procesar validación XML directamente
+        if (type === "XML") {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                try {
+                    const xmlString = event.target.result;
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+                    const comprobante = xmlDoc.documentElement;
+                    const getAttribute = (node, attr1, attr2) =>
+                        node?.getAttribute(attr1) || node?.getAttribute(attr2) || "";
+
+                    const subtotal = getAttribute(comprobante, "SubTotal", "subTotal");
+                    const conceptoNode = xmlDoc.getElementsByTagName("cfdi:Concepto")[0] || xmlDoc.getElementsByTagName("Concepto")[0];
+                    const concepto = getAttribute(conceptoNode, "Descripcion", "descripcion");
+
+                    const SenderNode = xmlDoc.getElementsByTagName("cfdi:Emisor")[0] || xmlDoc.getElementsByTagName("Emisor")[0];
+                    const sender = getAttribute(SenderNode, "Nombre", "nombre");
+
+                    const impuestos = xmlDoc.getElementsByTagName("cfdi:Traslado") || xmlDoc.getElementsByTagName("Traslado");
+                    let iva = "";
+                    for (let i = 0; i < impuestos.length; i++) {
+                        const impuesto = getAttribute(impuestos[i], "Impuesto", "impuesto");
+                        if (impuesto === "002") {
+                            iva = getAttribute(impuestos[i], "Importe", "importe");
+                            break;
+                        }
+                    }
+
+                    // Comparar con invoice
+                    const isValid =
+                        subtotal === invoice?.subtotal &&
+                        iva === invoice?.iva &&
+                        concepto === invoice?.concept &&
+                        sender === name_rs_Sender;
+
+                    //Si pasó todas las validaciones, mostrar modal solo si es XML
+                    setXmlValidationResults({
+                        subtotal: {
+                            xml: subtotal,
+                            expected: invoice?.subtotal,
+                            match: subtotal === invoice?.subtotal
+                        },
+                        iva: {
+                            xml: iva,
+                            expected: invoice?.iva,
+                            match: iva === invoice?.iva
+                        },
+                        concept: {
+                            xml: concepto,
+                            expected: invoice?.concept,
+                            match: concepto === invoice?.concept
+                        },
+                        sender: {
+                            xml: sender,
+                            expected: name_rs_Sender,
+                            match: sender === name_rs_Sender
+                        }
+                    });
+
+                    if (!isValid) {
+                        setError("El XML no coincide con los datos de la factura.");
+                        e.target.value = ""; // Limpiar input
+                        return;
+                    }
+                    // Si es válido, subir el archivo
+                    handleDocInvoiceUpload(file, doctype);
+
+                } catch (error) {
+                    setError("Error al procesar el archivo XML.");
+                    e.target.value = "";
+                    return;
+                }
+            };
+            reader.readAsText(file);
+            return;
+        }
+        // Si es PDF y todo está bien, subirlo directo
         handleDocInvoiceUpload(file, doctype);
     }
 
     return (
         <>
+            {/* Modal para Validar Archivo XML */}
+            {xmlValidationResults && (
+                <div className={styles.form_container}>
+                    <div className={styles.form_modal_bg}></div>
+                    <ModalValidationXML
+                        results={xmlValidationResults}
+                        onClose={() => setXmlValidationResults(null)}
+                    />
+                </div>
+            )}
+
             {/* Botón de Terminado */}
             {isAllDocsUploaded && adminStatus === 0 && hasVisited === 'En proceso' && (
                 <div className="flex justify-center">
@@ -242,3 +334,5 @@ export default InvoicesDetailsDocs
 // };
 
 // reader.readAsText(file);
+// e.target.value = ""; // Limpiar si falla la validación
+// return false;

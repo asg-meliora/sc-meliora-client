@@ -221,6 +221,8 @@ function InvoicesUserDetails({ api }) {
             handleFinished={handleFinished}
             setError={setError}
             hasVisited={hasVisited}
+            invoice={dataInvoice}
+            name_rs_Sender={dataSender.name_rs}
           />
           {(hasVisited === "Cancelando" || hasVisited === "Cancelada") &&
             <CancelledInvoiceDoc
