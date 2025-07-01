@@ -240,6 +240,7 @@ function InvoicesUserDetails({ api }) {
               message={error}
               onClose={() => setError(null)}
               variant="x"
+              reload={false}
             />
           )}
         </AnimatePresence>
