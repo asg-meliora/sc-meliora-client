@@ -56,9 +56,7 @@ function AnnulledInvoiceModal({ setCancelShowForm = null, api, invoiceId, setSuc
                         Anular
                     </button>
                 </div>
-
-
-
+                
             </div>
         </>
     );

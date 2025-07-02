@@ -25,12 +25,11 @@ const Historical = ({ api }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null)
 
+  // Función para obtener el histórico de todas las facturas
   const getHistorical = useCallback(async () => {
-    // Función para obtener el histórico de todas las facturas
     setLoading(true); // Carga inicial
     try {
-      const response = await fetch(
-        `${api}/historical/finalized?page=${currentPage}&limit=${5}`,
+      const response = await fetch(`${api}/historical/finalized?page=${currentPage}&limit=${5}`,
         {
           method: "GET",
           headers: {
@@ -53,37 +52,33 @@ const Historical = ({ api }) => {
     }
   }, [api, currentPage]);
 
-  const fetchSearch = useCallback(
-    async (searchChar) => {
-      // Función para buscar en el historico de facturas
-      setLoading(true); // Carga inicial
-      setSearchTerm(searchChar); // Guarda el termino de búsqueda para usarlo en el useEffect para efecto de paginación
-      try {
-        const response = await fetch(
-          `${api}/historical/search?q=${encodeURIComponent(
-            searchChar
-          )}&page=${currentPage}&limit=${5}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-access-token": Cookies.get("token"),
-            },
-          }
-        );
-        //Error handling
-        if (!response.ok) throw new Error("Error en la petición");
+  // Función para buscar en el historico de facturas
+  const fetchSearch = useCallback(async (searchChar) => {
+    setLoading(true); // Carga inicial
+    setSearchTerm(searchChar); // Guarda el termino de búsqueda para usarlo en el useEffect para efecto de paginación
+    try {
+      const response = await fetch(`${api}/historical/search?q=${encodeURIComponent(searchChar)}&page=${currentPage}&limit=${5}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": Cookies.get("token"),
+          },
+        }
+      );
+      //Error handling
+      if (!response.ok) throw new Error("Error en la petición");
 
-        const data = await response.json();
-        setDataBoard(data.results); //Datos
-        setTotalPages(data.pagination.totalPages); //Total de Paginas
-      } catch (err) {
-        console.log(err);
-        setError(err.message);
-      } finally {
-        setLoading(false); // Carga finalizada
-      }
-    },
+      const data = await response.json();
+      setDataBoard(data.results); //Datos
+      setTotalPages(data.pagination.totalPages); //Total de Paginas
+    } catch (err) {
+      console.log(err);
+      setError(err.message);
+    } finally {
+      setLoading(false); // Carga finalizada
+    }
+  },
     [api, currentPage]
   );
 
@@ -95,7 +90,7 @@ const Historical = ({ api }) => {
     }
   }, [currentPage, fetchSearch, getHistorical, searchTerm]);
 
-  const handleAnnulledForm = (invoiceId) => {
+  const handleCancelledForm = (invoiceId) => {
     setSelectedInvoiceId(invoiceId);
     setCancelShowForm(true);
   };
@@ -110,7 +105,7 @@ const Historical = ({ api }) => {
     return <LoadingScreen message="Cargando..." />; // Pantalla de carga
   }
 
-  console.log("Data", dataBoard);
+  console.log("Data", dataBoard); //Quitarlo
 
   return (
     <>
@@ -136,7 +131,7 @@ const Historical = ({ api }) => {
           <HistoricalTable
             dataBoard={dataBoard}
             api={api}
-            handleAnnulledForm={handleAnnulledForm}
+            handleCancelledForm={handleCancelledForm}
             getSearch={fetchSearch}
             searchTerm={searchTerm}
             setError={setError}
@@ -150,7 +145,7 @@ const Historical = ({ api }) => {
             totalPages={totalPages}
             handlePageChange={handlePageChange}
           />
-          
+
         </div>
         {/* Cancel Form Modal */}
         {showCancelForm && (

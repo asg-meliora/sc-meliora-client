@@ -15,12 +15,13 @@ const InvoicesTable = ({
 
   if (invoiceStatus === 1) localStorage.clear(); // TODO: CHANGE WITH REFACTORING
 
-  const statusMap = ["", "Iniciado", "En proceso", "Terminado"];
+  const statusMap = ["", "Iniciado", "En proceso", "Terminado", "Cancelando"];
   const statusColor = [
     "",
     "text-[#eeedeb]",
     "text-[#d2b72a]",
     "text-[#89e089]",
+    "text-[#feb1ff]",
   ];
 
   //Manejo empty data, checa si dataBoard es un array, si no lo es, lo convierte en un array vacio
@@ -32,6 +33,7 @@ const InvoicesTable = ({
   const filteredInvoices = invoices.filter(
     (invoice) => invoice.status === statusMap[invoiceStatus]
   );
+  console.log(invoices);
 
   const columns = [
     "ID",
@@ -72,13 +74,20 @@ const InvoicesTable = ({
     });
 
   // Manejo de la navegación al hacer clic en una fila de la tabla
-  // Si el rol es admin, navega a la ruta de admin, si no, navega a la ruta de usuario
+  // Si el rol es admin, navega a la ruta de admin, si no, navega a la ruta de usuario, si no, navega a la ruta de broker
   const handleNavigate = (pipelineId) => {
-    if (adminStatus === 1) {
+    const roleId = parseInt(Cookies.get("role_id"));
+    const userId = Cookies.get("user_id");
+
+    if (adminStatus === 1 && roleId === 1) {                        // Si el rol es admin, navega a su ruta de detalles del pipeline                  
       navigate(`/invoices/details/${pipelineId}`);
-    } else {
-      const userId = Cookies.get("user_id");
+    } else if (roleId === 2) {                                      //Si el rol es usuario, navega a su ruta de detalles del pipeline
       navigate(`/user/invoices/${userId}/details/${pipelineId}`);
+    } else if (roleId === 3) {                                      //Si el rol es broker, navega a su ruta de detalles del pipeline
+      navigate(`/broker/invoices/${userId}/details/${pipelineId}`); // TODO: Cambiar a la ruta de detalles del pipeline del broker
+    } else {
+      console.warn("Rol no autorizado");
+      navigate("*");
     }
   };
 
@@ -139,14 +148,13 @@ const InvoicesTable = ({
               filteredInvoices.map((invoice, index) => (
                 <tr
                   key={invoice.pipeline_id}
-                  className={`border-b-[2.5px] border-[#b9b9b9] last:border-none ${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
-                  } hover:bg-[#313131] hover:text-white transition-all`}
+                  className={`border-b-[2.5px] border-[#b9b9b9] last:border-none ${index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"
+                    } hover:bg-[#313131] hover:text-white transition-all`}
                 >
                   <td
                     className="p-4 text-center font-semibold"
-                    // className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transition-all"
-                    // onClick={() => handleNavigate(invoice.pipeline_id)}
+                  // className="p-4 text-center font-semibold hover:cursor-pointer hover:font-bold hover:scale-120 hover:underline transition-all"
+                  // onClick={() => handleNavigate(invoice.pipeline_id)}
                   >
                     {invoice.pipeline_id}
                   </td>
@@ -181,7 +189,7 @@ const InvoicesTable = ({
                       </button>
                     </td>
                   )}
-                  {invoiceStatus !== 1 && adminStatus === 1 && (
+                  {invoiceStatus !== 1 && adminStatus === 1 && ( // Si el status de la factura no es "Iniciado" y el rol es admin, muestra el botón de editar
                     <td className="p-4 text-center">
                       <button
                         onClick={() => handleNavigate(invoice.pipeline_id)}
@@ -191,7 +199,7 @@ const InvoicesTable = ({
                       </button>
                     </td>
                   )}
-                  {adminStatus !== 1 && (
+                  {adminStatus !== 1 && ( //Si no es admin, muestra el boton de editar
                     <td className="p-4 text-center">
                       <button
                         onClick={() => handleNavigate(invoice.pipeline_id)}

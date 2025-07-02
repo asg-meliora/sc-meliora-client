@@ -40,6 +40,7 @@ const Files = ({ api }) => {
 
       const data = await response.json();
       setNewFiles(data);
+      console.log(data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -64,8 +65,6 @@ const Files = ({ api }) => {
     setClientId(clientId);
     setDeleteModalOpen(true);
   };
-
-  console.log('Debug Padre', newFiles);
 
   return (
     <>
@@ -100,13 +99,11 @@ const Files = ({ api }) => {
             </div>
           </div>
           <FilesTable
-            api={api}
             newFiles={Array.isArray(newFiles.despacho) ? newFiles.despacho : []}
             handleAnnulledForm={handleAnnulledForm}
             category={0}
           />
           <FilesTable
-            api={api}
             newFiles={Array.isArray(newFiles.clients) ? newFiles.clients : []}
             handleAnnulledForm={handleAnnulledForm}
             category={1}

@@ -39,6 +39,29 @@ const SideBar = ({ setFullSideBar }) => {
             icon: <FaFileInvoiceDollar />,
           },
         ];
+      case "3":
+        return [
+          {
+            name: "Facturas",
+            route: `/broker/invoices/${Cookies.get("user_id")}`,
+            icon: <FaFileInvoiceDollar />,
+          },
+        ];
+      case "4":
+        return [
+          {
+            name: "Dashboard",
+            route: `/lecture/${Cookies.get("user_id")}`,
+            icon: <MdOutlineDashboard />,
+          },
+          // { name: "Expedientes", route: "/files", icon: <FaRegFileAlt /> },
+          // { name: "Usuarios", route: "/users", icon: <FaUsers /> },
+          {
+            name: "Histórico",
+            route: `/lecture/historical/${Cookies.get("user_id")}`,
+            icon: <IoFileTrayFullOutline />,
+          },
+        ];
       default:
         return [];
     }
@@ -95,11 +118,10 @@ const SideBar = ({ setFullSideBar }) => {
             <div key={index} className="group relative flex items-center">
               <button
                 onClick={() => handleMenuItemClick(index)}
-                className={`text-2xl p-3 rounded-lg ${
-                  activeIndex === index
+                className={`text-2xl p-3 rounded-lg ${activeIndex === index
                     ? "bg-gold-gradient shadow-lg "
                     : "menuButton  transform "
-                } hover:cursor-pointer hover:scale-115 transform transition-all duration-200 ease-in-out`}
+                  } hover:cursor-pointer hover:scale-115 transform transition-all duration-200 ease-in-out`}
               >
                 {item.icon}
               </button>

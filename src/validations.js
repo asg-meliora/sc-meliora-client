@@ -406,8 +406,26 @@ export const validateFileFormData = (formData, put = false) => { //Funcion para 
   result = validateRFC(formData.rfc);
   if (!result.valid) return result;
 
-  result = validateCURP(formData.curp);
-  if (!result.valid) return result;
+  if (formData.person_type === "Moral") {
+    return { valid: true }; //No se valida CURP para personas Morales
+  }
+  if (formData.person_type === "Fisica") {
+    result = validateCURP(formData.curp);
+    if (!result.valid) return result;
+  }
+  if (put) {
+    if (formData.person_type === "Moral" && formData.curp) {
+      return { valid: true };
+    }
+    else {
+      if (!formData.curp || formData.curp.trim() === "") {
+        return { valid: false, error: "CURP no puede estar vacío" };
+      }
+      const result = validateCURP(formData.curp);
+      if (!result.valid) return result;
+    }
+  }
+
 
 
   if (put) {
@@ -435,7 +453,7 @@ export const validateFileFormData = (formData, put = false) => { //Funcion para 
     if (!result.valid) return result;
   }
   else {
-    result = validateStreet(formData.street); 
+    result = validateStreet(formData.street);
     if (!result.valid) return result;
     result = validateExtNumber(formData.ext_number);
     if (!result.valid) return result;
@@ -449,7 +467,7 @@ export const validateFileFormData = (formData, put = false) => { //Funcion para 
     if (!result.valid) return result;
   }
 
-  
+
   result = validateZipCode(formData.zip_code);
   if (!result.valid) return result;
 
@@ -475,7 +493,7 @@ export const validateFileFormData = (formData, put = false) => { //Funcion para 
       return { valid: false, error: "Favor de seleccionar un usuario asignado." };
     }
   }
-  else{
+  else {
     if (!formData.userAssign) {
       return { valid: false, error: "Favor de seleccionar un usuario asignado." };
     }

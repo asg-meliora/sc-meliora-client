@@ -87,6 +87,7 @@ function FileDetail({ api }) {
         setNewData(clientsData);
         console.log(clientsData);
         setFileUrl(fileData);
+        console.log(fileData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -118,7 +119,7 @@ function FileDetail({ api }) {
         }
       );
 
-      if (!response.ok) throw new Error("Error al actualizar los datos");
+      if (!response.ok) throw new Error("Error al actualizar los datos, verifique los campos");
 
       const result = await response.json();
       console.log("Updated", result); //Quitarlo
@@ -155,6 +156,7 @@ function FileDetail({ api }) {
 
       // Refresca la lista de archivos
       const updatedDocs = await fetch(`${api}/docs/byid/${id}`, {
+        method: "GET",
         headers: {
           "x-access-token": Cookies.get("token"),
         },

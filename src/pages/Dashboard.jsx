@@ -6,7 +6,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import { useState } from "react";
 import { MdMenu } from "react-icons/md";
 
-const Dashboard = () => {
+const Dashboard = ({ api, children }) => {
   const [error, setError] = useState(null); // Estado de error
   const [loading, setLoading] = useState(false); // Estado de carga
   const [loadingMessage, setLoadingMessage] = useState(
@@ -38,8 +38,9 @@ const Dashboard = () => {
               </div>
             </div>
             <h2 className={styles.heading_page}>Dashboard</h2>
-            <div></div>
+            {/* <div className="bg-white w-10px">Hola</div> */}
           </div>
+          {children}
         </div>
       </div>
     </>

@@ -28,15 +28,16 @@ const DiccLabels = {
   fileCDD: "Carátula Bancaria",
 };
 
-const TextInput = ({ placeholder, name, value, onChange, type = "text" }) => (
+const TextInput = ({ placeholder, name, value, onChange, type = "text", disabled = false }) => (
   <input
     type={type}
     name={name}
     value={value}
     placeholder={placeholder}
     onChange={onChange}
-    className={styles.input_form}
+    className={disabled ? `w-full p-2 text-[16px] rounded-md shadow-md shadow-stone-300 bg-gray-700 cursor-not-allowed` : styles.input_form}
     required
+    disabled={disabled}
   />
 );
 
@@ -44,7 +45,7 @@ const FileInput = ({ name, onChange, file, label }) => (
   <div className="flex flex-col gap-2 col-span-2">
     <label htmlFor={name} className="text-base font-semibold text-gray-700">
       {" "}
-      Subir archivo {label}
+      Subir archivo {label} (No mayor a tres meses)
     </label>
     <input
       id={name}
@@ -76,6 +77,8 @@ function FilesCreate({
   if (!isOpen) return null;
 
   const [formData, setFormData] = useState({
+    category: "", //Nuevo campos
+    person_type: "", //Nuevo campos
     name_rs: "",
     street: "", //Nuevos campos de Dirección
     rfc: "",
@@ -89,9 +92,7 @@ function FilesCreate({
     phone: "",
     state: "",
     email: "",
-
     zip_code: "",
-    category: "",
     userAssign: "",
     fileCSF: null,
     fileCDB: null,
@@ -117,12 +118,23 @@ function FilesCreate({
 
   //Manejo de inputs de texto, pero tambien manejo de mayúsculas para ciertos campos para estandarizar
   const upperCaseFields = ["rfc", "curp", "bank_account"];
-  const handleInputChange = (e) => { 
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: upperCaseFields.includes(name) ? value.toUpperCase() : value,
-    }));
+
+    if (name === "person_type" && value === "Moral") { //Si es persona moral, limpia el campo curp para UX
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        curp: "", // limpia curp
+      }));
+      return;
+    }
+    else {
+      setFormData((prev) => ({ //Si es persona fisica, no limpia el campo curp
+        ...prev,
+        [name]: upperCaseFields.includes(name) ? value.toUpperCase() : value,
+      }));
+    }
   };
 
   const handleFileChange = (e) => { //Manejo de subida de archivos, y manejo de errores y limites
@@ -130,6 +142,8 @@ function FilesCreate({
     const file = files[0];
     const maxSizeMB = 2; //Limitado a 2MB
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+    if (!file) return;
 
     if (file) {
       const isPdf = file.type === "application/pdf";
@@ -161,6 +175,7 @@ function FilesCreate({
     }
     setErrorMessage(null);
 
+    console.table(formData);
     // Paso 1: Validar campos simples sin archivos
     try {
       const plainData = {
@@ -191,14 +206,25 @@ function FilesCreate({
   const onSubmit = async () => { //Manejo de Insertar Datos y Archivos al sistema
     setLoadingMessage("Enviando información...");
     setLoading(true);
+
+    // Asegurar un orden específico para los archivos en FormData
     const data = new FormData();
+    data.append("fileCSF", formData.fileCSF); // Asegura el orden deseado
+    data.append("fileCDD", formData.fileCDD);
+    data.append("fileCDB", formData.fileCDB);
+    // Agregar otros campos de formData
     Object.entries(formData).forEach(([key, value]) => {
-      if (value) data.append(key, value);
+      if (key !== "fileCSF" && key !== "fileCDD" && key !== "fileCDB" && value) {
+        data.append(key, value);
+      }
     });
-    // console.log("Contenido de FormData:");
-    // for (let pair of data.entries()) {
-    //   console.log(`${pair[0]}:`, pair[1]);
-    // }
+    
+    //Console.log para debug
+    console.log("Contenido de FormData:");
+    for (let pair of data.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
+
     try {
       const response = await fetch(`${api}/clients/complete`, {
         method: "POST",
@@ -252,52 +278,73 @@ function FilesCreate({
       >
         <div className="flex flex-col md:grid md:grid-cols-2 gap-4 max-h-[90vh] overflow-y-auto py-2 px-6 w-full max-w-5xl">
           {/* Form Fields */}
-          {Object.entries(formData).map(([key, value]) =>
-            key.startsWith("file") ? ( // Renderizar el nuevo campo "Files"
-              <FileInput
-                key={key}
-                name={key}
-                file={value}
-                onChange={handleFileChange}
-                label={DiccLabels[key]}
-              />
-            ) :
-              key === "category" ? ( // Renderizar el nuevo campo "Category"
+          {Object.entries(formData).map(([key, value]) => {
+            if (key.startsWith("file")) {
+              return ( // Renderizar el nuevo campo "Files"
+                <FileInput
+                  key={key}
+                  name={key}
+                  file={value}
+                  onChange={handleFileChange}
+                  label={DiccLabels[key]}
+                />
+              );
+            } else if (key === "category") {
+              return ( // Renderizar el nuevo campo "Category"
                 <select
                   key={key}
                   name={key}
                   value={formData.category || ""}
                   onChange={handleInputChange}
-                  className={`${styles.select_form} col-span-2  ${formData.category ? "text-black font-normal" : "italic text-gray-500"}`}
+                  className={`${styles.select_form} col-span-1  ${formData.category ? "text-black font-normal" : "italic text-gray-500"}`}
                   required
                 >
                   <option value="" hidden disabled>
-                    Categoría
+                    Tipo de Expediente
                   </option>
                   <option value="ClientesEmisor">Despacho</option>
                   <option value="ClientesReceptor">Clientes</option>
                 </select>
-              ) : (
-                key !== "userAssign" && ( // Renderizar todos los campos tipo "Text"
-                  <TextInput
-                    key={key}
-                    placeholder={DiccLabels[key]}
-                    name={key}
-                    value={value}
-                    onChange={handleInputChange}
-                  />
-                )
-              )
-          )}
+              );
+            } else if (key === "person_type") {
+              return (// Renderizar el nuevo campo "person_type"
+                <select
+                  key={key}
+                  name={key}
+                  value={formData.person_type || ""}
+                  onChange={handleInputChange}
+                  className={`${styles.select_form} col-span-1  ${formData.person_type ? "text-black font-normal" : "italic text-gray-500"}`}
+                  required
+                >
+                  <option value="" hidden disabled>
+                    Tipo de Persona
+                  </option>
+                  <option value="Fisica">Persona Fisica</option>
+                  <option value="Moral">Persona Moral</option>
+                </select>
+              );
+            } else if (key !== "userAssign") {
+              return ( // Renderizar todos los campos tipo "Text"
+                <TextInput
+                  key={key}
+                  placeholder={DiccLabels[key]}
+                  name={key}
+                  value={value}
+                  onChange={handleInputChange}
+                  disabled={key === "curp" && formData.person_type === "Moral"}
+                />
+              );
+            }
+            return null; //Para evitar errores si no se encuentra algun campo en formData
+          })}
           <select
             name="userAssign"
             value={formData.userAssign || ""}
             onChange={handleInputChange}
-            className={`${styles.select_form} col-span-2  ${
-              formData.userAssign
-                ? "text-black font-normal"
-                : "italic text-gray-500"
-            }`}
+            className={`${styles.select_form} col-span-2  ${formData.userAssign
+              ? "text-black font-normal"
+              : "italic text-gray-500"
+              }`}
             required
           >
             <option value="" hidden disabled>

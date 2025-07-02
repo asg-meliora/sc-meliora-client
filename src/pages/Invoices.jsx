@@ -27,6 +27,7 @@ const Invoices = ({ api }) => {
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [showSidemenu, setShowSideMenu] = useState(false);
+  const [invoicesCancelled, setInvoicesCancelled] = useState([]);
 
   // Muestra todas los datos de las facturas
   const getPipelines = useCallback(async () => {
@@ -45,6 +46,7 @@ const Invoices = ({ api }) => {
       //Data handling
       const data = await response.json();
       setDataBoard(data.results);
+      setInvoicesCancelled(data.canceladas);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -66,6 +68,7 @@ const Invoices = ({ api }) => {
   // if (loading) {
   //   return <LoadingScreen message="Cargando..." />; // Pantalla de carga
   // }
+
 
   return (
     <>
@@ -98,6 +101,11 @@ const Invoices = ({ api }) => {
               </button>
             </div>
           </div>
+          {invoicesCancelled.length > 0 && <InvoicesTable
+            dataBoard={dataBoard}
+            invoiceStatus={4}
+            adminStatus={1}
+          />}
           <InvoicesTable
             dataBoard={dataBoard}
             invoiceStatus={1}

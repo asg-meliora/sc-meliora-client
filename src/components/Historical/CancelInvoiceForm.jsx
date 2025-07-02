@@ -12,25 +12,18 @@ const CancelInvoiceForm = ({ setCancelShowForm, setError, api, invoiceId, getHis
     e.preventDefault();
 
     setLoading(true);
-    if (!formData.invoice_file) {
-      setError("Debes subir un archivo para cancelar la factura.");
-      return;
-    }
-    const sendFile = new FormData();
-    sendFile.append("document_type", "Cancelada");
-    sendFile.append("invoice_id", invoiceId);
-    sendFile.append("DocInvoice", formData.invoice_file);
     try {
-      const response = await fetch(`${api}/historical/canceled/${invoiceId}`, {
-        method: "POST",
+      const response = await fetch(`${api}/historical/cancelling/${invoiceId}`, {
+        method: "PATCH",
         headers: {
-          "x-access-token": Cookies.get("token"), // No pongas 'Content-Type' con FormData
+          "Content-Type": "application/json",
+          "x-access-token": Cookies.get("token"),
         },
-        body: sendFile,
       });
-      if (!response.ok) throw new Error("Error al subir el archivo");
-      setSuccess("Archivo de cancelación subido correctamente."); // Manejar éxito
+      if (!response.ok) throw new Error("Error al Iniciar la cancelación de la factura");
+      setSuccess("La solicitud de la factura ha iniciado correctamente"); // Manejar éxito
     } catch (err) {
+      console.error(err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -39,26 +32,26 @@ const CancelInvoiceForm = ({ setCancelShowForm, setError, api, invoiceId, getHis
     }
   };
 
-  const handleChange = (e) => {
-    const file = e.target.files[0];
-    const maxSizeMB = 2;
-    const maxSizeBytes = maxSizeMB * 1024 * 1024; //Limite de tamaño de archivo 2MB
+  // const handleChange = (e) => {
+  //   const file = e.target.files[0];
+  //   const maxSizeMB = 2;
+  //   const maxSizeBytes = maxSizeMB * 1024 * 1024; //Limite de tamaño de archivo 2MB
 
-    if (!file) return;
+  //   if (!file) return;
 
-    if (file) {
-      const isPdf = file.type === "application/pdf";
-      if (!isPdf) {
-        setError("Solo se permiten archivos en formato PDF"); //Rechazar si no es pdf
-        e.target.value = null; //Resetear cualquier archivo cargado local
-      } else if (file.size > maxSizeBytes) {
-        setError(`El archivo supera el límite de ${maxSizeMB}MB`); //Rechazar si pesa mucho
-        e.target.value = null; //Resetear cualquier archivo cargado local
-      } else {
-        setFormData((prev) => ({ ...prev, invoice_file: file, })); //Subir Archivo
-      }
-    }
-  };
+  //   if (file) {
+  //     const isPdf = file.type === "application/pdf";
+  //     if (!isPdf) {
+  //       setError("Solo se permiten archivos en formato PDF"); //Rechazar si no es pdf
+  //       e.target.value = null; //Resetear cualquier archivo cargado local
+  //     } else if (file.size > maxSizeBytes) {
+  //       setError(`El archivo supera el límite de ${maxSizeMB}MB`); //Rechazar si pesa mucho
+  //       e.target.value = null; //Resetear cualquier archivo cargado local
+  //     } else {
+  //       setFormData((prev) => ({ ...prev, invoice_file: file, })); //Subir Archivo
+  //     }
+  //   }
+  // };
 
   if (loading) {
     return <LoadingScreen message="Cargando..." />; // Pantalla de carga
@@ -73,49 +66,47 @@ const CancelInvoiceForm = ({ setCancelShowForm, setError, api, invoiceId, getHis
           ✕
         </button>
 
+
         {/* Form Title */}
-        <h2 className={styles.form_heading}>Cancelar Factura</h2>
+        <h2 className={`${styles.form_heading} text-center `}>
+          Confirmar cancelación de factura
+        </h2>
 
-        <form onSubmit={handleSubmit} className={styles.form} noValidate>
-
-          {/* Cancelation File */}
-          <div className="flex flex-col gap-2 py-1">
-            <label
-              htmlFor="invoice_file"
-              className="text-base font-semibold text-gray-700 text-center mt-[-2vh]"
-            >
-              <p>Si desea cancelar la factura, por favor </p>
-              <span className="text-red-500">*</span>
-              Adjuntar archivo de cancelación
-
-
-            </label>
-            <input
-              type="file"
-              name="invoice_file"
-              accept="application/pdf, .pdf" // puedes personalizar según el tipo de archivo permitido
-              onChange={handleChange}
-              className={styles.input_file}
-            />
-          </div>
-          {formData.invoice_file && (
-            <p className="text-sm text-gray-700">
-              Archivo seleccionado: {formData.invoice_file.name}
-            </p>
-          )}
-          {/* Confirm Button */}
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="confirmButton rounded-lg  px-4 py-2 text-white font-semibold hover:cursor-pointer hover:scale-110  transition duration-200 mb-[1vh]"
-            >
-              Confirmar Cancelación
-            </button>
-          </div>
-        </form>
+        <div className={`${styles.form} grid grid-cols-2 py-2`}>
+          <button
+            onClick={handleSubmit}
+            className="px-5 py-2 rounded-xl confirmButton text-white font-medium font-inter shadow-md shadow-green-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
+          >
+            Confirmar
+          </button>
+          <button
+            onClick={() => setCancelShowForm(false)}
+            className="px-5 py-2 rounded-xl logoutButton text-white font-medium font-inter shadow-md shadow-red-800/50 hover:cursor-pointer hover:scale-110 hover:font-semibold transition-all"
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
+
     </>
   );
 };
 
 export default CancelInvoiceForm;
+
+
+{/* <div className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center w-full max-w-xs">
+  <SiGoogledocs className="text-6xl text-gray-800 mb-3" />
+  <h3 className="text-lg font-semibold text-gray-800 text-center">
+    Archivo
+  </h3>
+  <p className="text-sm italic text-gray-500 mb-4">(Archivo Subido)</p>
+  <a
+    
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded transition-all"
+  >
+    Ver archivo
+  </a>
+</div> */}

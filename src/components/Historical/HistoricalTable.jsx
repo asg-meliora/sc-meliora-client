@@ -36,13 +36,13 @@ const statusColor = {
   Anulado: "bg-[#014293] shadow-blue-500/70 shadow-lg",
 };
 
-const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, searchTerm, setError, setSuccess }) => {
+const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searchTerm, setError, setSuccess }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
-  const [searchTermLocal, setSearchTermLocal] = useState(searchTerm ||'');
-  const [filters, setFilters] = useState({
+  const [searchTermLocal, setSearchTermLocal] = useState(searchTerm || '');
+  const [filters, setFilters] = useState({ //Filtros
     type_pipeline: "",
     assigned_user_sender: "",
     status: "",
@@ -54,6 +54,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, search
     receiver_name_rs: "",
   });
 
+  // Diccionario de columnas, Se usa para generar los encabezados de la tabla y los filtros
   const columns = [
     { label: "ID", key: "pipeline_id" },
     { label: "Tipo", key: "type_pipeline" },
@@ -227,6 +228,8 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, search
                     {checkAll ? "✓" : "−"}
                   </button>
                 </th>
+
+                {/* Generación de Encabezados con uso de diccionario y con ordenamiento */}
                 {columns.map((item) => (
                   <th
                     key={item.key}
@@ -316,7 +319,7 @@ const HistoricalTable = ({ dataBoard, api, handleAnnulledForm, getSearch, search
                     <td className="p-4 text-center">
                       {item.status !== "Anulado" && item.status !== "Cancelada" && (
                         <button
-                          onClick={() => handleAnnulledForm(item.pipeline_id)}
+                          onClick={() => handleCancelledForm(item.pipeline_id)}
                           className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
                         >
                           <MdOutlineCancel size={18} />
