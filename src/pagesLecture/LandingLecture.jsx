@@ -16,15 +16,16 @@ function LandingLecture({ api }) {
                 <div className={styles.page_container}>
                     Simple Landing Lecture
                     <p className="bg-green-600">{userId}</p>
-                </div>
+                // </div>
             </div> */}
             <Dashboard>
-                <div className={styles.blank_page}>
+                <p>Lecture</p>
+                {/* <div className={styles.blank_page}>
                     <div className={styles.page_container}>
                         Simple Landing Lecture
                         <p className="bg-green-600">{userId}</p>
                     </div>
-                </div>
+                </div> */}
             </Dashboard>
         </>
     )
