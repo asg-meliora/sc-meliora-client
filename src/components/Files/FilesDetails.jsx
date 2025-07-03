@@ -38,8 +38,11 @@ function FileDetail({ api }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [showSidemenu, setShowSideMenu] = useState(false);
 
+  const role = Cookies.get("role_id");
+
   const getUsers = useCallback(async () => {
-    const response = await fetch(`${api}/users/byregnact`, { //Mostrar usuarios disponibles para asignar
+    const response = await fetch(`${api}/users/byregnact`, {
+      //Mostrar usuarios disponibles para asignar
       method: "GET",
       headers: { "x-access-token": Cookies.get("token") },
     });
@@ -47,7 +50,8 @@ function FileDetail({ api }) {
     return await response.json();
   }, [api]);
 
-  const getClients = useCallback(async () => { //Mostrar Datos del Cliente
+  const getClients = useCallback(async () => {
+    //Mostrar Datos del Cliente
     const response = await fetch(`${api}/clients/byclientanduser/${id}`, {
       method: "GET",
       headers: {
@@ -59,7 +63,8 @@ function FileDetail({ api }) {
     return await response.json();
   }, [api, id]);
 
-  const getFileDetail = useCallback(async () => { //Mostrar Archivos del Cliente
+  const getFileDetail = useCallback(async () => {
+    //Mostrar Archivos del Cliente
     const response = await fetch(`${api}/docs/byid/${id}`, {
       method: "GET",
       headers: {
@@ -119,7 +124,8 @@ function FileDetail({ api }) {
         }
       );
 
-      if (!response.ok) throw new Error("Error al actualizar los datos, verifique los campos");
+      if (!response.ok)
+        throw new Error("Error al actualizar los datos, verifique los campos");
 
       const result = await response.json();
       console.log("Updated", result); //Quitarlo
@@ -196,15 +202,19 @@ function FileDetail({ api }) {
             {/* <h2 className={styles.heading_page}>Expediente No. {id}</h2> */}
             {!isEditing ? (
               <div className={styles.button_header_container}>
-                <button
-                  className={styles.button_header}
-                  onClick={() => setIsEditing(true)}
-                >
-                  <FaEdit />{" "}
-                  <span className="hidden sm:inline-block">Editar Datos</span>
-                </button>
+                {role === "1" && (
+                  <button
+                    className={styles.button_header}
+                    onClick={() => setIsEditing(true)}
+                  >
+                    <FaEdit />{" "}
+                    <span className="hidden sm:inline-block">Editar Datos</span>
+                  </button>
+                )}
               </div>
-            ) : <div></div>}
+            ) : (
+              <div></div>
+            )}
           </div>
           {/* Detalles del expediente */}
           <div className="w-full mb-6">
@@ -254,37 +264,43 @@ function FileDetail({ api }) {
                     Descargar
                   </a>
 
-                  <label
-                    htmlFor={`upload-${urls.document_id}`}
-                    className="cursor-pointer updateButton text-white px-3 py-1 rounded font-medium font-inter w-full shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
-                  >
-                    Actualizar
-                  </label>
-                  <input
-                    id={`upload-${urls.document_id}`}
-                    type="file"
-                    accept="application/pdf, pdf"
-                    hidden
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      const maxSizeMB = 2;
-                      const maxSizeBytes = maxSizeMB * 1024 * 1024; //Limite de tamaño de archivo 2MB
+                  {role === "1" && (
+                    <>
+                      <label
+                        htmlFor={`upload-${urls.document_id}`}
+                        className="cursor-pointer updateButton text-white px-3 py-1 rounded font-medium font-inter w-full shadow-md shadow-yellow-700/40 hover:scale-110 hover:font-semibold transition-all"
+                      >
+                        Actualizar
+                      </label>
+                      <input
+                        id={`upload-${urls.document_id}`}
+                        type="file"
+                        accept="application/pdf, pdf"
+                        hidden
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          const maxSizeMB = 2;
+                          const maxSizeBytes = maxSizeMB * 1024 * 1024; //Limite de tamaño de archivo 2MB
 
-                      if (file) {
-                        const isPdf = file.type === "application/pdf";
-                        if (!isPdf) {
-                          setError("Solo se permiten archivos en formato PDF"); //Rechazar si no es pdf
-                        } else if (file.size > maxSizeBytes) {
-                          setError(
-                            `El archivo supera el límite de ${maxSizeMB}MB`
-                          ); //Rechazar si pesa mucho
-                        } else {
-                          handleFileUpload(file, urls.document_id); //Subir Archivo
-                        }
-                      }
-                      e.target.value = null; //Resetear cualquier archivo cargado local
-                    }}
-                  />
+                          if (file) {
+                            const isPdf = file.type === "application/pdf";
+                            if (!isPdf) {
+                              setError(
+                                "Solo se permiten archivos en formato PDF"
+                              ); //Rechazar si no es pdf
+                            } else if (file.size > maxSizeBytes) {
+                              setError(
+                                `El archivo supera el límite de ${maxSizeMB}MB`
+                              ); //Rechazar si pesa mucho
+                            } else {
+                              handleFileUpload(file, urls.document_id); //Subir Archivo
+                            }
+                          }
+                          e.target.value = null; //Resetear cualquier archivo cargado local
+                        }}
+                      />
+                    </>
+                  )}
                 </div>
                 <div className="mb-4"></div>
               </article>

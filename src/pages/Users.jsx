@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, use } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import UserForm from "../components/Users/UserForm";
 import UsersTable from "../components/Users/UsersTable";
 import { FaPlus } from "react-icons/fa";
@@ -13,6 +13,7 @@ import { SuccessTexts } from "../constants/Texts";
 import { MdMenu } from "react-icons/md";
 import SideMenu from "../components/SideMenu";
 import ConfirmUserDeletion from "../components/Users/ConfirmUserDeletion"
+import ErrorToast from "../components/ErrorToast";
 
 const Users = ({ api }) => {
   const [showForm, setShowForm] = useState(false);
@@ -253,7 +254,7 @@ const Users = ({ api }) => {
             />
           )}
           {error && (
-            <SuccessToast
+            <ErrorToast
               message={error}
               onClose={() => setError(null)}
               variant="x"

@@ -14,7 +14,6 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 
 import lion from "../assets/lion.webp";
 
-
 const SideMenu = ({ setFullSideBar }) => {
   function GetMenuItems() {
     const roleId = Cookies.get("role_id");
@@ -62,8 +61,17 @@ const SideMenu = ({ setFullSideBar }) => {
             route: `/lecture/${Cookies.get("user_id")}`,
             icon: <MdOutlineDashboard />,
           },
-          // { name: "Expedientes", route: "/files", icon: <FaRegFileAlt /> },
-          // { name: "Usuarios", route: "/users", icon: <FaUsers /> },
+          {
+            name: "Expedientes",
+            route: `/lecture/files/${Cookies.get("user_id")}`,
+            baseRoute: "/lecture/files",
+            icon: <FaRegFileAlt />,
+          },
+          {
+            name: "Usuarios",
+            route: `/lecture/users/${Cookies.get("user_id")}`,
+            icon: <FaUsers />,
+          },
           {
             name: "Histórico",
             route: `/lecture/historical/${Cookies.get("user_id")}`,
@@ -83,10 +91,10 @@ const SideMenu = ({ setFullSideBar }) => {
 
   useEffect(() => {
     const currentIndex = menuItems.findIndex((item) =>
-      location.pathname.startsWith(item.route)
+      location.pathname.startsWith(item.baseRoute || item.route)
     );
     if (currentIndex !== -1) setActiveIndex(currentIndex);
-  }, [location.pathname]);
+  }, [location.pathname, menuItems]);
 
   /**
    * Handles user logout by removing the auth token and navigating to homepage (login)
@@ -134,10 +142,11 @@ const SideMenu = ({ setFullSideBar }) => {
         {menuItems.map((item, index) => (
           <button
             key={index}
-            className={`flex items-start gap-4 px-4 py-3 rounded-lg transition-all text-base font-lora ${activeIndex === index
-              ? "bg-gold-gradient font-bold shadow-mid hover:cursor-pointer"
-              : "hover:cursor-pointer menuButton font-medium hover:scale-110 hover:font-bold transform transition-all"
-              }`}
+            className={`flex items-start gap-4 px-4 py-3 rounded-lg transition-all text-base font-lora ${
+              activeIndex === index
+                ? "bg-gold-gradient font-bold shadow-mid hover:cursor-pointer"
+                : "hover:cursor-pointer menuButton font-medium hover:scale-110 hover:font-bold transform transition-all"
+            }`}
             onClick={() => handleMenuItemClick(index)}
           >
             <span className="text-xl">{item.icon}</span>

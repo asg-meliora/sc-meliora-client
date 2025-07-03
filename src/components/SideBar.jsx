@@ -54,8 +54,17 @@ const SideBar = ({ setFullSideBar }) => {
             route: `/lecture/${Cookies.get("user_id")}`,
             icon: <MdOutlineDashboard />,
           },
-          // { name: "Expedientes", route: "/files", icon: <FaRegFileAlt /> },
-          // { name: "Usuarios", route: "/users", icon: <FaUsers /> },
+          {
+            name: "Expedientes",
+            route: `/lecture/files/${Cookies.get("user_id")}`,
+            baseRoute: "/lecture/files",
+            icon: <FaRegFileAlt />,
+          },
+          {
+            name: "Usuarios",
+            route: `/lecture/users/${Cookies.get("user_id")}`,
+            icon: <FaUsers />,
+          },
           {
             name: "Histórico",
             route: `/lecture/historical/${Cookies.get("user_id")}`,
@@ -74,12 +83,14 @@ const SideBar = ({ setFullSideBar }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   // const [menuOpen, setMenuOpen] = useState(false);
 
+  console.log("Location: ", location.pathname, "\nIndex: ", activeIndex);
+
   useEffect(() => {
     const currentIndex = menuItems.findIndex((item) =>
-      location.pathname.startsWith(item.route)
+      location.pathname.startsWith(item.baseRoute || item.route)
     );
     if (currentIndex !== -1) setActiveIndex(currentIndex);
-  }, [location.pathname]);
+  }, [location.pathname, menuItems]);
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -118,10 +129,11 @@ const SideBar = ({ setFullSideBar }) => {
             <div key={index} className="group relative flex items-center">
               <button
                 onClick={() => handleMenuItemClick(index)}
-                className={`text-2xl p-3 rounded-lg ${activeIndex === index
+                className={`text-2xl p-3 rounded-lg ${
+                  activeIndex === index
                     ? "bg-gold-gradient shadow-lg "
                     : "menuButton  transform "
-                  } hover:cursor-pointer hover:scale-115 transform transition-all duration-200 ease-in-out`}
+                } hover:cursor-pointer hover:scale-115 transform transition-all duration-200 ease-in-out`}
               >
                 {item.icon}
               </button>

@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles";
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
+import Cookies from "js-cookie";
 import { MdOutlineCancel } from "react-icons/md";
 
 function FilesTable({ newFiles, handleAnnulledForm, category }) {
   const navigate = useNavigate();
+  const role = Cookies.get("role_id");
 
   const FormattedDate = ({ dateString }) => {
     const date = new Date(dateString);
@@ -16,13 +18,18 @@ function FilesTable({ newFiles, handleAnnulledForm, category }) {
 
     return <div>{formattedDate}</div>;
   };
+  
 
   return (
     <>
       <div className={styles.table_layout}>
         <div className={styles.table_container}>
           <div className="flex flex-row items-start justify-start  gap-5 px-4 py-3 bg-[#313131] border-[#313131] rounded-t-lg text-white">
-            {category === 0 ? <h2 className="text-xl font-semibold">Despacho</h2> : <h2 className="text-xl font-semibold">Clientes</h2>}
+            {category === 0 ? (
+              <h2 className="text-xl font-semibold">Despacho</h2>
+            ) : (
+              <h2 className="text-xl font-semibold">Clientes</h2>
+            )}
           </div>
 
           <table className={`${styles.table}` /*rounded-2xl*/}>
@@ -96,19 +103,21 @@ function FilesTable({ newFiles, handleAnnulledForm, category }) {
                     <td className="p-4 text-center">
                       <button
                         onClick={() =>
-                          navigate(`/files/details/${item.client_id}`)
+                          navigate(role === "1" ? `/files/details/${item.client_id}` : `/lecture/files/details/${item.client_id}/${Cookies.get("user_id")}`)
                         }
-                        className="text-[#9e824f] hover:text-[#eeb13f] pr-1.5 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
+                        className={`text-[#9e824f] hover:text-[#eeb13f] ${role === "1" ? "pr-1.5" : ""} scale-130 hover:cursor-pointer transition-all transform hover:scale-150`}
                       >
                         {/* <SlOptionsVertical size={18} /> */}
                         <FaEdit size={18} />
                       </button>
-                      <button
-                        onClick={() => handleAnnulledForm(item.client_id)}
-                        className="text-[#9e824f] hover:text-[#eeb13f] pl-1.5 hover:cursor-pointer transition-all transform hover:scale-150"
-                      >
-                        <FaRegTrashAlt size={18} />
-                      </button>
+                      {role === "1" && (
+                        <button
+                          onClick={() => handleAnnulledForm(item.client_id)}
+                          className="text-[#9e824f] hover:text-[#eeb13f] pl-1.5 hover:cursor-pointer transition-all transform hover:scale-150"
+                        >
+                          <FaRegTrashAlt size={18} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))

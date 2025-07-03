@@ -5,7 +5,11 @@ import styles from "../../styles";
 
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 
-const UsersTable = ({ handleOpenUserForm, dataBoard, handleOpenUserDelete }) => {
+const UsersTable = ({
+  handleOpenUserForm,
+  dataBoard,
+  handleOpenUserDelete,
+}) => {
   /**
    * Function that returns the user type in a readable format
    * @function formatUserType
@@ -43,6 +47,8 @@ const UsersTable = ({ handleOpenUserForm, dataBoard, handleOpenUserDelete }) => 
     return format(date, "dd/MM/yyyy");
   };
 
+  const role = Cookies.get("role_id");
+
   return (
     <div className={styles.table_layout}>
       <div className={styles.table_container}>
@@ -66,7 +72,9 @@ const UsersTable = ({ handleOpenUserForm, dataBoard, handleOpenUserDelete }) => 
               >
                 Creación
               </th>
-              <th className={`${styles.table_header_cell}`}>Acciones</th>
+              {role === "1" && (
+                <th className={`${styles.table_header_cell}`}>Acciones</th>
+              )}
             </tr>
           </thead>
           <tbody className={styles.table_body}>
@@ -106,21 +114,24 @@ const UsersTable = ({ handleOpenUserForm, dataBoard, handleOpenUserDelete }) => 
                 <td className="p-4 text-center hidden lg:table-cell">
                   {formatDate(user.created_at)}
                 </td>
-                <td className="p-4 text-center">
-                  <button
-                    onClick={() => handleOpenUserForm(user)}
-                    className="text-[#9e824f]  hover:text-[#eeb13f] pr-1.5 hover:cursor-pointer transition-all transform hover:scale-120"
-                  >
-                    <FaEdit size={18} />
-                  </button>
-                  <button
-                    onClick={() => {handleOpenUserDelete(user.user_id)}}
-                    className="text-[#9e824f] hover:text-[#eeb13f] pl-1.5 scale-100 hover:cursor-pointer transition-all transform hover:scale-150"
-                  >
-                    <FaRegTrashAlt size={18} />
-                  </button>
-                  
-                </td>
+                {role === "1" && (
+                  <td className="p-4 text-center">
+                    <button
+                      onClick={() => handleOpenUserForm(user)}
+                      className="text-[#9e824f]  hover:text-[#eeb13f] pr-1.5 hover:cursor-pointer transition-all transform hover:scale-120"
+                    >
+                      <FaEdit size={18} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleOpenUserDelete(user.user_id);
+                      }}
+                      className="text-[#9e824f] hover:text-[#eeb13f] pl-1.5 scale-100 hover:cursor-pointer transition-all transform hover:scale-150"
+                    >
+                      <FaRegTrashAlt size={18} />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
