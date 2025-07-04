@@ -46,7 +46,7 @@ const styles = {
   // > Form
   form_container: "fixed top-0 right-0 w-full h-full flex justify-center items-center",
   form_modal_bg: "fixed w-full h-full bg-black opacity-50",
-  form_layout: "max-w-[800px] max-h-[calc(92svh)] mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black px-6 py-3 rounded-lg shadow-xl relative w-96",
+form_layout: "max-w-[800px] max-h-[calc(92svh)] mx-auto bg-radial from-[#ffffff] via-[#f0f0f0] to-[#dfdfdf] text-black px-6 py-3 rounded-lg shadow-xl relative w-96",
   close_form_button: "absolute top-2 right-2 text-gray-400 hover:text-gray-700 hover:font-extrabold text-xl mx-2 my-1 hover:cursor-pointer hover:scale-120 transition-all",
   form_heading: "text-lg sm:text-2xl font-bold mb-4 mx-3 text-blackN font-raleway",
   form: "flex flex-col gap-4 mx-2",

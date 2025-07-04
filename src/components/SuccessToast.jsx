@@ -38,7 +38,7 @@ const SuccessToast = ({ message, onClose, variant = "text", autoClose = true, du
       ) : (
         <button
           onClick={onClose}
-          className="text-green-700 font-bold text-xl hover:text-green-900"
+          className="text-green-700 font-bold text-xl hover:text-green-900 hover:cursor-pointer hover:scale-125 transition-all"
         >
           ✕
         </button>
