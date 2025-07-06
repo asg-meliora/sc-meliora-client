@@ -298,7 +298,7 @@ export default function FileTableDetail({
                           onChange={handleChange}
                           required
                           disabled={key === "category" || key === "person_type"} // Se desactiva el editable solo si es "category" o "person_type"
-                          className={`w-full p-2 rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:ring-2 focus:ring-[#fff0] focus:scale-105  transition-all  px-3 py-2 focus:outline-none
+                          className={`w-full rounded-md italic shadow-stone-300 font-inter placeholder:italic focus:scale-105  transition-all  px-3 py-2 focus:outline-none
                             ${key === "category" || key === "person_type" // Si es "category" o "person_type", se desactiva el campo
                               ? "cursor-not-allowed"
                               : ""

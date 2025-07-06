@@ -83,8 +83,6 @@ const SideBar = ({ setFullSideBar }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   // const [menuOpen, setMenuOpen] = useState(false);
 
-  console.log("Location: ", location.pathname, "\nIndex: ", activeIndex);
-
   useEffect(() => {
     const currentIndex = menuItems.findIndex((item) =>
       location.pathname.startsWith(item.baseRoute || item.route)

@@ -2,20 +2,27 @@ import React, { useState } from "react";
 import styles from "../../styles";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { BsSend } from "react-icons/bs";
-import { IoCloudDownloadOutline, IoFilter, IoCaretUpOutline, IoCaretDownOutline, IoSearchSharp } from "react-icons/io5";
+import {
+  IoCloudDownloadOutline,
+  IoFilter,
+  IoCaretUpOutline,
+  IoCaretDownOutline,
+  IoSearchSharp,
+} from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 
 import LoadingScreen from "../LoadingScreen";
 import Cookies from "js-cookie";
 import FilterDropdown from "./FilterDropdown";
+import { FiSend } from "react-icons/fi";
 import HistoricalMobile from "./HistoricalMobile";
 
 // Formato Fecha //TODO cambiar formato fechas
 function FormattedDate(dateString) {
   const date = new Date(dateString);
   const year = date.getFullYear(); // Local
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Local
-  const day = String(date.getDate()).padStart(2, '0'); // Local
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Local
+  const day = String(date.getDate()).padStart(2, "0"); // Local
   return `${day}/${month}/${year}`;
 }
 
@@ -28,7 +35,10 @@ const FormatDateForComparison = (dateString) => {
 
 // Formato Moneda
 const formatCurrency = (value) => {
-  return Number(value).toLocaleString("es-MX", { style: "currency", currency: "MXN" });
+  return Number(value).toLocaleString("es-MX", {
+    style: "currency",
+    currency: "MXN",
+  });
 };
 
 const statusColor = {
@@ -37,13 +47,27 @@ const statusColor = {
   Anulado: "bg-[#014293] shadow-blue-500/70 shadow-lg",
 };
 
-const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searchTerm, setError, setSuccess }) => {
-  const [selectedIds, setSelectedIds] = useState([]);
+const HistoricalTable = ({
+  dataBoard,
+  api,
+  handleCancelledForm,
+  getSearch,
+  searchTerm,
+  setError,
+  setSuccess,
+  setShowSendForm,
+  selectedIds, 
+  setSelectedIds,
+}) => {
   const [checkAll, setCheckAll] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
-  const [searchTermLocal, setSearchTermLocal] = useState(searchTerm || '');
-  const [filters, setFilters] = useState({ //Filtros
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "default",
+  });
+  const [searchTermLocal, setSearchTermLocal] = useState(searchTerm || "");
+  const [filters, setFilters] = useState({
+    //Filtros
     type_pipeline: "",
     assigned_user_sender: "",
     status: "",
@@ -70,10 +94,12 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
     { label: "Acciones", key: "acciones" },
   ];
 
+  const role = Cookies.get("role_id");
+
   const handleDownload = async () => {
     if (selectedIds.length === 0) {
       setError("No hay elementos seleccionados.");
-      return
+      return;
     }
 
     setLoading(true); // Carga inicial
@@ -119,16 +145,26 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
     setCheckAll(!checkAll);
   };
 
+  const handleClickSend = () => {
+    if (selectedIds.length === 0) {
+      setError("No hay elementos seleccionados.");
+      return;
+    }
+    setShowSendForm(true);
+  }
+
   const handleSort = (columnKey) => {
     setSortConfig((prev) => {
       if (prev.key === columnKey) {
         const nextDirection =
-          prev.direction === 'default' ? 'asc'
-            : prev.direction === 'asc' ? 'desc'
-              : 'default';
+          prev.direction === "default"
+            ? "asc"
+            : prev.direction === "asc"
+            ? "desc"
+            : "default";
         return { key: columnKey, direction: nextDirection };
       } else {
-        return { key: columnKey, direction: 'asc' };
+        return { key: columnKey, direction: "asc" };
       }
     });
   };
@@ -146,7 +182,7 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
 
   // ORDENAMIENTO
   const sortedData = [...filteredData];
-  if (sortConfig.key && sortConfig.direction !== 'default') {
+  if (sortConfig.key && sortConfig.direction !== "default") {
     sortedData.sort((a, b) => {
       const aVal = a[sortConfig.key];
       const bVal = b[sortConfig.key];
@@ -155,7 +191,7 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
       if (sortConfig.key === "created_at") {
         const aDate = new Date(aVal);
         const bDate = new Date(bVal);
-        return sortConfig.direction === 'asc' ? aDate - bDate : bDate - aDate;
+        return sortConfig.direction === "asc" ? aDate - bDate : bDate - aDate;
       }
 
       if (typeof aVal === "number") {
@@ -180,8 +216,20 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
               <FaRegTrashAlt className="w-4 h-4 fill-current" />
               Eliminar
             </button> */}
-            <button onClick={handleDownload} className="flex items-center gap-2 text-sm p-2 font-semibold text-white  rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all">
-              <IoCloudDownloadOutline className="w-4 h-4 fill-current" />
+            {role === "1" && (
+              <button
+                onClick={handleClickSend}
+                className="flex items-center gap-2 text-sm p-2 font-semibold text-white hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all"
+              >
+                <FiSend className="w-5 h-5" />
+                Enviar
+              </button>
+            )}
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-2 text-sm p-2 font-semibold text-white  rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all"
+            >
+              <IoCloudDownloadOutline className="w-5 h-5 fill-current" />
               Descargar
             </button>
             {/* <button className="flex items-center gap-2 text-sm p-2 font-semibold text-white  rounded-md hover:text-[#eeb13f] hover:cursor-pointer hover:scale-110 transition-all">
@@ -197,7 +245,7 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
                 value={searchTermLocal}
                 onChange={(e) => setSearchTermLocal(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     console.log(searchTermLocal);
                     getSearch(searchTermLocal);
                   }

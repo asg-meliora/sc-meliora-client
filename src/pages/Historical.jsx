@@ -12,12 +12,14 @@ import Pagination from "../components/Historical/Pagination";
 import { AnimatePresence } from "framer-motion";
 import ErrorToast from "../components/ErrorToast";
 import SuccessToast from "../components/SuccessToast";
+import SendForm from "../components/Historical/SendForm";
 
 const Historical = ({ api }) => {
   const [dataBoard, setDataBoard] = useState([]); // Estado para almacenar los datos de la tabla
   const [loading, setLoading] = useState(true); // Estado de carga
   const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
   const [showCancelForm, setCancelShowForm] = useState(false);
+  const [showSendForm, setShowSendForm] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showSidemenu, setShowSideMenu] = useState(false);
@@ -25,6 +27,9 @@ const Historical = ({ api }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loadingMessage, setLoadingMessage] = useState("Cargando Histórico...");
+
+    const [selectedIds, setSelectedIds] = useState([]);
+  
 
   // Función para obtener el histórico de todas las facturas
   const getHistorical = useCallback(async () => {
@@ -107,7 +112,7 @@ const Historical = ({ api }) => {
     }
   };
 
-  console.log("Data", dataBoard); //Quitarlo
+  // console.log("Data", dataBoard); //Quitarlo
 
   return (
     <>
@@ -141,6 +146,9 @@ const Historical = ({ api }) => {
             searchTerm={searchTerm}
             setError={setError}
             setSuccess={setSuccess}
+            setShowSendForm={setShowSendForm}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
           />
 
           {/* Paginación */}
@@ -163,6 +171,14 @@ const Historical = ({ api }) => {
               setError={setError}
               setSuccess={setSuccess}
             />
+          </div>
+        )}
+
+        {/* Send Form */}
+        {showSendForm && (
+          <div className={styles.form_container}>
+            <div className={styles.form_modal_bg}></div>
+            <SendForm setShowSendForm={setShowSendForm} selectedIds={selectedIds} setSuccess={setSuccess} />
           </div>
         )}
       </div>
