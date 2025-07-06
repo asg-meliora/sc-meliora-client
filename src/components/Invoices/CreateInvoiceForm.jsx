@@ -393,7 +393,7 @@ function CreateInvoiceForm({
                   través de Plataformas Tecnológicas
                 </option>
                 <option value="626">
-                  626 Régimen Simplificado de Confianza
+                  626 - Régimen Simplificado de Confianza
                 </option>
               </select>
               {/* 6. Metodo de pago */}

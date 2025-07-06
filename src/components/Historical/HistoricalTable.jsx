@@ -8,6 +8,7 @@ import { MdOutlineCancel } from "react-icons/md";
 import LoadingScreen from "../LoadingScreen";
 import Cookies from "js-cookie";
 import FilterDropdown from "./FilterDropdown";
+import HistoricalMobile from "./HistoricalMobile";
 
 // Formato Fecha //TODO cambiar formato fechas
 function FormattedDate(dateString) {
@@ -70,7 +71,7 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
   ];
 
   const handleDownload = async () => {
-    if (selectedIds.length === 0){
+    if (selectedIds.length === 0) {
       setError("No hay elementos seleccionados.");
       return
     }
@@ -215,130 +216,143 @@ const HistoricalTable = ({ dataBoard, api, handleCancelledForm, getSearch, searc
           </div>
 
           {/*Header */}
-          <table className={styles.table}>
-            <thead className={styles.table_header}>
-              {/* Generación de Encabezados con uso de diccionario y con ordenamiento */}
-              <tr>
-                {/* Encabezado de Check */}
-                <th className="flex p-4">
-                  <button
-                    onClick={handleCheckAll}
-                    className={`w-6 h-6 flex items-center justify-center rounded-md border-2 hover:cursor-pointer hover:scale-120 transform transition-all 
-                    ${checkAll ? "bg-[#1a1a1a] border-[#eeb13f] text-[#eeb13f] hover:border-[#8e8260]"  : "bg-[#1a1a1a] border-[#8e8260] hover:border-[#eeb13f] text-[#fff]"}`}
-                  >
-                    {checkAll ? "✓" : "−"}
-                  </button>
-                </th>
-
-                {/* Todos los demás encabezados */}
-                {columns.map((item) => (
-                  <th
-                    key={item.key}
-                    className={`${styles.table_header_cell} ${item.key !== "acciones" ? "cursor-pointer select-none" : ""}`}
-                    onClick={() => item.key !== "acciones" && handleSort(item.key)}
-                  >
-                    <div className="flex items-center justify-center gap-1 mb-[-1.5vh]">
-                      <span>{item.label}</span>
-                      {item.key !== "acciones" && (
-                        sortConfig.key === item.key
-                          ? (sortConfig.direction === "asc" ? <IoCaretUpOutline className="text-sm" />
-                            : sortConfig.direction === "desc" ? <IoCaretDownOutline className="text-sm" />
-                              : <IoFilter className="text-sm" />)
-                          : <IoFilter className="text-sm" />
-                      )}
-                    </div>
+          <div className="hidden lg:block">
+            <table className={styles.table}>
+              <thead className={styles.table_header}>
+                {/* Generación de Encabezados con uso de diccionario y con ordenamiento */}
+                <tr>
+                  {/* Encabezado de Check */}
+                  <th className="flex p-4">
+                    <button
+                      onClick={handleCheckAll}
+                      className={`w-6 h-6 flex items-center justify-center rounded-md border-2 hover:cursor-pointer hover:scale-120 transform transition-all
+                    ${checkAll ? "bg-[#1a1a1a] border-[#eeb13f] text-[#eeb13f] hover:border-[#8e8260]" : "bg-[#1a1a1a] border-[#8e8260] hover:border-[#eeb13f] text-[#fff]"}`}
+                    >
+                      {checkAll ? "✓" : "−"}
+                    </button>
                   </th>
-                ))}
-              </tr>
 
-              {/* Filtros */}
-              <tr>
-                <th></th>
-                {columns.map((col) => (
-                  <th key={`filter-${col.key}`}>
-                    {col.key !== "acciones" & col.key !== "pipeline_id" ? (
-                      <select
-                        value={filters[col.key] || ""}
-                        onChange={(e) => setFilters((prev) => ({ ...prev, [col.key]: e.target.value }))}
-                        className="focus:bg-[#313131] px-0.5 py-0.5 rounded-sm text-sm font-inter text-white w-4/5 mb-[1vh] hover:cursor-pointer"
-                      >
-                        <option value="">Todos</option>
-                        {[...new Set(
-                          dataBoard.map(item => {
-                            if (col.key === "created_at") {
-                              return FormatDateForComparison(item[col.key]); // Formato de fecha
-                            }
-                            return item[col.key];
-                          }))].map((option) => {
-                            const isCurrency = ["subtotal", "iva", "total_refund"].includes(col.key);
-                            const displayValue = isCurrency ? formatCurrency(option) : col.key === "created_at" ? FormattedDate(option) : option;
-                            return (
-                              <option key={option} value={option} className="bg-[#313131] text-white cursor-pointer">
-                                {displayValue}
-                              </option>
-                            );
-                          })}
-                      </select>
-                    ) : null}
-                  </th>
-                ))}
-              </tr>
+                  {/* Todos los demás encabezados */}
+                  {columns.map((item) => (
+                    <th
+                      key={item.key}
+                      className={`${styles.table_header_cell} ${item.key !== "acciones" ? "cursor-pointer select-none" : ""}`}
+                      onClick={() => item.key !== "acciones" && handleSort(item.key)}
+                    >
+                      <div className="flex items-center justify-center gap-1 mb-[-1.5vh]">
+                        <span>{item.label}</span>
+                        {item.key !== "acciones" && (
+                          sortConfig.key === item.key
+                            ? (sortConfig.direction === "asc" ? <IoCaretUpOutline className="text-sm" />
+                              : sortConfig.direction === "desc" ? <IoCaretDownOutline className="text-sm" />
+                                : <IoFilter className="text-sm" />)
+                            : <IoFilter className="text-sm" />
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
 
-            </thead>
-
-            {/*Body*/}
-            <tbody className={styles.table_body}>
-              {sortedData.length > 0 ? (
-                sortedData.map((item, index) => (
-                  <tr key={item.pipeline_id}
-                    className={`border-b-[2.5px] border-[#b9b9b9] last:border-none ${index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"} hover:bg-[#313131] hover:text-white transition-all`}
-                  >
-                    <td className="p-4 text-center">
-                      {item.status !== "Anulado" && (
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(item.pipeline_id)}
-                          onChange={(e) => { setSelectedIds((prev) => e.target.checked ? [...prev, item.pipeline_id] : prev.filter((id) => id !== item.pipeline_id)); }}
-                          className="w-6 h-6 rounded-md border-2 transition-all hover:scale-120 hover:cursor-pointer"
-                        />
-                      )}
-                    </td>
-                    <td className="p-4 text-center font-semibold">{item.pipeline_id}</td>
-                    <td className="p-4 text-center">{item.type_pipeline}</td>
-                    <td className="p-4 text-center">{item.assigned_user_sender}</td>
-                    <td className="p-4 text-center">{item.concept}</td>
-                    <td className="p-4 text-center">{FormattedDate(item.created_at)}</td>
-                    <td className="p-4 text-center">{formatCurrency(item.subtotal)}</td>
-                    <td className="p-4 text-center">{formatCurrency(item.iva)}</td>
-                    <td className="p-4 text-center">{formatCurrency(item.total_refund)}</td>
-                    <td className="p-4 text-center">{item.receiver_name_rs}</td>
-                    <td className="p-4 text-center ">
-                      <span className={`px-3 py-1 items-center text-xs font-bold rounded-full text-white shadow-md ${statusColor[item.status] || "bg-gray-400"}`}>
-                        {item.status || "Desconocido"}
-                      </span>
-                    </td>
-                    <td className="p-4 text-center">
-                      {item.status !== "Anulado" && item.status !== "Cancelada" && (
-                        <button
-                          onClick={() => handleCancelledForm(item.pipeline_id)}
-                          className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
+                {/* Filtros */}
+                <tr>
+                  <th></th>
+                  {columns.map((col) => (
+                    <th key={`filter-${col.key}`}>
+                      {col.key !== "acciones" & col.key !== "pipeline_id" ? (
+                        <select
+                          value={filters[col.key] || ""}
+                          onChange={(e) => setFilters((prev) => ({ ...prev, [col.key]: e.target.value }))}
+                          className="focus:bg-[#313131] px-0.5 py-0.5 rounded-sm text-sm font-inter text-white w-4/5 mb-[1vh] hover:cursor-pointer"
                         >
-                          <MdOutlineCancel size={18} />
-                        </button>
-                      )}
+                          <option value="">Todos</option>
+                          {[...new Set(
+                            dataBoard.map(item => {
+                              if (col.key === "created_at") {
+                                return FormatDateForComparison(item[col.key]); // Formato de fecha
+                              }
+                              return item[col.key];
+                            }))].map((option) => {
+                              const isCurrency = ["subtotal", "iva", "total_refund"].includes(col.key);
+                              const displayValue = isCurrency ? formatCurrency(option) : col.key === "created_at" ? FormattedDate(option) : option;
+                              return (
+                                <option key={option} value={option} className="bg-[#313131] text-white cursor-pointer">
+                                  {displayValue}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      ) : null}
+                    </th>
+                  ))}
+                </tr>
+
+              </thead>
+
+              {/*Body*/}
+              <tbody className={styles.table_body}>
+                {sortedData.length > 0 ? (
+                  sortedData.map((item, index) => (
+                    <tr key={item.pipeline_id}
+                      className={`border-b-[2.5px] border-[#b9b9b9] last:border-none ${index % 2 === 0 ? "bg-gray-50" : "bg-[#c5c5c5]"} hover:bg-[#313131] hover:text-white transition-all`}
+                    >
+                      <td className="p-4 text-center">
+                        {item.status !== "Anulado" && (
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.includes(item.pipeline_id)}
+                            onChange={(e) => { setSelectedIds((prev) => e.target.checked ? [...prev, item.pipeline_id] : prev.filter((id) => id !== item.pipeline_id)); }}
+                            className="w-6 h-6 rounded-md border-2 transition-all hover:scale-120 hover:cursor-pointer"
+                          />
+                        )}
+                      </td>
+                      <td className="p-4 text-center font-semibold">{item.pipeline_id}</td>
+                      <td className="p-4 text-center">{item.type_pipeline}</td>
+                      <td className="p-4 text-center">{item.assigned_user_sender}</td>
+                      <td className="p-4 text-center">{item.concept}</td>
+                      <td className="p-4 text-center">{FormattedDate(item.created_at)}</td>
+                      <td className="p-4 text-center">{formatCurrency(item.subtotal)}</td>
+                      <td className="p-4 text-center">{formatCurrency(item.iva)}</td>
+                      <td className="p-4 text-center">{formatCurrency(item.total_refund)}</td>
+                      <td className="p-4 text-center">{item.receiver_name_rs}</td>
+                      <td className="p-4 text-center ">
+                        <span className={`px-3 py-1 items-center text-xs font-bold rounded-full text-white shadow-md ${statusColor[item.status] || "bg-gray-400"}`}>
+                          {item.status || "Desconocido"}
+                        </span>
+                      </td>
+                      <td className="p-4 text-center">
+                        {item.status !== "Anulado" && item.status !== "Cancelada" && (
+                          <button
+                            onClick={() => handleCancelledForm(item.pipeline_id)}
+                            className="text-[#9e824f] hover:text-[#eeb13f] pr-1 pl-2 scale-130 hover:cursor-pointer transition-all transform hover:scale-150"
+                          >
+                            <MdOutlineCancel size={18} />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  // Si no hay facturas, muestra un mensaje
+                  <tr>
+                    <td colSpan={columns.length + 1} className="text-center py-5 text-gray-600 font-semibold">
+                      No hay datos disponibles.
                     </td>
                   </tr>
-                ))
-              ) : (
-                // Si no hay facturas, muestra un mensaje
-                <tr>
-                  <td colSpan={columns.length + 1} className="text-center py-5 text-gray-600 font-semibold">
-                    No hay datos disponibles.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <HistoricalMobile
+            sortedData={sortedData}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+            handleCancelledForm={handleCancelledForm}
+            FormattedDate={FormattedDate}
+            formatCurrency={formatCurrency}
+            statusColor={statusColor}
+          />
+
         </div>
       </div>
     </>
